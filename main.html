@@ -204,7 +204,7 @@
 		
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-sm-2 border">
+				<div class="col-sm-2 border" id="categorySideBar">
 					<button class="btn btn-sm btn-block btn-outline-primary" id="fc" onclick="processData('fc')">Faltu Cheeze</button><br>
 					<button class="btn btn-sm btn-block btn-outline-primary" id="ss" onclick="processData('ss')">Stop/Start</button>
 				</div>
@@ -298,6 +298,7 @@
 			firebase.analytics();
 			
 
+			// Used for testing
 			function uploadFile() {
 
 				var fileUpload = document.getElementById('fileInput')
@@ -315,13 +316,13 @@
 
 			}
 
-			var categories;
+			// Global array for storing all categories
+			var allCategories = [];
 			function pullCategories() {
 				/* This function retrieves categories of SAP Notes from Firebase Database. */
 
 				var database = firebase.database();
 				data = database.ref('sap_notes/activities/').once('value').then(function(snapshot) {
-					console.log(snapshot.val()["totalActivities"]);
 					activityTypes = snapshot.val()["type"]
 					totalActivityTypes = activityTypes.length;
 					for(i = 0; i < totalActivityTypes; i++) {
@@ -329,8 +330,12 @@
 						activityName = activityTypes[i]["meta"]["name"];
 						activityId = activityTypes[i]["meta"]["id"];
 
-						categories[activityId] =  activityName;
-						console.log(categories)
+						// Storing category in global allCategories array for future use.
+						var category = {
+							name: activityName,
+							id: activityId
+						};
+						allCategories.push(category);
 
 						// Create <option> element
 						var optn = document.createElement("option");
@@ -341,10 +346,9 @@
 						selectElement = document.getElementById('noteCategory');
 						selectElement.appendChild(optn);
 					}
+					addCategorySideBar();
 				})
-
 				console.log(data);
-				console.log("Categories",categories);
 			}
 
 
@@ -369,6 +373,7 @@
 				});
 			}
 
+			// Used for testing
 			function initialFirebaseData() {
 				/* Call this function when you want to replace all firebase database data with initial data. */
 
@@ -461,6 +466,7 @@
 			function submitForm() {
 				/* This function gets and validate data from addNote form and passes
 					data to addNotes() function to update it in firebase database. */
+
 				// Get values
 				var noteCategory = document.getElementById('noteCategory');
 				noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
@@ -512,6 +518,19 @@
 			}
 
 
+			function pullNotesOfCategory(categoryId) {
+				/* This function full all notes of category having id as categoryId */
+
+				var database = firebase.database();
+
+				database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/').once('value').then(function(snapshot){
+					allNotes = snapshot.val();
+					console.log(allNotes);
+				});
+
+			}
+
+			// Used for testing
 			function updateFirebaseDatabase() {
 				var database = firebase.database();
 				firebase.database().ref('sap_notes/typeDetail/allActivityTypes/2/').set({
@@ -535,6 +554,29 @@
 						}
 					]
 				})
+			}
+
+
+			function addCategorySideBar() {
+				/* This function adds categories in the Side Bar */
+
+				sideBarDiv = document.getElementById('categorySideBar');
+				var totalCategories = allCategories.length;
+				var allCategoryButtons = "";
+				for(i = 0; i < totalCategories; i++) {
+					categoryBtn = document.createElement('button');
+					categoryBtn.setAttribute('class','btn btn-sm btn-block btn-outline-primary');
+					categoryBtn.setAttribute('id',allCategories[i]["id"]);
+					categoryBtn.setAttribute('onclick',"showNotes("+allCategories[i]["id"]+")");
+					categoryBtn.innerHTML = allCategories[i]["name"];
+
+					allCategoryButtons += categoryBtn.outerHTML;
+				}
+				sideBarDiv.innerHTML=allCategoryButtons;
+			}
+
+			function showNotes(categoryId) {
+				pullNotesOfCategory(categoryId)
 			}
 
 		</script>
