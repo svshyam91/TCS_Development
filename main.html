@@ -1,0 +1,543 @@
+<html>
+	<head>
+		<title>SAP LINKS</title>
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" 
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" 
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/fontawesome.min.css">
+
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+		
+		<!-- Include JS File -->
+		<script src="data.js"></script>
+		
+		<!-- <script src="https://cdn.tiny.cloud/1/nufd5k4pn60ihxkrg6kv7wvtawh43p41y8b8qtkwgvxz4eob/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+		
+		<style>
+			button {
+				margin: 5px; 
+			}
+			.pre-text {
+				margin-top: 20px;
+				border: 1px solid #007bff;
+				border-radius: 20px;
+				padding: 10px;
+				margin-bottom: 40px;
+			}
+			textarea {
+				width: 100%;
+				height: 100px;
+				border-radius: 5px;
+			}
+			.add-content {
+				display: none;
+			}
+			.form-heading {
+				background-color: #5c85d6;
+				margin: 20px;
+				padding: 5px 20px;
+				border-radius: 10px;
+				color: white;
+			}
+		</style>
+
+		<script>
+
+			/* Parsing JS File with variable as JS object*/
+			function processData(heading) {
+			
+				/* Remove previous content loaded inside #cont id div */
+				document.getElementById("cont").innerHTML = "";
+			
+				/* Create an element for every heading(stop/start, faaltu_cheeze, client copy) inside tab */
+				for(let head in dat[heading]) {
+					
+					/* Create button for copy content */
+					var headString = '\"'+head+'\"'
+					var copyBtn = document.createElement("button");
+					copyBtn.setAttribute("class","btn btn-sm");
+					copyBtn.setAttribute("id",heading);
+					copyBtn.setAttribute("onclick","copyText("+headString+")");		/* Passing "head" coz it's id of pre element */
+					copyBtn.innerHTML = "Copy Text";
+					
+					/* Creating element <div> to display content */
+					var div = document.createElement("div");
+					div.setAttribute("class","pre-text");
+					div.innerHTML = `<pre class="block-content ${heading}" id="${head}">${dat[heading][head]}</pre>
+									<button class="btn btn-sm btn-outline-info copy-text" id="copyText" onclick="copyToClipboard('${head}')">Copy Text</button>`
+					
+					
+					/* Add pre elements to the #cont id div. */
+					document.getElementById("cont").innerHTML += div.outerHTML;
+					
+					
+					//var pre = document.createElement("pre");
+					//pre.setAttribute("class","block-content "+heading);
+					//pre.setAttribute("id",head);
+					//pre.innerHTML = dat[heading][head];
+					
+					///* Adding this newly created pre element in #preText div id */
+					//document.getElementById("preText").innerHTML += pre.outerHTML;
+
+					///* Add newly created button in #copyText div id */
+					//document.getElementById("copyText").innerHTML += copyBtn.outerHTML;
+					
+				}
+				
+			}
+
+			
+			function copyToClipboard(elemId) {
+				/* This function copies content inside div with id elemId 
+					Ref: https://stackoverflow.com/questions/36639681/how-to-copy-text-from-a-div-to-clipboard  */
+				
+				if(document.selection) {
+					var range = document.body.createTextRange();
+					range.moveToElementText(document.getElementById(elemId));
+					range.select().createTextRange();
+					document.execCommand("copy");
+				}
+				else if(window.getSelection) {
+					var range = document.createRange();
+					range.selectNode(document.getElementById(elemId));
+					window.getSelection().removeAllRanges();
+					window.getSelection().addRange(range);
+					document.execCommand("copy");
+					//alert("Text has been copied, now paste in text area");
+				}
+			}
+
+
+			function getText() {
+				txt = document.getElementById('mytextarea').value;
+				if(txt == null || txt == "")
+					alert("Please add some text.")
+				else {
+					alert("Your text: "+txt);
+					// Add text in data.js file 
+
+					dat["ss"]["ss_abap"] = txt;
+				}
+
+			}
+
+
+			function openTicket() {
+				var ticketNo = prompt("Enter ticket number:");
+				if(ticketNo != null && ticketNo != "") {
+					var link = "https://spc.ondemand.com/open?ticket="+ticketNo.trim();
+					window.open(link);
+				}
+			}
+
+
+			function openSapNote() {
+				var sapNoteNo = prompt("Enter SAP NOTE: ");
+				if(sapNoteNo != null && sapNoteNo != "") {
+					var sapNoteLink = "https://launchpad.support.sap.com/#/notes/"+sapNoteNo.trim();
+					window.open(sapNoteLink);
+				}
+			
+			}
+
+
+			function addSapNote() {
+
+				// Fetch the values of note Category(<select>)
+				pullCategories();
+				document.getElementById('addSapNote').style.display = "block";
+			}
+			
+
+			$(document).ready(function() {
+				$("#ss").click(function() {
+					if($("#stop-start").css("display") == "block")
+						$("#stop-start").css("display","none");
+					else
+						$("#stop-start").css("display","block");
+				});
+				$("#fc").click(function(){
+					
+					if($("#faltu-cheeze").css("display") == "block")
+						$("#faltu-cheeze").css("display","none");
+					else	
+						$("#faltu-cheeze").css("display","block");
+				});
+			});
+
+		</script>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5c85d6">
+		
+			<a class="navbar-brand">
+				<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/SAP-Logo.svg/1200px-SAP-Logo.svg.png" width="60px" height="30px">
+			</a>
+			
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">NOTES</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" target="_blank" 
+					href="https://spc.ondemand.com/sap/public/ap/ui/repository/SAP_UI/HTMLOBERON5/client.html?app.component=/SAP_UI_CT/Main/root.uiccwoc&rootWindow=X&redirectUrl=/sap/public/byd/runtime#n=eyJpblBvcnQiOiIiLCJ0YXJnZXQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInBhcmFtcyI6e30sImxpc3RzIjp7fSwid2NDb250ZXh0Ijp7IndvY0lkIjoiL0ExU19TUEMvV29ya0NlbnRlci9Nb25pdG9yaW5nX1dDRi5XQ0YudWl3b2MiLCJ2aWV3SWQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInN0YXRzSXNDb21tb25UYXNrIjpmYWxzZSwiaXNOYXZOb2RlIjpmYWxzZSwibmF2Tm9kZVRleHQiOiIifX0%3D">OPEN SPC</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" onclick="openTicket()"><i class="fas fa-clipboard-list"></i>&nbsp;	OPEN TICKET</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" onclick="openSapNote()">OPEN SAP NOTE</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" onclick="addSapNote()">ADD SAP NOTE</a>
+				</li>
+			</ul>
+			
+		</nav>
+		
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-2 border">
+					<button class="btn btn-sm btn-block btn-outline-primary" id="fc" onclick="processData('fc')">Faltu Cheeze</button><br>
+					<button class="btn btn-sm btn-block btn-outline-primary" id="ss" onclick="processData('ss')">Stop/Start</button>
+				</div>
+				<div class="col-sm-8 border">
+					<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
+					<!-- <div class="upload-file" id="uploadFile">
+						<input type="file" name="firebaseFile" id="fileInput" class="btn btn-outline-primary">
+						<input type="submit" name="submitFile" class="btn btn-outline-primary" onclick="uploadFile()"> 
+					</div> -->
+					<div class="content" id="cont">
+						<!-- Add contents comes here. --> 
+					</div>
+
+					<!-- Form for adding notes -->
+					<div id="addSapNote" style="display: none;">
+						<div class="form-heading">
+							<h2>ADD NOTES</h2>
+						</div>
+							<div class="form-group">
+								<label for="noteCategory" class="control-label">Choose Category:</label>
+								<button class="btn btn-sm btn-outline-primary" style="float: right;" data-toggle="modal" data-target="#categoryModal">Add Category</button>	
+								<select id="noteCategory" class="form-control">
+									<option value=""> -- Select Category -- </option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="noteHeading" class="control-label">Enter Heading:</label>
+								<input type="text" name="noteHeading" id="noteHeading" class="form-control" maxlength="50">
+							</div>	
+							<div class="form-group">
+								<label for="noteDescription" class="control-label">Enter Note Description:</label>
+								<textarea class="form-control" id="noteDescription"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="additionalInfo" class="control-label">Enter Additional Info (Not Mandatory):</label>
+								<input type="text" name="additionalInfo" id="additionalInfo" class="form-control" maxlength="100">
+							</div>
+							<button class="btn btn-block btn-outline-success" id="submitNote" onclick="submitForm()">SUBMIT</button>
+					</div>
+
+
+					<!-- Modal for Category Form -->
+
+					<div id="categoryModal" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+							
+							<!-- Content -->
+							<div class="modal-content">
+								<div class="modal-header">
+									<h3>Add Category</h3>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<label for="categoryName">Enter Category Name:</label>
+										<input type="text" name="categoryName" id="categoryName" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="categoryDescription">Enter Category Description:</label>
+										<input type="text" name="categoryDescription" id="categoryDescription" class="form-control">
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-outline-success" onclick="addCategory()">Submit</button>
+									<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div><!-- End of category Modal -->
+				</div>
+			</div>
+		</div>
+
+		<!-- FIREBASE -->
+		
+		<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase.js"></script>
+
+		<script>
+			// Your web app's Firebase configuration
+			var firebaseConfig = {
+				apiKey: "AIzaSyDQW3d-chWI5MbTAqNN2LcJ91gxKzo1p5A",
+				authDomain: "myproject2020-c8d32.firebaseapp.com",
+				databaseURL: "https://myproject2020-c8d32.firebaseio.com",
+				projectId: "myproject2020-c8d32",
+				storageBucket: "myproject2020-c8d32.appspot.com",
+				messagingSenderId: "156968638460",
+				appId: "1:156968638460:web:368e691fd0eedc98370479",
+				measurementId: "G-2SM2YZK7WF"
+			};
+			// Initialize Firebase
+			firebase.initializeApp(firebaseConfig);
+			firebase.analytics();
+			
+
+			function uploadFile() {
+
+				var fileUpload = document.getElementById('fileInput')
+				// Validate file upload
+				if(fileUpload.files.length == 0)
+					alert("No files Selected.");
+				else
+					var file = fileUpload.files[0]
+
+					// Create storage Reference
+					var storageRef = firebase.storage().ref("extra_files/"+file.name)
+					
+					// Upload file
+					storageRef.put(file)
+
+			}
+
+			var categories;
+			function pullCategories() {
+				/* This function retrieves categories of SAP Notes from Firebase Database. */
+
+				var database = firebase.database();
+				data = database.ref('sap_notes/activities/').once('value').then(function(snapshot) {
+					console.log(snapshot.val()["totalActivities"]);
+					activityTypes = snapshot.val()["type"]
+					totalActivityTypes = activityTypes.length;
+					for(i = 0; i < totalActivityTypes; i++) {
+
+						activityName = activityTypes[i]["meta"]["name"];
+						activityId = activityTypes[i]["meta"]["id"];
+
+						categories[activityId] =  activityName;
+						console.log(categories)
+
+						// Create <option> element
+						var optn = document.createElement("option");
+						optn.innerHTML = activityName;
+						optn.setAttribute("value",activityId);
+
+						// Append <option> element to <select> element
+						selectElement = document.getElementById('noteCategory');
+						selectElement.appendChild(optn);
+					}
+				})
+
+				console.log(data);
+				console.log("Categories",categories);
+			}
+
+
+			function addCategory() {
+				/* This function adds category of SAP Notes to Firebase Database. */
+
+				/* Get Values from category form */
+				var categoryName = document.getElementById('categoryName').value;
+				var categoryDescription = document.getElementById('categoryDescription').value;
+
+				/* Add values to firebase database */
+				var database  = firebase.database();
+				database.ref('sap_notes/activities/type/').once('value').then(function(snapshot){
+					var totalCategories = snapshot.numChildren();
+					database.ref('sap_notes/activities/type/'+totalCategories+'/').set({
+						description: categoryDescription,
+						meta: {
+							id: totalCategories+1,
+							name: categoryName
+						}
+					});
+				});
+			}
+
+			function initialFirebaseData() {
+				/* Call this function when you want to replace all firebase database data with initial data. */
+
+				var database = firebase.database();
+				firebase.database().ref('sap_notes/').set({
+					activities: {
+						totalActivities: 5,
+						type: [
+							{
+								meta: {
+									id: 1,
+									name:"Faaltu Cheeze",
+								},
+								description:"We acknowledge your request."
+							},
+							{
+								meta: {
+									id: 2, 
+									name:"Stop/Start",
+								},
+								description:"Here comes description of stop start."
+							}
+						]
+					},
+					typeDetail: {
+						allActivityTypes: [
+							{
+								meta: {
+									id: 1,
+									name:"Faaltu Cheeze"
+								},
+								activityNotes: [
+									{
+										id: 1,
+										heading:"Acknowledgement",
+										description:"We acknowledge your request and we are happy to help you.",
+										additionalNotes:""
+
+									},
+									{
+										id: 2,
+										heading:"Online Backup Template",
+										description:"This is online backup template.",
+										additionalNotes:""
+									}
+								]
+							},
+							{
+								meta: {
+									id: 2,
+									name:"Stop/Start"
+								},
+								activityNotes: [
+									{
+										id: 1,
+										heading:"ABAP Stop/Start",
+										description:"To stop/start ABAP System, use sapcontrol command.",
+										additionalNotes:""
+									},
+									{
+										id: 2,
+										heading:"JAVA Stop/Start",
+										description:"To stop/start JAVA system, use sapcontrol command.",
+										additionalNotes:""
+									}
+								]
+							}
+						]
+					}
+				});
+
+				txt = document.getElementById('mytextarea').value;
+				if(txt == null || txt == "")
+					alert("Please add some text.")
+				else {
+					alert("Your text: "+txt);
+					// Add text in data.js file 
+
+					dat["ss"]["ss_abap"] = txt;
+				}
+
+			}
+
+
+			// Global variables for storing values in firebase database
+			var noteCategoryValue = "";
+			var noteHeading = "";
+			var noteDescription = "";
+
+			function submitForm() {
+				/* This function gets and validate data from addNote form and passes
+					data to addNotes() function to update it in firebase database. */
+				// Get values
+				var noteCategory = document.getElementById('noteCategory');
+				noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
+				noteHeading = document.getElementById('noteHeading').value;
+				noteDescription = document.getElementById('noteDescription').value;
+
+				// Validate data
+				if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
+					alert("Please fill form before submitting.");
+				}
+				readAndUpdateDatabase();
+			}
+
+
+			function readAndUpdateDatabase() {
+
+				var database = firebase.database();
+
+				// Search choosen Category -> Add note in choosen category
+				var search = database.ref('sap_notes/typeDetail/allActivityTypes/').once('value').then(function(snapshot){
+					allActivityTypes = snapshot.val();
+					var index;
+					console.log("Note category Value:" + noteCategoryValue)
+					for(index = 0; index < allActivityTypes.length; index++) {
+						if(allActivityTypes[index]["meta"]["id"] == noteCategoryValue){
+							console.log("This is true. Index:"+index);
+							break;	
+						}
+					}
+					// Add 'sap_notes/typeDetail/allActivityTypes/{i}/activityNotes/'
+					console.log("index:"+index)
+					newIndex =  allActivityTypes[index]["activityNotes"].length
+					
+					// Add data(note) in Choosen category
+					database.ref('sap_notes/typeDetail/allActivityTypes/'+index+'/activityNotes/'+newIndex).set({
+						id: newIndex+1,
+						heading: noteHeading,
+						description: noteDescription,
+						additionalNotes:""				
+					}, function(error) {
+						if(error)
+							alert("Something went wrong!!");
+						else {
+							alert("Data updated successfully.");
+							location.reload();
+						}
+					});
+				});
+			}
+
+
+			function updateFirebaseDatabase() {
+				var database = firebase.database();
+				firebase.database().ref('sap_notes/typeDetail/allActivityTypes/2/').set({
+					meta: {
+						id: 3,
+						name:"Upgrades"
+					},
+					activityNotes: [
+						{
+							id: 1,
+							heading:"Bobj Upgrade",
+							description:"This description is for Bobj Upgrade",
+							additionalNotes:""
+
+						},
+						{
+							id: 2,
+							heading:"Kernel Upgrade",
+							description:"This description is for kernel Upgrade",
+							additionalNotes:""
+						}
+					]
+				})
+			}
+
+		</script>
+
+	</body>
+</html>
