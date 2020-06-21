@@ -1,0 +1,36 @@
+button {
+	margin: 5px; 
+}
+.pre-text {
+	margin-top: 20px;
+	border: 1px solid #5c85d6;
+	border-radius: 20px;
+	padding: 10px 10px 0px 10px;
+	margin-bottom: 40px;
+}
+textarea {
+	width: 100%;
+	height: 100px;
+	border-radius: 5px;
+}
+.add-content {
+	display: none;
+}
+.form-heading {
+	background-color: #5c85d6;
+	margin: 20px;
+	padding: 5px 20px;
+	border-radius: 10px;
+	color: white;
+}
+.delete-note{
+	float: right;
+	border-radius: 15px;
+}
+.edit-note {
+	float: right;
+	border-radius: 15px;
+} 	
+.copy-text{
+	border-radius: 15px;
+}

@@ -14,38 +14,13 @@
 
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 		
-		<!-- Include JS File -->
-		<script src="data.js"></script>
+		<!-- Include JS Files -->
+		<!-- <script src="data.js"></script> -->
+		<script src="script.js"></script>
+
+		<!-- Include CSS File -->
+		<link rel="stylesheet" type="text/css" href="style.css">
 		
-		<!-- <script src="https://cdn.tiny.cloud/1/nufd5k4pn60ihxkrg6kv7wvtawh43p41y8b8qtkwgvxz4eob/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
-		
-		<style>
-			button {
-				margin: 5px; 
-			}
-			.pre-text {
-				margin-top: 20px;
-				border: 1px solid #007bff;
-				border-radius: 20px;
-				padding: 10px;
-				margin-bottom: 40px;
-			}
-			textarea {
-				width: 100%;
-				height: 100px;
-				border-radius: 5px;
-			}
-			.add-content {
-				display: none;
-			}
-			.form-heading {
-				background-color: #5c85d6;
-				margin: 20px;
-				padding: 5px 20px;
-				border-radius: 10px;
-				color: white;
-			}
-		</style>
 
 		<script>
 
@@ -92,95 +67,18 @@
 				
 			}
 
-			
-			function copyToClipboard(elemId) {
-				/* This function copies content inside div with id elemId 
-					Ref: https://stackoverflow.com/questions/36639681/how-to-copy-text-from-a-div-to-clipboard  */
-				
-				if(document.selection) {
-					var range = document.body.createTextRange();
-					range.moveToElementText(document.getElementById(elemId));
-					range.select().createTextRange();
-					document.execCommand("copy");
-				}
-				else if(window.getSelection) {
-					var range = document.createRange();
-					range.selectNode(document.getElementById(elemId));
-					window.getSelection().removeAllRanges();
-					window.getSelection().addRange(range);
-					document.execCommand("copy");
-					//alert("Text has been copied, now paste in text area");
-				}
-			}
-
-
-			function getText() {
-				txt = document.getElementById('mytextarea').value;
-				if(txt == null || txt == "")
-					alert("Please add some text.")
-				else {
-					alert("Your text: "+txt);
-					// Add text in data.js file 
-
-					dat["ss"]["ss_abap"] = txt;
-				}
-
-			}
-
-
-			function openTicket() {
-				var ticketNo = prompt("Enter ticket number:");
-				if(ticketNo != null && ticketNo != "") {
-					var link = "https://spc.ondemand.com/open?ticket="+ticketNo.trim();
-					window.open(link);
-				}
-			}
-
-
-			function openSapNote() {
-				var sapNoteNo = prompt("Enter SAP NOTE: ");
-				if(sapNoteNo != null && sapNoteNo != "") {
-					var sapNoteLink = "https://launchpad.support.sap.com/#/notes/"+sapNoteNo.trim();
-					window.open(sapNoteLink);
-				}
-			
-			}
-
-
-			function addSapNote() {
-
-				// Fetch the values of note Category(<select>)
-				pullCategories();
-				document.getElementById('addSapNote').style.display = "block";
-			}
-			
-
-			$(document).ready(function() {
-				$("#ss").click(function() {
-					if($("#stop-start").css("display") == "block")
-						$("#stop-start").css("display","none");
-					else
-						$("#stop-start").css("display","block");
-				});
-				$("#fc").click(function(){
-					
-					if($("#faltu-cheeze").css("display") == "block")
-						$("#faltu-cheeze").css("display","none");
-					else	
-						$("#faltu-cheeze").css("display","block");
-				});
-			});
-
 		</script>
 	</head>
 
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5c85d6">
 		
+			<!-- Brand Logo -->
 			<a class="navbar-brand">
 				<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/SAP-Logo.svg/1200px-SAP-Logo.svg.png" width="60px" height="30px">
 			</a>
 			
+			<!-- Top Navigation Bar -->
 			<ul class="navbar-nav">
 				<li class="nav-item active">
 					<a class="nav-link" href="#">NOTES</a>
@@ -242,7 +140,7 @@
 								<label for="additionalInfo" class="control-label">Enter Additional Info (Not Mandatory):</label>
 								<input type="text" name="additionalInfo" id="additionalInfo" class="form-control" maxlength="100">
 							</div>
-							<button class="btn btn-block btn-outline-success" id="submitNote" onclick="submitForm()">SUBMIT</button>
+							<button class="btn btn-block btn-outline-success" id="submitNote" onclick="validateAddNoteForm()">SUBMIT</button>
 					</div>
 
 
@@ -267,7 +165,7 @@
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button class="btn btn-outline-success" onclick="addCategory()">Submit</button>
+									<button class="btn btn-outline-success" onclick="pushCategory()">Submit</button>
 									<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
 								</div>
 							</div>
@@ -280,23 +178,10 @@
 		<!-- FIREBASE -->
 		
 		<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase.js"></script>
+		<script src="firebase.js"></script>
+		<script src="changeDOM.js"></script>
 
-		<script>
-			// Your web app's Firebase configuration
-			var firebaseConfig = {
-				apiKey: "AIzaSyDQW3d-chWI5MbTAqNN2LcJ91gxKzo1p5A",
-				authDomain: "myproject2020-c8d32.firebaseapp.com",
-				databaseURL: "https://myproject2020-c8d32.firebaseio.com",
-				projectId: "myproject2020-c8d32",
-				storageBucket: "myproject2020-c8d32.appspot.com",
-				messagingSenderId: "156968638460",
-				appId: "1:156968638460:web:368e691fd0eedc98370479",
-				measurementId: "G-2SM2YZK7WF"
-			};
-			// Initialize Firebase
-			firebase.initializeApp(firebaseConfig);
-			firebase.analytics();
-			
+		<script>	
 
 			// Used for testing
 			function uploadFile() {
@@ -314,63 +199,6 @@
 					// Upload file
 					storageRef.put(file)
 
-			}
-
-			// Global array for storing all categories
-			var allCategories = [];
-			function pullCategories() {
-				/* This function retrieves categories of SAP Notes from Firebase Database. */
-
-				var database = firebase.database();
-				data = database.ref('sap_notes/activities/').once('value').then(function(snapshot) {
-					activityTypes = snapshot.val()["type"]
-					totalActivityTypes = activityTypes.length;
-					for(i = 0; i < totalActivityTypes; i++) {
-
-						activityName = activityTypes[i]["meta"]["name"];
-						activityId = activityTypes[i]["meta"]["id"];
-
-						// Storing category in global allCategories array for future use.
-						var category = {
-							name: activityName,
-							id: activityId
-						};
-						allCategories.push(category);
-
-						// Create <option> element
-						var optn = document.createElement("option");
-						optn.innerHTML = activityName;
-						optn.setAttribute("value",activityId);
-
-						// Append <option> element to <select> element
-						selectElement = document.getElementById('noteCategory');
-						selectElement.appendChild(optn);
-					}
-					addCategorySideBar();
-				})
-				console.log(data);
-			}
-
-
-			function addCategory() {
-				/* This function adds category of SAP Notes to Firebase Database. */
-
-				/* Get Values from category form */
-				var categoryName = document.getElementById('categoryName').value;
-				var categoryDescription = document.getElementById('categoryDescription').value;
-
-				/* Add values to firebase database */
-				var database  = firebase.database();
-				database.ref('sap_notes/activities/type/').once('value').then(function(snapshot){
-					var totalCategories = snapshot.numChildren();
-					database.ref('sap_notes/activities/type/'+totalCategories+'/').set({
-						description: categoryDescription,
-						meta: {
-							id: totalCategories+1,
-							name: categoryName
-						}
-					});
-				});
 			}
 
 			// Used for testing
@@ -457,79 +285,6 @@
 
 			}
 
-
-			// Global variables for storing values in firebase database
-			var noteCategoryValue = "";
-			var noteHeading = "";
-			var noteDescription = "";
-
-			function submitForm() {
-				/* This function gets and validate data from addNote form and passes
-					data to addNotes() function to update it in firebase database. */
-
-				// Get values
-				var noteCategory = document.getElementById('noteCategory');
-				noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
-				noteHeading = document.getElementById('noteHeading').value;
-				noteDescription = document.getElementById('noteDescription').value;
-
-				// Validate data
-				if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
-					alert("Please fill form before submitting.");
-				}
-				readAndUpdateDatabase();
-			}
-
-
-			function readAndUpdateDatabase() {
-
-				var database = firebase.database();
-
-				// Search choosen Category -> Add note in choosen category
-				var search = database.ref('sap_notes/typeDetail/allActivityTypes/').once('value').then(function(snapshot){
-					allActivityTypes = snapshot.val();
-					var index;
-					console.log("Note category Value:" + noteCategoryValue)
-					for(index = 0; index < allActivityTypes.length; index++) {
-						if(allActivityTypes[index]["meta"]["id"] == noteCategoryValue){
-							console.log("This is true. Index:"+index);
-							break;	
-						}
-					}
-					// Add 'sap_notes/typeDetail/allActivityTypes/{i}/activityNotes/'
-					console.log("index:"+index)
-					newIndex =  allActivityTypes[index]["activityNotes"].length
-					
-					// Add data(note) in Choosen category
-					database.ref('sap_notes/typeDetail/allActivityTypes/'+index+'/activityNotes/'+newIndex).set({
-						id: newIndex+1,
-						heading: noteHeading,
-						description: noteDescription,
-						additionalNotes:""				
-					}, function(error) {
-						if(error)
-							alert("Something went wrong!!");
-						else {
-							alert("Data updated successfully.");
-							location.reload();
-						}
-					});
-				});
-			}
-
-
-			function pullNotesOfCategory(categoryId) {
-				/* This function full all notes of category having id as categoryId */
-
-				var database = firebase.database();
-
-				database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/').once('value').then(function(snapshot){
-					allNotes = snapshot.val();
-					console.log(allNotes);
-				});
-
-			}
-
 			// Used for testing
 			function updateFirebaseDatabase() {
 				var database = firebase.database();
@@ -554,29 +309,6 @@
 						}
 					]
 				})
-			}
-
-
-			function addCategorySideBar() {
-				/* This function adds categories in the Side Bar */
-
-				sideBarDiv = document.getElementById('categorySideBar');
-				var totalCategories = allCategories.length;
-				var allCategoryButtons = "";
-				for(i = 0; i < totalCategories; i++) {
-					categoryBtn = document.createElement('button');
-					categoryBtn.setAttribute('class','btn btn-sm btn-block btn-outline-primary');
-					categoryBtn.setAttribute('id',allCategories[i]["id"]);
-					categoryBtn.setAttribute('onclick',"showNotes("+allCategories[i]["id"]+")");
-					categoryBtn.innerHTML = allCategories[i]["name"];
-
-					allCategoryButtons += categoryBtn.outerHTML;
-				}
-				sideBarDiv.innerHTML=allCategoryButtons;
-			}
-
-			function showNotes(categoryId) {
-				pullNotesOfCategory(categoryId)
 			}
 
 		</script>
