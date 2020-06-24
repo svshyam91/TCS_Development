@@ -22,8 +22,11 @@ var allCategories = [];
 function pullCategories() {
 	/* This function retrieves categories of SAP Notes from Firebase Database. */
 
-	data = database.ref('sap_notes/activities/type/').once('value').then(function(snapshot) {
+	data = database.ref('sap_notes/activities/type/').on('value',function(snapshot) {
 		// make sure here that some values exist. Right code to verify that
+
+		// Clear all categories stored previously
+		allCategories = [];
 
 		snapshot.forEach(function(category) {
 			var categoryKey = category.key;
@@ -52,31 +55,6 @@ function pullCategories() {
 			selectElement.appendChild(optn);
 		})
 
-
-
-		/*
-		totalActivityTypes = activityTypes.length;
-		for(i = 0; i < totalActivityTypes; i++) {
-
-			activityName = activityTypes[i]["meta"]["name"];
-			activityId = activityTypes[i]["meta"]["id"];
-
-			// Storing category in global allCategories array for future use.
-			var category = {
-				name: activityName,
-				id: activityId
-			};
-			allCategories.push(category);
-
-			// Create <option> element
-			var optn = document.createElement("option");
-			optn.innerHTML = activityName;
-			optn.setAttribute("value",activityId);
-
-			// Append <option> element to <select> element
-			selectElement = document.getElementById('noteCategory');
-			selectElement.appendChild(optn);
-		}*/
 		addCategorySideBar();		/* Definition In: changeDOM.js */
 	});
 }
@@ -102,23 +80,16 @@ function pushCategory() {
 			id: 0,
 			name: categoryName
 		}
+	},function(error) {
+		if(error) {
+			console.log("Something went wrong!!");
+		}
+		else {
+			console.log("Data updated successfully.");
+			showStatus(0);		// Display status to user via alert
+		}
 	});
-	categoryKey = categoryRef.key;
-
-	console.log("New Key:"+categoryKey);
-	// Push same category key for all notes related to this category
-	// database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryKey+'/').set({});
-
-	// database.ref('sap_notes/activities/type/').once('value').then(function(snapshot){
-	// 	var totalCategories = snapshot.numChildren();
-	// 	database.ref('sap_notes/activities/type/'+totalCategories+'/').set({
-	// 		description: categoryDescription,
-	// 		meta: {
-	// 			id: totalCategories+1,
-	// 			name: categoryName
-	// 		}
-	// 	});
-	// });
+	categoryKey = categoryRef.key;		// Currently no use.
 }
 
 
@@ -138,40 +109,7 @@ function pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription) {
 	pushNoteRef.on('child_added', function(data){
 		console.log("A child node has been added.")
 	});
-
-	// Search choosen Category -> Add note in choosen category
-	/*
-	var search = database.ref('sap_notes/typeDetail/allActivityTypes/').once('value').then(function(snapshot){
-		allActivityTypes = snapshot.val();
-		var index;
-		console.log("Note category Value:" + noteCategoryValue)
-		for(index = 0; index < allActivityTypes.length; index++) {
-			if(allActivityTypes[index]["meta"]["id"] == noteCategoryValue){
-				console.log("This is true. Index:"+index);
-				break;	
-			}
-		}
-		// Add 'sap_notes/typeDetail/allActivityTypes/{i}/activityNotes/'
-		newIndex =  allActivityTypes[index]["activityNotes"].length
-		
-		// Add data(note) in Choosen category
-		database.ref('sap_notes/typeDetail/allActivityTypes/'+index+'/activityNotes/'+newIndex).set({
-			id: newIndex+1,
-			heading: noteHeading,
-			description: noteDescription,
-			additionalNotes:""				
-		}, function(error) {
-			if(error)
-				alert("Something went wrong!!");
-			else {
-				alert("Data updated successfully.");
-				location.reload();
-			}
-		});
-	});
-	*/
 }
-
 
 
 var allNotes = "";
@@ -179,7 +117,7 @@ function pullNotesOfCategory(categoryId) {
 	/* This function full all notes of category having id as categoryId */
 
 
-	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').once('value').then(function(snapshot){
+	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').on('value',function(snapshot){
 		allNotes = snapshot.val();
 		if(allNotes == null)
 			alert("No data exist");

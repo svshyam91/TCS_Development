@@ -25,47 +25,46 @@
 		<script>
 
 			/* Parsing JS File with variable as JS object*/
-			function processData(heading) {
+			// function processData(heading) {
 			
-				/* Remove previous content loaded inside #cont id div */
-				document.getElementById("cont").innerHTML = "";
+			// 	/* Remove previous content loaded inside #cont id div */
+			// 	document.getElementById("cont").innerHTML = "";
 			
-				/* Create an element for every heading(stop/start, faaltu_cheeze, client copy) inside tab */
-				for(let head in dat[heading]) {
+			// 	/* Create an element for every heading(stop/start, faaltu_cheeze, client copy) inside tab */
+			// 	for(let head in dat[heading]) {
 					
-					/* Create button for copy content */
-					var headString = '\"'+head+'\"'
-					var copyBtn = document.createElement("button");
-					copyBtn.setAttribute("class","btn btn-sm");
-					copyBtn.setAttribute("id",heading);
-					copyBtn.setAttribute("onclick","copyText("+headString+")");		/* Passing "head" coz it's id of pre element */
-					copyBtn.innerHTML = "Copy Text";
+			// 		/* Create button for copy content */
+			// 		var headString = '\"'+head+'\"'
+			// 		var copyBtn = document.createElement("button");
+			// 		copyBtn.setAttribute("class","btn btn-sm");
+			// 		copyBtn.setAttribute("id",heading);
+			// 		copyBtn.setAttribute("onclick","copyText("+headString+")");		/* Passing "head" coz it's id of pre element */
+			// 		copyBtn.innerHTML = "Copy Text";
 					
-					/* Creating element <div> to display content */
-					var div = document.createElement("div");
-					div.setAttribute("class","pre-text");
-					div.innerHTML = `<pre class="block-content ${heading}" id="${head}">${dat[heading][head]}</pre>
-									<button class="btn btn-sm btn-outline-info copy-text" id="copyText" onclick="copyToClipboard('${head}')">Copy Text</button>`
-					
-					
-					/* Add pre elements to the #cont id div. */
-					document.getElementById("cont").innerHTML += div.outerHTML;
+			// 		/* Creating element <div> to display content */
+			// 		var div = document.createElement("div");
+			// 		div.setAttribute("class","pre-text");
+			// 		div.innerHTML = `<pre class="block-content ${heading}" id="${head}">${dat[heading][head]}</pre>
+			// 						<button class="btn btn-sm btn-outline-info copy-text" id="copyText" onclick="copyToClipboard('${head}')">Copy Text</button>`
 					
 					
-					//var pre = document.createElement("pre");
-					//pre.setAttribute("class","block-content "+heading);
-					//pre.setAttribute("id",head);
-					//pre.innerHTML = dat[heading][head];
+			// 		/* Add pre elements to the #cont id div. */
+			// 		document.getElementById("cont").innerHTML += div.outerHTML;
 					
-					///* Adding this newly created pre element in #preText div id */
-					//document.getElementById("preText").innerHTML += pre.outerHTML;
+					
+			// 		//var pre = document.createElement("pre");
+			// 		//pre.setAttribute("class","block-content "+heading);
+			// 		//pre.setAttribute("id",head);
+			// 		//pre.innerHTML = dat[heading][head];
+					
+			// 		///* Adding this newly created pre element in #preText div id */
+			// 		//document.getElementById("preText").innerHTML += pre.outerHTML;
 
-					///* Add newly created button in #copyText div id */
-					//document.getElementById("copyText").innerHTML += copyBtn.outerHTML;
+			// 		///* Add newly created button in #copyText div id */
+			// 		//document.getElementById("copyText").innerHTML += copyBtn.outerHTML;
 					
-				}
-				
-			}
+			// 	}	
+			// }
 
 		</script>
 	</head>
@@ -103,8 +102,8 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-2 border" id="categorySideBar">
-					<button class="btn btn-sm btn-block btn-outline-primary" id="fc" onclick="processData('fc')">Faltu Cheeze</button><br>
-					<button class="btn btn-sm btn-block btn-outline-primary" id="ss" onclick="processData('ss')">Stop/Start</button>
+					<!-- <button class="btn btn-sm btn-block btn-outline-primary" id="fc" onclick="processData('fc')">Faltu Cheeze</button><br>
+					<button class="btn btn-sm btn-block btn-outline-primary" id="ss" onclick="processData('ss')">Stop/Start</button> -->
 				</div>
 				<div class="col-sm-8 border">
 					<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
@@ -165,7 +164,7 @@
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button class="btn btn-outline-success" onclick="pushCategory()">Submit</button>
+									<button class="btn btn-outline-success" onclick="pushCategory()" data-dismiss="modal">Submit</button>
 									<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
 								</div>
 							</div>
@@ -200,9 +199,18 @@
 								</div>
 							</div>
 						</div>
-					</div><!-- End of category Modal -->
+					</div><!-- End of change Note Modal -->
+
+				</div>
+				<div class="col-sm-2 border">
 				</div>
 			</div>
+		</div>
+
+		<!-- Status Notification -->
+		<div class="alert alert-success alert-dismissible status-alert" id="statusAlert" style="display: none;">
+			<!-- <a href="#" class="close">&times;</a>
+			<div class="alert-text" id="alertText"></div> -->
 		</div>
 
 		<!-- FIREBASE -->

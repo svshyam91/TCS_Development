@@ -78,6 +78,7 @@ function editNote(categoryId, noteId) {
 	/* This function gets data from allNotes global variable and fills in the form. */
 
 	// Get Data
+	console.log(allNotes)
 	noteHeading = allNotes[noteId]["heading"];
 	noteDescription = allNotes[noteId]["description"];
 

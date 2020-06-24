@@ -38,10 +38,37 @@ function openSapNote() {
 
 
 function addSapNote() {
-	pullCategories();
 	document.getElementById('addSapNote').style.display = "block";
 }
 
 
+function showStatus(statusCode) {
 
 
+	// Alert Text based on status code
+	if(statusCode == 0) {
+		var alertText = "Success!! Data updated successfully.",
+	}
+	else {
+		var alertText = "Failed!! Something went wrong.",
+	}
+
+	var alertBox = document.getElementById('statusAlert');
+
+	// Add alert status text
+	document.getElementById('statusAlert').innerHTML = alertText;
+
+	// Display alert box.
+	alertBox.style.display = "block";
+
+	// Close alert box after 5 seconds 
+	setTimeout(function() {
+		$("#statusAlert").alert("close");
+	}, 5000);
+}
+
+
+// This function runs when the page is fully loaded
+$(document).ready(function(){
+	pullCategories();
+})
