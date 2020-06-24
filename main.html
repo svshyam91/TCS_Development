@@ -71,7 +71,7 @@
 	</head>
 
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5c85d6">
+		<nav class="navbar navbar-expand-lg navbar-dark navbar-fixed-top" style="background-color: #5c85d6">
 		
 			<!-- Brand Logo -->
 			<a class="navbar-brand">
@@ -166,6 +166,36 @@
 								</div>
 								<div class="modal-footer">
 									<button class="btn btn-outline-success" onclick="pushCategory()">Submit</button>
+									<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div><!-- End of category Modal -->
+
+
+					<!-- Modal for change Note Form -->
+
+					<div id="changeNoteModal" class="modal fade" role="dialog" noteId="">
+						<div class="modal-dialog modal-xl">
+							
+							<!-- Content -->
+							<div class="modal-content">
+								<div class="modal-header">
+									<h3>Change NOTE</h3>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<label for="changeNoteHeading">Change NOTE Heading:</label>
+										<input type="text" name="changeNoteHeading" id="changeNoteHeading" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="changeNoteDescription">Change NOTE Description:</label>
+										<textarea class="form-control" style="height: 200px;" name="changeNoteDescription" id="changeNoteDescription"></textarea>
+										<!-- <text type="text" name="changeNoteDescription" id="changeNoteDescription" class="form-control"> -->
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-outline-success" onclick="validateChangeNote()">Apply Changes</button>
 									<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
 								</div>
 							</div>

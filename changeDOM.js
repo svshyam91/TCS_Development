@@ -3,6 +3,8 @@ function addCategorySideBar() {
 	/* Called In: firebase.js -> pullCategories() */
 
 	sideBarDiv = document.getElementById('categorySideBar');
+	
+
 	// We are getting values from allCategories[] global array defined in pullCategories().
 	var allCategoryButtons = "";
 	allCategories.forEach(function(category, index){
@@ -19,60 +21,103 @@ function addCategorySideBar() {
 }
 
 
-// Global variables for storing values in firebase database
-var noteCategoryValue = "";
-var noteHeading = "";
-var noteDescription = "";
-
 function validateAddNoteForm() {
 	/* This function gets and validate data from addNote form and passes
 		data to addNotes() function to update it in firebase database. */
 
 	// Get values
 	var noteCategory = document.getElementById('noteCategory');
-	noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
-	noteHeading = document.getElementById('noteHeading').value;
-	noteDescription = document.getElementById('noteDescription').value;
+	var noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
+	var noteHeading = document.getElementById('noteHeading').value;
+	var noteDescription = document.getElementById('noteDescription').value;
 
 	// Validate data
 	if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
 		alert("Please fill form before submitting.");
 	}
-	pushNoteOfCategory();		/* File: firebase.js */
+	pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription);		/* File: firebase.js */
 }
 
 
-function showNotes(allNotes) {
+function showNotes(categoryId, allNotes) {
+	/* This function displays all notes of choosen category. 
+		Called In: firebase.js -> pullNotesOfCategory()
+	*/
 
-	console.log(allNotes["activityNotes"][0]);
-	var totalNotes = allNotes["activityNotes"].length;
 	var allNotesDivs = ""
 
-	for(var key in allNotes["activityNotes"]) {
+	for(var key in allNotes) {
 
-		var heading = allNotes["activityNotes"][key]["heading"];
-		var id = allNotes["activityNotes"][key]["id"];
-		var description = allNotes["activityNotes"][key]["description"];
+		var heading = allNotes[key]["heading"];
+		var id = allNotes[key]["id"];
+		var description = allNotes[key]["description"];
 
 		/* Creating element <div> to display content */
 		var div = document.createElement("div");
 		div.setAttribute("class","pre-text");
+		div.setAttribute("categoryId", categoryId);
+		div.setAttribute("noteId", key);
+
 		div.innerHTML = `
 						<h4>${heading}</h4>
-						<pre class="block-content" id="${id}">${description}</pre>
-						<button class="btn btn-sm btn-outline-info copy-text" onclick="copyToClipboard(${id})">Copy Text</button>
-						<button class="btn btn-sm btn-outline-success edit-note" id="${id}">Edit</button>
-						<button class="btn btn-sm btn-outline-danger delete-note" id="${id}">Delete</button>
+						<pre class="block-content" id="${key}">${description}</pre>
+						<button class="btn btn-sm btn-outline-info copy-text" onclick="copyToClipboard('${key}')">Copy Text</button>
+						<button class="btn btn-sm btn-outline-success edit-note" id="${key}" onclick="editNote('${categoryId}','${key}')" data-toggle="modal" data-target="#changeNoteModal">Edit</button>
+						<button class="btn btn-sm btn-outline-danger delete-note" id="${key}" onclick="confirmDeleteNote('${categoryId}','${key}')">Delete</button>
 						`
 		
 		allNotesDivs += div.outerHTML;
-		/* Add pre elements to the #cont id div. */
-		// document.getElementById("cont").innerHTML += div.outerHTML;
 
-		// console.log("key:"+key);
-		// console.log("value:"+allNotes["activityNotes"])
 	}
 	// Add all Div elements in the #cont id div
 	document.getElementById('cont').innerHTML = allNotesDivs;
-
 }
+
+
+function editNote(categoryId, noteId) {
+	/* This function gets data from allNotes global variable and fills in the form. */
+
+	// Get Data
+	noteHeading = allNotes[noteId]["heading"];
+	noteDescription = allNotes[noteId]["description"];
+
+	// Add noteId attribute to the modal(#changeNoteModal)
+	changeNoteModal = document.getElementById('changeNoteModal');
+	changeNoteModal.setAttribute('noteId',noteId);	
+	changeNoteModal.setAttribute('categoryId', categoryId);
+
+	// Fill data in form
+	document.getElementById('changeNoteHeading').value = noteHeading;
+	document.getElementById('changeNoteDescription').value = noteDescription;
+}
+
+
+function validateChangeNote() {
+	/* This function validates data filled in changeNote form and passes data to pushChangeNote()
+		in firebase.js file.
+	*/
+
+	// Get Values of form fields
+	noteHeading = document.getElementById('changeNoteHeading').value;
+	noteDescription = document.getElementById('changeNoteDescription').value;
+
+	// Get note Id from modal 
+	noteId = document.getElementById('changeNoteModal').getAttribute("noteId");
+	categoryId = document.getElementById('changeNoteModal').getAttribute("categoryId");
+
+	// Validate Data
+	if(noteHeading == "" || noteDescription == "") {
+		alert("Please fill form before submitting.");
+	}
+	else {
+		pushChangeNote(categoryId, noteId, noteHeading, noteDescription);
+	}
+}
+
+
+function confirmDeleteNote(categoryId, noteId) {
+	if(confirm("Are you sure you want to delete this note ?")){
+		removeNote(categoryId, noteId);
+	}
+}
+

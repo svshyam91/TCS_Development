@@ -22,7 +22,6 @@ var allCategories = [];
 function pullCategories() {
 	/* This function retrieves categories of SAP Notes from Firebase Database. */
 
-	var database = firebase.database();
 	data = database.ref('sap_notes/activities/type/').once('value').then(function(snapshot) {
 		// make sure here that some values exist. Right code to verify that
 
@@ -123,21 +122,22 @@ function pushCategory() {
 }
 
 
-function pushNoteOfCategory() {
+function pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription) {
 	/* 
 		This function pushes SAP note of choosen category to Firebase Database.
 		Called In: changeDOM.js -> submitForm()
 	*/
 
-	var database = firebase.database();
-
-	pushNoteRef = database.ref('sap_notes/typeDetail/allActivityTypes/'+noteCategoryValue+'/activityNotes/').push({
+	pushNoteRef = database.ref('sap_notes/typeDetail/allActivityTypes/'+noteCategoryValue+'/activityNotes/');
+	pushNoteRef.push({
 		id: 0,
 		heading: noteHeading,
 		description: noteDescription,
 		additionalNotes: ""
 	});
-	console.log(pushNoteRef);
+	pushNoteRef.on('child_added', function(data){
+		console.log("A child node has been added.")
+	});
 
 	// Search choosen Category -> Add note in choosen category
 	/*
@@ -173,15 +173,60 @@ function pushNoteOfCategory() {
 }
 
 
+
+var allNotes = "";
 function pullNotesOfCategory(categoryId) {
 	/* This function full all notes of category having id as categoryId */
 
-	var database = firebase.database();
 
-	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/').once('value').then(function(snapshot){
+	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').once('value').then(function(snapshot){
 		allNotes = snapshot.val();
 		if(allNotes == null)
 			alert("No data exist");
-		showNotes(allNotes);		// Definition In: changeDOM.js
+		else 
+			showNotes(categoryId, allNotes);		// Definition In: changeDOM.js
 	});
+}
+
+
+function pushChangeNote(categoryId, noteId, noteHeading, noteDescription) {
+	/* This function updates(pushes) data in the firebase database. */
+
+	var noteData = {
+		additionalNotes: "",
+		description: noteDescription,
+		heading: noteHeading,
+		id: 1
+	};
+
+	// Generate a key for new note
+	var newNoteKey = database.ref().child('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').push().key;
+
+	// Write new note data
+	var updates = {};
+	updates['sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+newNoteKey] = noteData;
+
+	// Push update in firebase database
+	database.ref().update(updates, function(error){
+		if(error)
+			console.log("Something went wrong!!"+error);
+		else
+			console.log("Data updated successfully.");
+			window.reload()
+	});
+
+	// Remove old data
+	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+noteId).remove();
+
+	/* The reason why we first added and then removed data from the firebase database instead 
+	of directly updating it is because if we push data with new key, we will get different advantages
+	like sorting data. */
+}
+
+
+function removeNote(categoryId, noteId) {
+	/* This function removed note(noteId) of categoryId from firebase database. */
+
+	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+noteId).remove();
+	
 }
