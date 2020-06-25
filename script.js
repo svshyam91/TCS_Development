@@ -47,10 +47,10 @@ function showStatus(statusCode) {
 
 	// Alert Text based on status code
 	if(statusCode == 0) {
-		var alertText = "Success!! Data updated successfully.",
+		var alertText = "Success!! Data updated successfully.";
 	}
 	else {
-		var alertText = "Failed!! Something went wrong.",
+		var alertText = "Failed!! Something went wrong.";
 	}
 
 	var alertBox = document.getElementById('statusAlert');
