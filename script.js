@@ -93,13 +93,29 @@ $(document).ready(function() {
 	});
 	$("#deleteCategory").click(function() {
 
+		console.log("You are here.")
+
 		// Blur backgroud div
 		$("#categorySideBar").css("filter","blur(5px)");
 
 		// Display Delete div
-		$("deleteInputDiv").css("width","100%");
+		$("#deleteInputDiv").css("width","100%");
 
-	})
+		// Disable pointer-events to backgroud div
+		$("#categorySideBar").css("pointer-events","none");
+
+	});
+	$("#closeDeleteBtn").click(function() {
+
+		// Hide Delete Div
+		$("#deleteInputDiv").css("width","0");
+
+		// Remove blur of background
+		$("#categorySideBar").css("filter","blur(0px)");
+
+		//Enable pointer-events to background div
+		$("#categorySideBar").css("pointer-events","auto"); 
+	});
 });
 
 // This function runs when the page is fully loaded

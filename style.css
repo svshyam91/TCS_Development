@@ -47,6 +47,10 @@ textarea {
 	width: 100%;
 }
 
+.btn-group {
+	margin: 0px;
+}
+
 .nav-link {
 	font-weight: 600;
 }
