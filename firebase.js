@@ -70,6 +70,7 @@ function pushCategory() {
 	// Validating form
 	if(categoryName == "" || categoryDescription == "") {
 		alert("Please fill form before submitting.");
+		return;
 	}
 
 
@@ -124,6 +125,8 @@ function pullNotesOfCategory(categoryId) {
 		else 
 			showNotes(categoryId, allNotes);		// Definition In: changeDOM.js
 	});
+
+	addEditDelete(categoryId);
 }
 
 

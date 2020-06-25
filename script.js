@@ -67,6 +67,40 @@ function showStatus(statusCode) {
 	}, 5000);
 }
 
+$(document).ready(function() {
+	$("#editCategory").click(function() {
+
+		// Blur backgroud div
+		$("#categorySideBar").css("filter","blur(5px)");
+
+		// Display input div
+		$("#editInputDiv").css("width","100%");
+
+		// Disable pointer-events to backgroud div
+		$("#categorySideBar").css("pointer-events","none");
+		
+	});
+	$("#closeInputBtn").click(function() {
+
+		// Hide input div
+		$("#editInputDiv").css("width","0");
+
+		// Remove blur of backgroud
+		$("#categorySideBar").css("filter","blur(0px)");
+
+		//Enable pointer-events to background div
+		$("#categorySideBar").css("pointer-events","auto"); 
+	});
+	$("#deleteCategory").click(function() {
+
+		// Blur backgroud div
+		$("#categorySideBar").css("filter","blur(5px)");
+
+		// Display Delete div
+		$("deleteInputDiv").css("width","100%");
+
+	})
+});
 
 // This function runs when the page is fully loaded
 $(document).ready(function(){

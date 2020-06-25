@@ -35,7 +35,7 @@ textarea {
 	border-radius: 15px;
 }
 .navbar {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .modal-dialog {
 	max-width: 70%;
@@ -45,4 +45,20 @@ textarea {
 	position: sticky;
 	bottom: 0px;		
 	width: 100%;
+}
+
+.nav-link {
+	font-weight: 600;
+}
+
+.input-group {
+	position: absolute;
+	left: 0;
+	top: 50vh;
+	margin: 0;
+	padding: 0;
+	width: 0;
+	z-index: 100;
+	transition: 0.5s;
+	overflow-x: hidden;
 }

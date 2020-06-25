@@ -122,3 +122,14 @@ function confirmDeleteNote(categoryId, noteId) {
 	}
 }
 
+
+function addEditDelete(categoryId) {
+	/* This function add categoryId to edit and delete button for editing and deleting choosen category. */
+
+	editBtn = document.getElementById("editCategory");
+	editBtn.setAttribute("categoryId",categoryId);
+
+	deleteBtn = document.getElementById("deleteCategory");
+	deleteBtn.setAttribute("categoryId",categoryId);
+}
+

@@ -101,9 +101,29 @@
 		
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-sm-2 border" id="categorySideBar">
-					<!-- <button class="btn btn-sm btn-block btn-outline-primary" id="fc" onclick="processData('fc')">Faltu Cheeze</button><br>
-					<button class="btn btn-sm btn-block btn-outline-primary" id="ss" onclick="processData('ss')">Stop/Start</button> -->
+				
+				<div class="col-sm-2 border">
+					<div class="input-group" id="editInputDiv">
+						<input type="text" class="form-control">
+						<div class="input-group-append">
+						  <button class="btn btn-success" type="button" style="margin: 0;"><i class="fas fa-check"></i></button>
+						  <button class="btn btn-danger" type="button" style="margin: 0;" id="closeInputBtn"><i class="fas fa-times"></i></button>
+						</div>
+					</div>
+					<div class="input-group" id="deleteInputDiv">
+						<input type="text" class="form-control" value="Are you sure?" disabled>
+						<div class="input-group-append">
+						  <button class="btn btn-success" type="button" style="margin: 0;"><i class="fas fa-check"></i></button>
+						  <button class="btn btn-danger" type="button" style="margin: 0;" id="closeDeleteBtn"><i class="fas fa-times"></i></button>
+						</div>
+					</div>
+					<!-- <input type="text" name="edit-category" class="form-control input-edit-btn" id="editInputBtn"> -->
+					<!-- <input type="submit" name="delete-category" class="form-control input-edit-btn"> -->
+					<div class="btn-group btn-group-sm d-flex" role="group" aria-label="edit-cancel buttons">
+						<button type="button" class="btn btn-outline-success w-100" id="editCategory">Edit</button>
+						<button type="button" class="btn btn-outline-danger w-100" id="deleteCategory">Delete</button>
+					</div>
+					<div id="categorySideBar"></div>
 				</div>
 				<div class="col-sm-8 border">
 					<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
