@@ -42,6 +42,9 @@ function pullCategories() {
 
 		});
 
+		// Add category to the side navigation
+		addCategorySideBar();		/* Definition In: changeDOM.js */
+
 		// Append option elements in the select dropdown menu of Notes form.
 		allCategories.forEach(function(category, index){
 
@@ -54,8 +57,6 @@ function pullCategories() {
 			selectElement = document.getElementById('noteCategory');
 			selectElement.appendChild(optn);
 		})
-
-		addCategorySideBar();		/* Definition In: changeDOM.js */
 	});
 }
 

@@ -1,12 +1,26 @@
-button {
-	margin: 5px; 
+.loader {
+	border: 8px solid #f3f3f3;
+	border-top: 8px solid #03396c;
+	border-radius: 50%;
+	margin: auto;
+	width: 50px;
+	height: 50px;
+	animation: spin 2s linear infinite;
+}
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
 .pre-text {
 	margin-top: 20px;
-	border: 1px solid #5c85d6;
-	border-radius: 20px;
-	padding: 10px 10px 0px 10px;
 	margin-bottom: 40px;
+}
+.note-content {
+	border-right: 1px solid #5c85d6;
+	border-left: 1px solid #5c85d6;
+	padding: 10px;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
 }
 textarea {
 	width: 100%;
@@ -47,8 +61,8 @@ textarea {
 	width: 100%;
 }
 
-.btn-group {
-	margin: 0px;
+.btn-group button {
+	margin: 10px 0px;
 }
 
 .nav-link {

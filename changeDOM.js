@@ -18,6 +18,9 @@ function addCategorySideBar() {
 	});
 	// Appends new categories to sideBarDiv. Later change this to replace the elements
 	sideBarDiv.innerHTML=allCategoryButtons;
+
+	// Hide loader Div since the elements are added to the DOM
+	hideLoaderDiv();
 }
 
 
@@ -45,7 +48,7 @@ function showNotes(categoryId, allNotes) {
 	*/
 
 	var allNotesDivs = ""
-
+	var elementId = 1;
 	for(var key in allNotes) {
 
 		var heading = allNotes[key]["heading"];
@@ -57,16 +60,19 @@ function showNotes(categoryId, allNotes) {
 		div.setAttribute("class","pre-text");
 		div.setAttribute("categoryId", categoryId);
 		div.setAttribute("noteId", key);
-
+		// <i class="fas fa-angle-double-up"></i>
 		div.innerHTML = `
-						<h4>${heading}</h4>
+						<button class="btn btn-block btn-secondary" onclick="displayNoteContent('${elementId}')">${heading}&nbsp;&nbsp;<i class="fas fa-angle-double-down" id="udAngle${elementId}"></i></button>
+						<div class="note-content" id="noteContent${elementId}" style="display: none;">
 						<pre class="block-content" id="${key}">${description}</pre>
 						<button class="btn btn-sm btn-outline-info copy-text" onclick="copyToClipboard('${key}')">Copy Text</button>
 						<button class="btn btn-sm btn-outline-success edit-note" id="${key}" onclick="editNote('${categoryId}','${key}')" data-toggle="modal" data-target="#changeNoteModal">Edit</button>
 						<button class="btn btn-sm btn-outline-danger delete-note" id="${key}" onclick="confirmDeleteNote('${categoryId}','${key}')">Delete</button>
+						</div>
 						`
 		
 		allNotesDivs += div.outerHTML;
+		elementId += 1;
 
 	}
 	// Add all Div elements in the #cont id div

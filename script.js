@@ -67,6 +67,37 @@ function showStatus(statusCode) {
 	}, 5000);
 }
 
+
+function displayNoteContent(elementId) {
+	/* 
+		This function hides/displays .note-content and changes the angle(arrow) of the button.
+		Later, replace this code with jQuery code(using delegate).
+	*/
+	
+	// Get elements
+	
+	preDisplay = document.getElementById("noteContent"+elementId).style.display;
+	angle = document.getElementById("udAngle"+elementId);
+
+	// Use toggle() method of JS to change this code later
+	if(preDisplay == "none") {
+		preDisplay = "block";
+		
+		// Change down arrow to up
+		angle.classList.remove("fa-angle-double-down");
+		angle.classList.add("fa-angle-double-up");
+	}
+	else if(preDisplay == "block") {
+		preDisplay = "none";
+
+		// Change up arrow to down
+		angle.classList.remove("fa-angle-double-up");
+		angle.classList.add("fa-angle-double-down");
+	}
+	document.getElementById("noteContent"+elementId).style.display = preDisplay;
+}
+
+
 $(document).ready(function() {
 	$("#editCategory").click(function() {
 
@@ -120,5 +151,11 @@ $(document).ready(function() {
 
 // This function runs when the page is fully loaded
 $(document).ready(function(){
+	// Show loader div for categories
+
+	$("#loaderDiv").show();
 	pullCategories();
-})
+});
+function hideLoaderDiv() {
+	$("#loaderDiv").hide();
+}
