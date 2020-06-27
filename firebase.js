@@ -172,3 +172,26 @@ function removeNote(categoryId, noteId) {
 	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+noteId).remove();
 	
 }
+
+
+function changeCategory(categoryName, categoryId) {
+	/* This function pushes change categoryName and categoryId to firebase database. */
+
+	var updates = {};
+	updates['sap_notes/activities/type/'+categoryId+'/meta/name'] = categoryName;
+	updates['sap_notes/typeDetail/allActivityTypes/'+categoryId+'/meta/name'] = categoryName;
+
+	database.ref().update(updates);
+	showStatus(0);
+}
+
+
+function deleteCategory(categoryId) {
+	/* This function will remove category of categoryId and all notes under same category */
+
+	// Delete all notes of category categoryId
+	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId).remove();
+
+	// Delete category
+	database.ref('sap_notes/activities/type/'+categoryId).remove();
+}

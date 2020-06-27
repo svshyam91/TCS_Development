@@ -43,7 +43,7 @@ function validateAddNoteForm() {
 
 
 function showNotes(categoryId, allNotes) {
-	/* This function displays all notes of choosen category. 
+	/* This function displays all notes of selected category. 
 		Called In: firebase.js -> pullNotesOfCategory()
 	*/
 
@@ -84,7 +84,6 @@ function editNote(categoryId, noteId) {
 	/* This function gets data from allNotes global variable and fills in the form. */
 
 	// Get Data
-	console.log(allNotes)
 	noteHeading = allNotes[noteId]["heading"];
 	noteDescription = allNotes[noteId]["description"];
 
@@ -100,7 +99,8 @@ function editNote(categoryId, noteId) {
 
 
 function validateChangeNote() {
-	/* This function validates data filled in changeNote form and passes data to pushChangeNote()
+	/* 
+		This function validates data filled in changeNote form and passes data to pushChangeNote()
 		in firebase.js file.
 	*/
 
@@ -139,3 +139,35 @@ function addEditDelete(categoryId) {
 	deleteBtn.setAttribute("categoryId",categoryId);
 }
 
+
+function insertCategoryText() {
+	/* This function gets category text from category button and adds it to the  input category element */
+	
+	// Get category Id
+	categoryId = document.getElementById("editCategory").getAttribute("categoryId");
+
+	// Get category text from selected category button(with id "categoryId")
+	const categoryText = document.getElementById(categoryId).innerHTML;
+
+	// Put category name in the input element of #editInputDiv
+
+	// Get Input element 
+	inputCategoryElement = document.getElementById("inputCategoryElement");
+
+	// Insert text in input category element
+	inputCategoryElement.value = categoryText;
+
+	// Add categoryId attribute with "categoryId" value to pass and change this category on submission.
+	inputCategoryElement.setAttribute("categoryId",categoryId);
+}
+
+
+function editCategory() {
+	/* This function gets changed input category text and categoryId and passes to pushCategory() function */
+
+	// Get #inputCategoryElement text and category id
+	categoryName = document.getElementById("inputCategoryElement").value;
+	categoryId = document.getElementById("inputCategoryElement").getAttribute("categoryId");
+
+	changeCategory(categoryName, categoryId);
+}

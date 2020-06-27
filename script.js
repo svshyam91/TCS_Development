@@ -61,9 +61,9 @@ function showStatus(statusCode) {
 	// Display alert box.
 	alertBox.style.display = "block";
 
-	// Close alert box after 5 seconds 
+	// Hide alert box after 5 seconds 
 	setTimeout(function() {
-		$("#statusAlert").alert("close");
+		document.getElementById("statusAlert").style.display = "none";
 	}, 5000);
 }
 
@@ -98,7 +98,9 @@ function displayNoteContent(elementId) {
 }
 
 
+// jQuery Code
 $(document).ready(function() {
+
 	$("#editCategory").click(function() {
 
 		// Blur backgroud div
@@ -111,8 +113,9 @@ $(document).ready(function() {
 		$("#categorySideBar").css("pointer-events","none");
 		
 	});
-	$("#closeInputBtn").click(function() {
 
+	$("#closeInputBtn").click(closeInputBtn);
+	function closeInputBtn() {
 		// Hide input div
 		$("#editInputDiv").css("width","0");
 
@@ -120,11 +123,10 @@ $(document).ready(function() {
 		$("#categorySideBar").css("filter","blur(0px)");
 
 		//Enable pointer-events to background div
-		$("#categorySideBar").css("pointer-events","auto"); 
-	});
-	$("#deleteCategory").click(function() {
+		$("#categorySideBar").css("pointer-events","auto");
+	}
 
-		console.log("You are here.")
+	$("#deleteCategory").click(function() {
 
 		// Blur backgroud div
 		$("#categorySideBar").css("filter","blur(5px)");
@@ -136,8 +138,10 @@ $(document).ready(function() {
 		$("#categorySideBar").css("pointer-events","none");
 
 	});
-	$("#closeDeleteBtn").click(function() {
 
+	// Close Delete Button
+	$("#closeDeleteBtn").click(closeDeleteBtn);
+	function closeDeleteBtn() {
 		// Hide Delete Div
 		$("#deleteInputDiv").css("width","0");
 
@@ -145,8 +149,22 @@ $(document).ready(function() {
 		$("#categorySideBar").css("filter","blur(0px)");
 
 		//Enable pointer-events to background div
-		$("#categorySideBar").css("pointer-events","auto"); 
-	});
+		$("#categorySideBar").css("pointer-events","auto");
+	}
+
+	// Edit Category button
+	$("#editCategorySubmitBtn").click(function() {
+		editCategory();
+		closeInputBtn();
+	})
+
+	// Delete Category Submit 
+	$("#deleteCategorySubmitBtn").click(function() {
+		categoryId = $("#deleteCategory").attr("categoryId");
+		deleteCategory(categoryId);
+		showStatus(0);
+		closeDeleteBtn();
+	})
 });
 
 // This function runs when the page is fully loaded

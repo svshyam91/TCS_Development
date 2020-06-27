@@ -100,37 +100,41 @@
 		</nav>
 		
 		<div class="container-fluid">
-			<div class="row">
-				
-				<div class="col-sm-2 border">
+			<div class="row">	
+				<div class="col-sm-2">
 
 					<!-- Input button to edit category -->
 					<div class="input-group" id="editInputDiv">
-						<input type="text" class="form-control">
+						<input type="text" class="form-control" id="inputCategoryElement">
 						<div class="input-group-append">
-						  <button class="btn btn-success" type="button" style="margin: 0;"><i class="fas fa-check"></i></button>
+						  <button class="btn btn-success" type="button" style="margin: 0;" id="editCategorySubmitBtn"><i class="fas fa-check"></i></button>
 						  <button class="btn btn-danger" type="button" style="margin: 0;" id="closeInputBtn"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
-					<!-- Button to delete category -->
+					<!-- Div to delete category -->
 					<div class="input-group" id="deleteInputDiv">
 						<input type="text" class="form-control" value="Are you sure?" disabled>
 						<div class="input-group-append">
-						  <button class="btn btn-success" type="button" style="margin: 0;"><i class="fas fa-check"></i></button>
+						  <button class="btn btn-success" type="button" style="margin: 0;" id="deleteCategorySubmitBtn"><i class="fas fa-check"></i></button>
 						  <button class="btn btn-danger" type="button" style="margin: 0;" id="closeDeleteBtn"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
+
+					<!-- Edit/Delete Category buttons -->
 					<div class="btn-group btn-group-sm d-flex" role="group" aria-label="edit-cancel buttons">
-						<button type="button" class="btn btn-outline-success w-100" id="editCategory">Edit</button>
+						<button type="button" class="btn btn-outline-success w-100" id="editCategory" onclick="insertCategoryText()">Edit</button>
 						<button type="button" class="btn btn-outline-danger w-100" id="deleteCategory">Delete</button>
 					</div>
 
 					<!-- Div to show loading button -->
 					<div class="loader" id="loaderDiv"></div>
 					
-					<div id="categorySideBar"></div>
+					<div id="categorySideDiv">
+						<div id="categorySideBar"></div>
+					</div>
 				</div>
-				<div class="col-sm-8 border">
+				<div class="verticle-border border-right" style="height: 100vh;"></div>
+				<div class="col-sm-8 border-right">
 					<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
 					<!-- <div class="upload-file" id="uploadFile">
 						<input type="file" name="firebaseFile" id="fileInput" class="btn btn-outline-primary">
@@ -227,7 +231,7 @@
 					</div><!-- End of change Note Modal -->
 
 				</div>
-				<div class="col-sm-2 border">
+				<div class="col-sm-2">
 				</div>
 			</div>
 		</div>
@@ -238,8 +242,8 @@
 			<div class="alert-text" id="alertText"></div> -->
 		</div>
 
+
 		<!-- FIREBASE -->
-		
 		<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase.js"></script>
 		<script src="firebase.js"></script>
 		<script src="changeDOM.js"></script>
