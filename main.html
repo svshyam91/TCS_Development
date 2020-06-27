@@ -70,7 +70,7 @@
 	</head>
 
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-dark navbar-fixed-top" style="background-color: #5c85d6">
+		<nav class="navbar navbar-expand-lg navbar-dark navbar-fixed-top">
 		
 			<!-- Brand Logo -->
 			<a class="navbar-brand">
@@ -79,21 +79,21 @@
 			
 			<!-- Top Navigation Bar -->
 			<ul class="navbar-nav">
-				<li class="nav-item active">
-					<a class="nav-link" href="#">NOTES</a>
+				<li class="nav-item">
+					<a class="nav-link" href="javascript:void(0)">NOTES</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" target="_blank" 
 					href="https://spc.ondemand.com/sap/public/ap/ui/repository/SAP_UI/HTMLOBERON5/client.html?app.component=/SAP_UI_CT/Main/root.uiccwoc&rootWindow=X&redirectUrl=/sap/public/byd/runtime#n=eyJpblBvcnQiOiIiLCJ0YXJnZXQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInBhcmFtcyI6e30sImxpc3RzIjp7fSwid2NDb250ZXh0Ijp7IndvY0lkIjoiL0ExU19TUEMvV29ya0NlbnRlci9Nb25pdG9yaW5nX1dDRi5XQ0YudWl3b2MiLCJ2aWV3SWQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInN0YXRzSXNDb21tb25UYXNrIjpmYWxzZSwiaXNOYXZOb2RlIjpmYWxzZSwibmF2Tm9kZVRleHQiOiIifX0%3D">OPEN SPC</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#" onclick="openTicket()"><i class="fas fa-clipboard-list"></i>&nbsp;	OPEN TICKET</a>
+					<a class="nav-link" href="javascript:void(0)" onclick="openTicket()"><i class="fas fa-clipboard-list"></i>&nbsp;	OPEN TICKET</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#" onclick="openSapNote()">OPEN SAP NOTE</a>
+					<a class="nav-link" href="javascript:void(0)" onclick="openSapNote()">OPEN SAP NOTE</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#" onclick="addSapNote()">ADD SAP NOTE</a>
+					<a class="nav-link" href="javascript:void(0)" onclick="addSapNote()">ADD SAP NOTE</a>
 				</li>
 			</ul>
 			
@@ -133,7 +133,7 @@
 						<div id="categorySideBar"></div>
 					</div>
 				</div>
-				<div class="verticle-border border-right" style="height: 100vh;"></div>
+				<div class="verticle-border border-right"></div>
 				<div class="col-sm-8 border-right">
 					<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
 					<!-- <div class="upload-file" id="uploadFile">
@@ -223,7 +223,7 @@
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button class="btn btn-outline-success" onclick="validateChangeNote()">Apply Changes</button>
+									<button class="btn btn-outline-success" data-dismiss="modal" onclick="validateChangeNote()">Apply Changes</button>
 									<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
 								</div>
 							</div>
@@ -231,6 +231,7 @@
 					</div><!-- End of change Note Modal -->
 
 				</div>
+				<div class="verticle-border border-right"></div>
 				<div class="col-sm-2">
 				</div>
 			</div>

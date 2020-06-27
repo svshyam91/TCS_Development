@@ -97,6 +97,12 @@ function displayNoteContent(elementId) {
 	document.getElementById("noteContent"+elementId).style.display = preDisplay;
 }
 
+function changeCategoryBtnStyle(categoryId) {
+	console.log("You are in changeCategoryBtnStyle");
+	$(".category-sidebar-btn").removeClass("selected-category");
+	$("#"+categoryId).addClass("selected-category");
+}
+
 
 // jQuery Code
 $(document).ready(function() {

@@ -13,10 +13,25 @@
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
 }
-
-.border-right {
-	height: 100%;
+.navbar {
+	background-color: #5c85d6;
 }
+.nav-link {
+	color: #FFFFFF;
+}
+.border-right {
+	height: 100vh;
+}
+
+/* Sidebar category buttons */
+.category-sidebar-btn:hover {
+	background-color: #5c85d6;
+}
+.selected-category {
+	background-color: #03396c;
+}
+
+/* Styling on note content */
 .pre-text {
 	margin-top: 20px;
 	margin-bottom: 40px;
@@ -28,6 +43,14 @@
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
 }
+.note-heading-btn {
+	background-color: #03396c;
+	color: #FFFFFF;
+}
+.note-heading-btn:hover {
+	background-color: #356089;
+}
+
 textarea {
 	width: 100%;
 	height: 100px;
@@ -48,7 +71,7 @@ textarea {
 	float: right;
 	border-radius: 15px;
 } 	
-.copy-text{
+.copy-note{
 	border-radius: 15px;
 }
 .navbar {

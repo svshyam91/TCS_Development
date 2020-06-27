@@ -22,6 +22,7 @@ var allCategories = [];
 function pullCategories() {
 	/* This function retrieves categories of SAP Notes from Firebase Database. */
 
+
 	data = database.ref('sap_notes/activities/type/').on('value',function(snapshot) {
 		// make sure here that some values exist. Right code to verify that
 
@@ -118,7 +119,7 @@ var allNotes = "";
 function pullNotesOfCategory(categoryId) {
 	/* This function full all notes of category having id as categoryId */
 
-
+	changeCategoryBtnStyle(categoryId);
 	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').on('value',function(snapshot){
 		allNotes = snapshot.val();
 		if(allNotes == null)
@@ -159,6 +160,8 @@ function pushChangeNote(categoryId, noteId, noteHeading, noteDescription) {
 
 	// Remove old data
 	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+noteId).remove();
+
+	showStatus(0);
 
 	/* The reason why we first added and then removed data from the firebase database instead 
 	of directly updating it is because if we push data with new key, we will get different advantages

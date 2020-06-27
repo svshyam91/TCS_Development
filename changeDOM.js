@@ -9,7 +9,7 @@ function addCategorySideBar() {
 	var allCategoryButtons = "";
 	allCategories.forEach(function(category, index){
 		categoryBtn = document.createElement('button');
-		categoryBtn.setAttribute('class','btn btn-sm btn-block btn-outline-primary');
+		categoryBtn.setAttribute('class','btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
 		categoryBtn.setAttribute('id',category["id"]);
 		categoryBtn.setAttribute('onclick',"pullNotesOfCategory('"+category["id"]+"')");
 		categoryBtn.innerHTML = category["name"];
@@ -62,10 +62,10 @@ function showNotes(categoryId, allNotes) {
 		div.setAttribute("noteId", key);
 		// <i class="fas fa-angle-double-up"></i>
 		div.innerHTML = `
-						<button class="btn btn-block btn-secondary" onclick="displayNoteContent('${elementId}')">${heading}&nbsp;&nbsp;<i class="fas fa-angle-double-down" id="udAngle${elementId}"></i></button>
+						<button class="btn btn-block note-heading-btn" onclick="displayNoteContent('${elementId}')">${heading}&nbsp;&nbsp;<i class="fas fa-angle-double-down" id="udAngle${elementId}"></i></button>
 						<div class="note-content" id="noteContent${elementId}" style="display: none;">
 						<pre class="block-content" id="${key}">${description}</pre>
-						<button class="btn btn-sm btn-outline-info copy-text" onclick="copyToClipboard('${key}')">Copy Text</button>
+						<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${key}')">Copy Text</button>
 						<button class="btn btn-sm btn-outline-success edit-note" id="${key}" onclick="editNote('${categoryId}','${key}')" data-toggle="modal" data-target="#changeNoteModal">Edit</button>
 						<button class="btn btn-sm btn-outline-danger delete-note" id="${key}" onclick="confirmDeleteNote('${categoryId}','${key}')">Delete</button>
 						</div>
