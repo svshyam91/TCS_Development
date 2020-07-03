@@ -183,3 +183,54 @@ $(document).ready(function(){
 function hideLoaderDiv() {
 	$("#loaderDiv").hide();
 }
+
+
+// Sign Up
+window.onload = () => {
+	signUpBtn = document.getElementById("signUpBtn");
+	signUpBtn.addEventListener('click', () => {
+
+		// Get Values
+		signUpUsername = document.getElementById('signUpUsername').value;
+		signUpEmail = document.getElementById('signUpEmail').value;
+		signUpPassword = document.getElementById('signUpPassword').value;
+
+		// Sign Up using Firebase
+		firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword).catch(function(error) {
+			// Error Handling
+			console.log("Something went wrong!! "+error);
+		});
+	});
+}
+
+
+// Sign In
+window.onload = () => {
+	signInBnt = document.getElementById('signInBtn');
+	signInBtn.addEventListener('click', () => {
+
+		// Get Values
+		signInEmail = document.getElementById('signInEmail').value;
+		signInPassword = document.getElementById('signInPassword').value;
+
+		// Sign In Using Firebase
+		firebase.auth().signInWithEmailAndPassword(signInEmail, signInPassword).catch(function(error) {
+			//Error Handling
+			console.log("Something went wrong!! "+error);
+		});
+
+	});
+};
+
+
+// Authentication State Observer
+firebase.auth().onAuthStateChanged(function(user) {
+	if(user) {
+		// User logged In
+		console.log("You have successfully signed In.");
+	}
+	else {
+		// User is logged Out
+		console.log("You have successfully signed out.");
+	}
+});

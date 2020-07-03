@@ -1,72 +1,26 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<title>SAP LINKS</title>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/fontawesome.min.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
 		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" 
 		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
 		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" 
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/fontawesome.min.css">
-
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-		
-		<!-- Include JS Files -->
-		<!-- <script src="data.js"></script> -->
-		<script src="script.js"></script>
 
 		<!-- Include CSS File -->
 		<link rel="stylesheet" type="text/css" href="style.css">
 		
-
-		<script>
-
-			/* Parsing JS File with variable as JS object*/
-			// function processData(heading) {
-			
-			// 	/* Remove previous content loaded inside #cont id div */
-			// 	document.getElementById("cont").innerHTML = "";
-			
-			// 	/* Create an element for every heading(stop/start, faaltu_cheeze, client copy) inside tab */
-			// 	for(let head in dat[heading]) {
-					
-			// 		/* Create button for copy content */
-			// 		var headString = '\"'+head+'\"'
-			// 		var copyBtn = document.createElement("button");
-			// 		copyBtn.setAttribute("class","btn btn-sm");
-			// 		copyBtn.setAttribute("id",heading);
-			// 		copyBtn.setAttribute("onclick","copyText("+headString+")");		/* Passing "head" coz it's id of pre element */
-			// 		copyBtn.innerHTML = "Copy Text";
-					
-			// 		/* Creating element <div> to display content */
-			// 		var div = document.createElement("div");
-			// 		div.setAttribute("class","pre-text");
-			// 		div.innerHTML = `<pre class="block-content ${heading}" id="${head}">${dat[heading][head]}</pre>
-			// 						<button class="btn btn-sm btn-outline-info copy-text" id="copyText" onclick="copyToClipboard('${head}')">Copy Text</button>`
-					
-					
-			// 		/* Add pre elements to the #cont id div. */
-			// 		document.getElementById("cont").innerHTML += div.outerHTML;
-					
-					
-			// 		//var pre = document.createElement("pre");
-			// 		//pre.setAttribute("class","block-content "+heading);
-			// 		//pre.setAttribute("id",head);
-			// 		//pre.innerHTML = dat[heading][head];
-					
-			// 		///* Adding this newly created pre element in #preText div id */
-			// 		//document.getElementById("preText").innerHTML += pre.outerHTML;
-
-			// 		///* Add newly created button in #copyText div id */
-			// 		//document.getElementById("copyText").innerHTML += copyBtn.outerHTML;
-					
-			// 	}	
-			// }
-
-		</script>
 	</head>
 
 	<body>
@@ -74,7 +28,7 @@
 		
 			<!-- Brand Logo -->
 			<a class="navbar-brand">
-				<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/SAP-Logo.svg/1200px-SAP-Logo.svg.png" width="60px" height="30px">
+				<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/SAP-Logo.svg/1200px-SAP-Logo.svg.png" width="60px" height="30px" alt="logo-image">
 			</a>
 			
 			<!-- Top Navigation Bar -->
@@ -96,6 +50,14 @@
 					<a class="nav-link" href="javascript:void(0)" onclick="addSapNote()">ADD SAP NOTE</a>
 				</li>
 			</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" href="javascript:void(0)">SIGN IN</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="javascript:void(0)">SIGN UP</a>
+				</li>
+			</ul>
 			
 		</nav>
 		
@@ -105,18 +67,18 @@
 
 					<!-- Input button to edit category -->
 					<div class="input-group" id="editInputDiv">
-						<input type="text" class="form-control" id="inputCategoryElement">
+						<input type="text" class="form-control" name="categoryName" id="inputCategoryElement">
 						<div class="input-group-append">
-						  <button class="btn btn-success" type="button" style="margin: 0;" id="editCategorySubmitBtn"><i class="fas fa-check"></i></button>
-						  <button class="btn btn-danger" type="button" style="margin: 0;" id="closeInputBtn"><i class="fas fa-times"></i></button>
+						  <button class="btn btn-success" type="button" style="margin: 0;" aria-label="submit-button" id="editCategorySubmitBtn"><i class="fas fa-check"></i></button>
+						  <button class="btn btn-danger" type="button" style="margin: 0;" aria-label="cancel-button" aria-label="close-input-btn" id="closeInputBtn"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 					<!-- Div to delete category -->
 					<div class="input-group" id="deleteInputDiv">
-						<input type="text" class="form-control" value="Are you sure?" disabled>
+						<input type="text" class="form-control" value="Are you sure?" name="deleteCategory" disabled>
 						<div class="input-group-append">
-						  <button class="btn btn-success" type="button" style="margin: 0;" id="deleteCategorySubmitBtn"><i class="fas fa-check"></i></button>
-						  <button class="btn btn-danger" type="button" style="margin: 0;" id="closeDeleteBtn"><i class="fas fa-times"></i></button>
+						  <button class="btn btn-success" type="button" style="margin: 0;" aria-label="delete-category-btn" id="deleteCategorySubmitBtn"><i class="fas fa-check"></i></button>
+						  <button class="btn btn-danger" type="button" style="margin: 0;" aria-label="close-delete-btn" id="closeDeleteBtn"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 
@@ -145,7 +107,7 @@
 					</div>
 
 					<!-- Form for adding notes -->
-					<div id="addSapNote" style="display: none;">
+					<div id="addSapNote" class="form-block" style="display: none;">
 						<div class="form-heading">
 							<h2>ADD NOTES</h2>
 						</div>
@@ -171,6 +133,46 @@
 							<button class="btn btn-block btn-outline-success" id="submitNote" onclick="validateAddNoteForm()">SUBMIT</button>
 					</div>
 
+					
+					<!-- Form for Sign Up -->
+
+					<div id="signUpForm" class="form-block">
+						<div class="form-heading">
+							<h2>SIGN UP</h2>
+						</div>
+						<div class="form-group">
+							<label for="signUpUsername">Username</label>
+							<input type="text" name="username" id="signUpUsername" class="form-control" maxlength="20">
+						</div>
+						<div class="form-group">
+							<label for="signUpEmail">Email</label>
+							<input type="email" name="email" id="signUpEmail" class="form-control" maxlength="20">
+						</div>
+						<div class="form-group">
+							<label for="signUpPassword">Password</label>
+							<input type="password" name="password" id="signUpPassword" class="form-control">
+						</div>
+						<button class="btn btn-success btn-block" id="signUpBtn">Sign Up</button>
+						<button class="btn btn-danger btn-block" id="cancelSignUp">Cancel</button>
+					</div>
+
+
+					<!-- Form for Sign In -->
+					<div id="signInForm" class="form-block">
+						<div class="form-heading">
+							<h2>Sign In</h2>
+						</div>
+						<div class="form-group">
+							<label for="signInEmail">Email</label>
+							<input type="email" name="email" id="signInEmail" class="form-control" maxlength="20">
+						</div>
+						<div class="form-group">
+							<label for="signInPassword">Password</label>
+							<input type="password" name="password" id="signInPassword" class="form-control" maxlength="20">
+						</div>
+						<button class="btn btn-success btn-block" id="signIpBtn">Sign Up</button>
+						<button class="btn btn-danger btn-block" id="cancelSignIn">Cancel</button>
+					</div>
 
 					<!-- Modal for Category Form -->
 
@@ -243,14 +245,14 @@
 			<div class="alert-text" id="alertText"></div> -->
 		</div>
 
-
 		<!-- FIREBASE -->
 		<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase.js"></script>
 		<script src="firebase.js"></script>
 		<script src="changeDOM.js"></script>
-
-		<script>	
-
+		
+		<!-- Include JS Files -->
+		<script src="script.js"></script>
+		<script>
 			// Used for testing
 			function uploadFile() {
 
@@ -378,7 +380,6 @@
 					]
 				})
 			}
-
 		</script>
 
 	</body>
