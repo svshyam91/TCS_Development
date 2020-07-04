@@ -37,11 +37,6 @@ function openSapNote() {
 }
 
 
-function addSapNote() {
-	document.getElementById('addSapNote').style.display = "block";
-}
-
-
 function showStatus(statusCode) {
 
 
@@ -98,7 +93,6 @@ function displayNoteContent(elementId) {
 }
 
 function changeCategoryBtnStyle(categoryId) {
-	console.log("You are in changeCategoryBtnStyle");
 	$(".category-sidebar-btn").removeClass("selected-category");
 	$("#"+categoryId).addClass("selected-category");
 }
@@ -182,55 +176,136 @@ $(document).ready(function(){
 });
 function hideLoaderDiv() {
 	$("#loaderDiv").hide();
+};
+
+
+// Hide/Show Sign In and Sign Up form
+$(document).ready(function() {
+	$('#signUpNav').click(signUpForm);	
+	$('#signInNav').click(signInForm);
+	$('#addSapNote').click(addSapNote);
+
+	// Hide and show addSapNoteForm 	
+	function addSapNote() {
+		$('.main-div').hide();
+		$('#addSapNoteForm').slideDown();
+	};
+
+	// Hide other content and show signInForm 
+	function signInForm() {
+		$('.main-div').hide();
+		$('#signInForm').slideDown();
+	}
+
+	// Hide other content and show signUpForm 
+	function signUpForm() {
+		$('.main-div').hide();
+		$('#signUpForm').slideDown();
+	}
+
+});
+
+// Hide all content from main div to show div
+function hideMainDivContent() {
+	console.log("you are here now now");
+	$('.main-div').hide();
+	$('#cont').slideDown();
+	return;
 }
 
+$(document).ready(function() {
+	/* This function adds event on signIn and signUp buttons and observes behaviour 
+	 of authentication. */
+
+	document.getElementById('signInBtn').addEventListener('click', signIn);
+	document.getElementById("signUpBtn").addEventListener('click', signUp);
+	document.getElementById('signOutNav').addEventListener('click', signOut);
+
+	// Authentication State Observer
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user) {
+			// User logged In
+			console.log("You have successfully signed In.");
+			console.log("Name:"+user.displayName);
+			$('#usernameNav').text(user.email);
+			userLoggedIn();
+		}
+		else {
+			// User is logged Out
+			console.log("You have successfully signed out.");
+			userLoggedOut();
+		}
+	});
+})
+
+
+function userLoggedIn() {
+
+	// Hide signIn and signUp button
+	$('#signInNavItem').hide();
+	$('#signUpNavItem').hide();
+
+	// Show username and signOut Button
+	$('#signOutNavItem').show();
+	$('#usernameNavItem').show();
+}
+
+function userLoggedOut() {
+
+	// Hide username and signOut button
+	$('#signOutNavItem').hide();
+	$('#usernameNavItem').hide();
+
+	// Show signIn and signUp button
+	$('#signInNavItem').show();
+	$('#signUpNavItem').show();
+
+}
 
 // Sign Up
-window.onload = () => {
-	signUpBtn = document.getElementById("signUpBtn");
-	signUpBtn.addEventListener('click', () => {
+function signUp() {
 
-		// Get Values
-		signUpUsername = document.getElementById('signUpUsername').value;
-		signUpEmail = document.getElementById('signUpEmail').value;
-		signUpPassword = document.getElementById('signUpPassword').value;
+	// Get Values
+	signUpUsername = document.getElementById('signUpUsername').value;
+	signUpEmail = document.getElementById('signUpEmail').value;
+	signUpPassword = document.getElementById('signUpPassword').value;
 
-		// Sign Up using Firebase
-		firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword).catch(function(error) {
-			// Error Handling
-			console.log("Something went wrong!! "+error);
-		});
+	// Sign Up using Firebase
+	firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword).catch(function(error) {
+		// Error Handling
+		console.log("Something went wrong!! "+error);
+	});
+	sendEmailVerfication();
+}
+
+function sendEmailVerfication() {
+
+	firebase.auth().currentUser.sendEmailVerfication().then(function() {
+		// Email sent successfully.
+		alert("Check you Email and verify.")
+	}).catch(function(error) {
+		// Error Handling
+		alert("Something went wrong !! Please try after sometime.")
 	});
 }
 
 
 // Sign In
-window.onload = () => {
-	signInBnt = document.getElementById('signInBtn');
-	signInBtn.addEventListener('click', () => {
+function signIn() {
 
-		// Get Values
-		signInEmail = document.getElementById('signInEmail').value;
-		signInPassword = document.getElementById('signInPassword').value;
+	// Get Values
+	signInEmail = document.getElementById('signInEmail').value;
+	signInPassword = document.getElementById('signInPassword').value;
 
-		// Sign In Using Firebase
-		firebase.auth().signInWithEmailAndPassword(signInEmail, signInPassword).catch(function(error) {
-			//Error Handling
-			console.log("Something went wrong!! "+error);
-		});
-
+	// Sign In Using Firebase
+	firebase.auth().signInWithEmailAndPassword(signInEmail, signInPassword).catch(function(error) {
+		//Error Handling
+		console.log("Something went wrong!! "+error);
 	});
-};
+}
 
+function signOut() {
+	// Sign Out user from firebase 
 
-// Authentication State Observer
-firebase.auth().onAuthStateChanged(function(user) {
-	if(user) {
-		// User logged In
-		console.log("You have successfully signed In.");
-	}
-	else {
-		// User is logged Out
-		console.log("You have successfully signed out.");
-	}
-});
+	firebase.auth().signOut();
+}

@@ -57,10 +57,11 @@ textarea {
 	border-radius: 5px;
 }
 .form-heading {
-	background-color: #03396c;
+	background: linear-gradient(to right, rgb(3,57,108,1), rgb(255,255,255));
+	/*background: #03396c;*/
 	margin: 10px 0px;
 	padding: 5px 20px;
-	border-radius: 10px;
+	/*border-radius: 10px;*/
 	color: white;
 }
 .delete-note{

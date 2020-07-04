@@ -119,6 +119,8 @@ var allNotes = "";
 function pullNotesOfCategory(categoryId) {
 	/* This function full all notes of category having id as categoryId */
 
+	hideMainDivContent();
+
 	changeCategoryBtnStyle(categoryId);
 	database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').on('value',function(snapshot){
 		allNotes = snapshot.val();
