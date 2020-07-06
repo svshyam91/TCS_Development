@@ -50,6 +50,12 @@
 				</li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<div class="btn-group">
+						<button type="button" class="btn btn-sm btn-outline-primary user-toggle-btn">General</button>
+						<button type="button" class="btn btn-sm btn-outline-primary user-toggle-btn">User</button>
+					</div>
+				</li>
 				<li class="nav-item" style="display: none;" id="usernameNavItem">
 					<a class="nav-link" href="javascript:void(0)" id="usernameNav"></a>
 				</li>
@@ -68,7 +74,7 @@
 		
 		<div class="container-fluid">
 			<div class="row">	
-				<div class="col-sm-2">
+				<div class="col-sm-2 border-right">
 
 					<!-- Input button to edit category -->
 					<div class="input-group" id="editInputDiv">
@@ -100,7 +106,6 @@
 						<div id="categorySideBar"></div>
 					</div>
 				</div>
-				<div class="verticle-border border-right"></div>
 				<div class="col-sm-8 border-right">
 					<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
 					<!-- <div class="upload-file" id="uploadFile">
@@ -187,13 +192,12 @@
 					</div>
 
 					<!-- Modal for Category Form -->
-
 					<div id="categoryModal" class="modal fade" role="dialog">
 						<div class="modal-dialog">
 							
 							<!-- Content -->
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header form-heading">
 									<h3>Add Category</h3>
 								</div>
 								<div class="modal-body">
@@ -216,13 +220,12 @@
 
 
 					<!-- Modal for change Note Form -->
-
 					<div id="changeNoteModal" class="modal fade" role="dialog" noteId="">
 						<div class="modal-dialog modal-xl">
 							
 							<!-- Content -->
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header form-heading">
 									<h3>Change NOTE</h3>
 								</div>
 								<div class="modal-body">
@@ -245,9 +248,18 @@
 					</div><!-- End of change Note Modal -->
 
 				</div>
-				<div class="verticle-border border-right"></div>
-				<div class="col-sm-2">
-				</div>
+
+				<!-- Right Div -->
+				<div class="col-sm-2 border">
+
+					<!-- Show User Data -->
+					<div class="user-data border" id="userData"  style="display: none;">
+						<button class="btn btn-block btn-sm btn-outline-success" id="emailVerified" style="display: none;">Email Verified</button>
+						<button class="btn btn-block btn-sm btn-outline-danger" id="emailNotVerified" style="display: none;">Verify Email</button>
+						<div class="user-data-email">Your Email</div>
+						<div class="user-data-username">Your Password</div>
+					</div>
+				</div><!-- End of right div -->
 			</div>
 		</div>
 

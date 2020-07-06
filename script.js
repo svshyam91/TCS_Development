@@ -44,6 +44,9 @@ function showStatus(statusCode) {
 	if(statusCode == 0) {
 		var alertText = "Success!! Data updated successfully.";
 	}
+	else if(statusCode == 2) {
+		var alertText = "You have successfully logged In.";
+	}
 	else {
 		var alertText = "Failed!! Something went wrong.";
 	}
@@ -220,19 +223,32 @@ $(document).ready(function() {
 	document.getElementById('signInBtn').addEventListener('click', signIn);
 	document.getElementById("signUpBtn").addEventListener('click', signUp);
 	document.getElementById('signOutNav').addEventListener('click', signOut);
+	document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
 
 	// Authentication State Observer
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user) {
 			// User logged In
 			console.log("You have successfully signed In.");
-			console.log("Name:"+user.displayName);
 			$('#usernameNav').text(user.email);
+			document.getElementById('userData').style.display = 'block';
+			console.log(user.emailVerified);
+			if( user.emailVerified == false) {
+				console.log("Email not verified");
+				document.getElementById('emailNotVerified').style.display = 'block';
+				document.getElementById('emailVerified').style.display = "none";
+			}
+			else {
+				document.getElementById('emailVerified').style.display = "block";
+				document.getElementById('emailNotVerified').style.display = "none";
+			}
 			userLoggedIn();
+			showStatus(2);
 		}
 		else {
 			// User is logged Out
 			console.log("You have successfully signed out.");
+			document.getElementById('userData').style.display = 'none';
 			userLoggedOut();
 		}
 	});
@@ -275,12 +291,11 @@ function signUp() {
 		// Error Handling
 		console.log("Something went wrong!! "+error);
 	});
-	sendEmailVerfication();
 }
 
 function sendEmailVerfication() {
 
-	firebase.auth().currentUser.sendEmailVerfication().then(function() {
+	firebase.auth().currentUser.sendEmailVerification().then(function() {
 		// Email sent successfully.
 		alert("Check you Email and verify.")
 	}).catch(function(error) {
