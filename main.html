@@ -289,11 +289,11 @@
 			else
 				var file = fileUpload.files[0]
 
-				// Create storage Reference
-				var storageRef = firebase.storage().ref("extra_files/"+file.name)
-				
-				// Upload file
-				storageRef.put(file)
+			// Create storage Reference
+			var storageRef = firebase.storage().ref("extra_files/"+file.name)
+			
+			// Upload file
+			storageRef.put(file)
 		}
 	</script>
 

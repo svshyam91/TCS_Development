@@ -168,7 +168,7 @@ function pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription) {
 
 var allNotes = "";
 function pullNotesOfCategory(categoryId) {
-	/* This function full all notes of category having id as categoryId */
+	/* This function pulls all notes of category categoryId */
 
 	hideMainDivContent();
 	changeCategoryBtnStyle(categoryId);
@@ -267,7 +267,7 @@ function pushChangeNote(categoryId, noteId, noteHeading, noteDescription) {
 
 
 function removeNote(categoryId, noteId) {
-	/* This function removed note(noteId) of categoryId from firebase database. */
+	/* This function removes note(noteId) of categoryId from firebase database. */
 
 	if(user_data == false) {
 		// Delete general data
