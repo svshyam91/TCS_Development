@@ -37,6 +37,50 @@ function openSapNote() {
 }
 
 
+function validateAddNoteForm() {
+	/* This function gets and validate data from addNote form and passes
+		data to addNotes() function to update it in firebase database. */
+
+	// Get values
+	var noteCategory = document.getElementById('noteCategory');
+	var noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
+	var noteHeading = document.getElementById('noteHeading').value;
+	var noteDescription = document.getElementById('noteDescription').value;
+
+	// Validate data
+	if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
+		alert("Please fill form before submitting.");
+		return;
+	}
+	pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription);		/* File: firebase.js */
+}
+
+
+function validateChangeNote() {
+	/* 
+		This function validates data filled in changeNote form and passes data to pushChangeNote()
+		in firebase.js file.
+	*/
+
+	// Get Values of form fields
+	noteHeading = document.getElementById('changeNoteHeading').value;
+	noteDescription = document.getElementById('changeNoteDescription').value;
+
+	// Get note Id from modal 
+	noteId = document.getElementById('changeNoteModal').getAttribute("noteId");
+	categoryId = document.getElementById('changeNoteModal').getAttribute("categoryId");
+
+	// Validate Data
+	if(noteHeading == "" || noteDescription == "") {
+		alert("Please fill form before submitting.");
+		return;
+	}
+	else {
+		pushChangeNote(categoryId, noteId, noteHeading, noteDescription);
+	}
+}
+
+
 function showStatus(statusCode) {
 
 
@@ -72,8 +116,7 @@ function displayNoteContent(elementId) {
 		Later, replace this code with jQuery code(using delegate).
 	*/
 	
-	// Get elements
-	
+	// Get elements	
 	preDisplay = document.getElementById("noteContent"+elementId).style.display;
 	angle = document.getElementById("udAngle"+elementId);
 
@@ -95,13 +138,14 @@ function displayNoteContent(elementId) {
 	document.getElementById("noteContent"+elementId).style.display = preDisplay;
 }
 
+
 function changeCategoryBtnStyle(categoryId) {
 	$(".category-sidebar-btn").removeClass("selected-category");
 	$("#"+categoryId).addClass("selected-category");
 }
 
 
-// jQuery Code
+// jQuery Code for Edit and Delete Categoty button actions
 $(document).ready(function() {
 
 	$("#editCategory").click(function() {
@@ -170,16 +214,74 @@ $(document).ready(function() {
 	})
 });
 
+
 // This function runs when the page is fully loaded
 $(document).ready(function(){
 	// Show loader div for categories
-
 	$("#loaderDiv").show();
-	pullCategories();
 });
 function hideLoaderDiv() {
 	$("#loaderDiv").hide();
 };
+
+
+/* Code for data toggle between general and user. */
+
+// Global boolean variable to store type(general/user) of data to show. "user_data = false" means 
+// it will show general data.
+var user_data;	
+
+document.getElementById('general-data-btn').addEventListener('click', handleGeneralData);
+document.getElementById('user-data-btn').addEventListener('click', handleUserData);
+
+
+function handleGeneralData() {
+
+	// Return if general data is already loaded
+	if(user_data == false) 
+		return;
+	user_data = false;
+
+	// Change CSS
+	document.getElementById('general-data-btn').style.backgroundColor = '#03396c';
+	document.getElementById('user-data-btn').style.backgroundColor = 'transparent';
+
+	// Load General Data
+	pullCategories(user_data);
+
+	return;
+}
+
+
+function handleUserData() {
+
+	// Return if user data is already loaded
+	if(user_data == true) 
+		return;
+
+	// Check user is signed in or not
+	user = firebase.auth().currentUser;
+	if(user) {
+		// User is signed in
+
+		user_data = true;
+
+		// Change CSS
+		document.getElementById('user-data-btn').style.backgroundColor = '#03396c';
+		document.getElementById('general-data-btn').style.backgroundColor = 'transparent';
+
+		// Load user data
+		pullCategories(user_data);
+		return;
+	}
+	else {
+		// User is not signed In
+
+		// Tell user to sign In first.
+		alert("Please sign In first.");
+		return;
+	}
+}
 
 
 // Hide/Show Sign In and Sign Up form
@@ -205,12 +307,11 @@ $(document).ready(function() {
 		$('.main-div').hide();
 		$('#signUpForm').slideDown();
 	}
-
 });
+
 
 // Hide all content from main div to show div
 function hideMainDivContent() {
-	console.log("you are here now now");
 	$('.main-div').hide();
 	$('#cont').slideDown();
 	return;
@@ -229,10 +330,26 @@ $(document).ready(function() {
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user) {
 			// User logged In
-			console.log("You have successfully signed In.");
+
+			// Check if user is already stored in DB or not. (Check if user is signing in or signing up)
+			userRef = firebase.database().ref('/user/'+user.uid+'/').once('value',(snapshot) => {
+				if(snapshot.exists() == false) {
+					// User is not stored in DB means user is signing Up.
+
+					console.log("User was not stored in DB.");
+					firebase.database().ref('/user/'+user.uid+'/').set({
+						uid: user.uid,
+						email: user.email
+					});	
+					return;
+				}
+				console.log("User is stored in DB");
+				return;
+			});
+
+
 			$('#usernameNav').text(user.email);
 			document.getElementById('userData').style.display = 'block';
-			console.log(user.emailVerified);
 			if( user.emailVerified == false) {
 				console.log("Email not verified");
 				document.getElementById('emailNotVerified').style.display = 'block';
@@ -280,6 +397,7 @@ function userLoggedOut() {
 
 // Sign Up
 function signUp() {
+	/* This function is used to sign Up user to firebase database. */
 
 	// Get Values
 	signUpUsername = document.getElementById('signUpUsername').value;
@@ -287,13 +405,18 @@ function signUp() {
 	signUpPassword = document.getElementById('signUpPassword').value;
 
 	// Sign Up using Firebase
-	firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword).catch(function(error) {
+	firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword).then(function(){
+		// Successfully signed up.
+		console.log("User has successfully signed up.");
+	}).catch(function(error) {
 		// Error Handling
 		console.log("Something went wrong!! "+error);
 	});
 }
 
+
 function sendEmailVerfication() {
+	/* This function sends email verification to user. */
 
 	firebase.auth().currentUser.sendEmailVerification().then(function() {
 		// Email sent successfully.
@@ -307,6 +430,7 @@ function sendEmailVerfication() {
 
 // Sign In
 function signIn() {
+	/* This function is used to sign In user to firebase database. */
 
 	// Get Values
 	signInEmail = document.getElementById('signInEmail').value;
@@ -318,6 +442,7 @@ function signIn() {
 		console.log("Something went wrong!! "+error);
 	});
 }
+
 
 function signOut() {
 	// Sign Out user from firebase 

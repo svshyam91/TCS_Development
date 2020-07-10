@@ -13,27 +13,34 @@
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
 }
+
+
+/* ----------------------- Styling Items In Navigation Bar. ----------------------- */
 .navbar {
 	background-color: #5c85d6;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-.user-toggle-btn {
+.data-toggle-btn {
 	border: 1px solid #03396c;
-	color: #03396c;
+	color: #FFFFFF;
 	padding: 0px 8px;
 }
-.user-toggle-btn:hover {
+.data-toggle-btn:hover {
 	background-color: #03396c;
 	border: 1px solid #03396c;
 	color: #FFFFFF;
 }
-
 /* Navbar links */
 .navbar-dark .navbar-nav .nav-link {
 	color: rgba(255,255,255,1);
 }
+.nav-link {
+	font-weight: 600;
+	color: #FFFFFF;
+}
 
-/* Sidebar category buttons */
+
+/* ----------------------- Sidebar Category Buttons ----------------------- */
 .category-sidebar-btn:hover {
 	background-color: #5c85d6;
 }
@@ -41,7 +48,8 @@
 	background-color: #03396c;
 }
 
-/* Styling on note content */
+
+/* ----------------------- Styling On Note Content ----------------------- */
 .pre-text {
 	margin-top: 20px;
 	margin-bottom: 40px;
@@ -60,6 +68,14 @@
 .note-heading-btn:hover {
 	background-color: #356089;
 }
+.delete-note, .edit-note {
+	float: right;
+	border-radius: 15px;
+}
+.copy-note {
+	border-radius: 15px;
+}
+
 
 textarea {
 	width: 100%;
@@ -68,22 +84,9 @@ textarea {
 }
 .form-heading {
 	background: linear-gradient(to right, rgb(3,57,108,1), rgb(255,255,255));
-	/*background: #03396c;*/
 	margin: 10px 0px;
 	padding: 5px 20px;
-	/*border-radius: 10px;*/
 	color: white;
-}
-.delete-note {
-	float: right;
-	border-radius: 15px;
-}
-.edit-note {
-	float: right;
-	border-radius: 15px;
-} 	
-.copy-note {
-	border-radius: 15px;
 }
 .modal-dialog {
 	max-width: 70%;
@@ -94,16 +97,9 @@ textarea {
 	bottom: 0;		
 	width: 100%;
 }
-
 .btn-group button {
 	margin: 10px 0px;
 }
-
-.nav-link {
-	font-weight: 600;
-	color: #FFFFFF;
-}
-
 .input-group {
 	position: absolute;
 	left: 0;

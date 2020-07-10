@@ -4,7 +4,7 @@ function addCategorySideBar() {
 
 	sideBarDiv = document.getElementById('categorySideBar');
 	
-
+	
 	// We are getting values from allCategories[] global array defined in pullCategories().
 	var allCategoryButtons = "";
 	allCategories.forEach(function(category, index){
@@ -24,30 +24,12 @@ function addCategorySideBar() {
 }
 
 
-function validateAddNoteForm() {
-	/* This function gets and validate data from addNote form and passes
-		data to addNotes() function to update it in firebase database. */
-
-	// Get values
-	var noteCategory = document.getElementById('noteCategory');
-	var noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
-	var noteHeading = document.getElementById('noteHeading').value;
-	var noteDescription = document.getElementById('noteDescription').value;
-
-	// Validate data
-	if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
-		alert("Please fill form before submitting.");
-	}
-	pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription);		/* File: firebase.js */
-}
-
-
 function showNotes(categoryId, allNotes) {
 	/* This function displays all notes of selected category. 
 		Called In: firebase.js -> pullNotesOfCategory()
 	*/
 
-	var allNotesDivs = ""
+	var allNotesDivs = "";
 	var elementId = 1;
 	for(var key in allNotes) {
 
@@ -98,30 +80,6 @@ function editNote(categoryId, noteId) {
 }
 
 
-function validateChangeNote() {
-	/* 
-		This function validates data filled in changeNote form and passes data to pushChangeNote()
-		in firebase.js file.
-	*/
-
-	// Get Values of form fields
-	noteHeading = document.getElementById('changeNoteHeading').value;
-	noteDescription = document.getElementById('changeNoteDescription').value;
-
-	// Get note Id from modal 
-	noteId = document.getElementById('changeNoteModal').getAttribute("noteId");
-	categoryId = document.getElementById('changeNoteModal').getAttribute("categoryId");
-
-	// Validate Data
-	if(noteHeading == "" || noteDescription == "") {
-		alert("Please fill form before submitting.");
-	}
-	else {
-		pushChangeNote(categoryId, noteId, noteHeading, noteDescription);
-	}
-}
-
-
 function confirmDeleteNote(categoryId, noteId) {
 	if(confirm("Are you sure you want to delete this note ?")){
 		removeNote(categoryId, noteId);
@@ -163,7 +121,7 @@ function insertCategoryText() {
 
 
 function editCategory() {
-	/* This function gets changed input category text and categoryId and passes to pushCategory() function */
+	/* This function gets changed input category text and categoryId and passes to changeCategory() function */
 
 	// Get #inputCategoryElement text and category id
 	categoryName = document.getElementById("inputCategoryElement").value;
