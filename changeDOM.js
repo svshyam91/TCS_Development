@@ -36,20 +36,28 @@ function showNotes(categoryId, allNotes) {
 		var heading = allNotes[key]["heading"];
 		var id = allNotes[key]["id"];
 		var description = allNotes[key]["description"];
+		var authorEmail = allNotes[key]["meta"]["author"].split("@")[0];
+		var totalUpvotes = allNotes[key]["meta"]["likes"];
 
 		/* Creating element <div> to display content */
 		var div = document.createElement("div");
 		div.setAttribute("class","pre-text");
 		div.setAttribute("categoryId", categoryId);
 		div.setAttribute("noteId", key);
+		div.setAttribute("id","note"+elementId)
 		// <i class="fas fa-angle-double-up"></i>
 		div.innerHTML = `
 						<button class="btn btn-block note-heading-btn" onclick="displayNoteContent('${elementId}')">${heading}&nbsp;&nbsp;<i class="fas fa-angle-double-down" id="udAngle${elementId}"></i></button>
-						<div class="note-content" id="noteContent${elementId}" style="display: none;">
-						<pre class="block-content" id="${key}">${description}</pre>
-						<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${key}')">Copy Text</button>
-						<button class="btn btn-sm btn-outline-success edit-note" id="${key}" onclick="editNote('${categoryId}','${key}')" data-toggle="modal" data-target="#changeNoteModal">Edit</button>
-						<button class="btn btn-sm btn-outline-danger delete-note" id="${key}" onclick="confirmDeleteNote('${categoryId}','${key}')">Delete</button>
+						<div class="note-content" id="noteContent${elementId}" category-id="${categoryId}" note-id="${key}" style="display: none;">
+							<textarea readonly class="block-content" id="${key}">${description}</textarea>
+							<div class="border-up">
+								<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${key}')"><i class="far fa-copy"></i></button>
+								<button class="btn btn-sm btn-outline-success edit-note" id="editNote${elementId}" category-id="${categoryId}" note-id="${key}" onclick="editNote(${elementId})"><i class="far fa-edit"></i></button>
+								<button class="btn btn-sm btn-outline-danger delete-note" id="deleteNote${elementId}" category-id="${categoryId}" note-id="${key}" onclick="confirmDeleteNote('${categoryId}','${key}')"><i class="far fa-trash-alt"></i></button>
+								<button class="btn btn-sm btn-outline-primary share-note"><i class="fas fa-share-alt"></i></button>
+								<button class="btn btn-sm btn-outline-secondary author-note" title="Author"><i class="fas fa-at"></i>&nbsp;${authorEmail}</button>
+								<button class="btn btn-sm btn-outline-danger like-note" id="upvoteNote${elementId}" data-id="${elementId}" onclick="upvoteNote(${elementId})"><i class="fas fa-arrow-up"></i>&nbsp;${totalUpvotes}</i></button>	
+							</div>
 						</div>
 						`
 		
@@ -61,34 +69,115 @@ function showNotes(categoryId, allNotes) {
 	document.getElementById('cont').innerHTML = allNotesDivs;
 }
 
+/*
+function showUpvote() {
+	// Pull value of upvote of all notes for signed in user
 
-function editNote(categoryId, noteId) {
+	var elemId = 1;
+	var noteId, noteUpvoted, upvoteBtn;
+	
+	user = firebase.auth().currentUser;
+	if(user == null) 
+		return;
+
+	for(let key in allNotes) {
+		console.log("ElemID: "+elemId);
+		noteId = key;
+		database.ref('sap_notes/upvotes/'+user.uid+'/'+noteId+'/upvoted').once('value', function(snapshot) {
+			console.log("ElemId:"+elemId);
+			// Get note value
+			noteUpvoted = snapshot.val();
+
+			// Update DOM
+			upvoteBtn = document.getElementById('upvoteNote'+elemId);
+
+			if(noteUpvoted == true) {
+				upvoteBtn.classList.add('note-upvoted');
+			}
+			else if(false) {
+				upvoteBtn.classList.remove('note-upvoted');
+			}
+			else if(noteUpvoted == null) {
+				upvoteBtn.classList.remove('note-upvoted');
+			}
+
+			elemId += 1;
+			semaphoreLock = false;
+		});
+		console.log("ElemID2: "+elemId);
+	}
+} 
+*/
+
+
+function editNote(elementId) {
 	/* This function gets data from allNotes global variable and fills in the form. */
 
-	// Get Data
-	noteHeading = allNotes[noteId]["heading"];
-	noteDescription = allNotes[noteId]["description"];
+	// Check if user is logged in 
+	user = firebase.auth().currentUser;
+	if(user) {
 
-	// Add noteId attribute to the modal(#changeNoteModal)
-	changeNoteModal = document.getElementById('changeNoteModal');
-	changeNoteModal.setAttribute('noteId',noteId);	
-	changeNoteModal.setAttribute('categoryId', categoryId);
+		// Get noteId and categoryId
+		noteId = document.getElementById('editNote'+elementId).getAttribute('note-id');
+		categoryId = document.getElementById('deleteNote'+elementId).getAttribute('category-id');
 
-	// Fill data in form
-	document.getElementById('changeNoteHeading').value = noteHeading;
-	document.getElementById('changeNoteDescription').value = noteDescription;
+
+		// Get Data from global variable
+		noteHeading = allNotes[noteId]["heading"];
+		noteDescription = allNotes[noteId]["description"];
+
+		// Open modal 
+		// data-toggle="modal" data-target="#changeNoteModal"
+		editBtn = document.getElementById('editNote'+elementId);
+		editBtn.setAttribute('data-toggle','modal');
+		editBtn.setAttribute('data-target', '#changeNoteModal');
+
+
+		// Add noteId attribute to the modal(#changeNoteModal)
+		changeNoteModal = document.getElementById('changeNoteModal');
+		changeNoteModal.setAttribute('noteId',noteId);	
+		changeNoteModal.setAttribute('categoryId', categoryId);
+
+		// Fill data in form
+		document.getElementById('changeNoteHeading').value = noteHeading;
+		document.getElementById('changeNoteDescription').value = noteDescription;		
+	}
+	else {
+		// Remmove previously set attributes
+		editBtn = document.getElementById('editNote'+elementId);
+		editBtn.removeAttribute('data-toggle');
+		editBtn.removeAttribute('data-target');
+
+		alert("Please Sign In first.");
+		return;
+	}
 }
 
 
 function confirmDeleteNote(categoryId, noteId) {
-	if(confirm("Are you sure you want to delete this note ?")){
-		removeNote(categoryId, noteId);
+	
+	// Check user is signed In or Not
+	user = firebase.auth().currentUser;
+	if(user) {
+		// User is signed In
+
+		if(confirm("Are you sure you want to delete this note ?")){
+			removeNote(categoryId, noteId);
+			return;
+		}
+		return;
+	}
+	else {
+		// User is not signed In
+
+		alert("Please sign In first. ");
+		return;
 	}
 }
 
 
 function addEditDelete(categoryId) {
-	/* This function add categoryId to edit and delete button for editing and deleting choosen category. */
+	/* This function adds categoryId to edit and delete button for editing and deleting choosen category. */
 
 	editBtn = document.getElementById("editCategory");
 	editBtn.setAttribute("categoryId",categoryId);

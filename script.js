@@ -19,40 +19,54 @@ function copyToClipboard(elemId) {
 }
 
 
-function openTicket() {
+document.querySelector('.open-ticket').addEventListener('click', function(){
 	var ticketNo = prompt("Enter ticket number:");
 	if(ticketNo != null && ticketNo != "") {
 		var link = "https://spc.ondemand.com/open?ticket="+ticketNo.trim();
 		window.open(link);
 	}
-}
+});
 
 
-function openSapNote() {
+document.querySelector('.open-sap-note').addEventListener('click', function() {
 	var sapNoteNo = prompt("Enter SAP NOTE: ");
 	if(sapNoteNo != null && sapNoteNo != "") {
 		var sapNoteLink = "https://launchpad.support.sap.com/#/notes/"+sapNoteNo.trim();
 		window.open(sapNoteLink);
 	}
-}
+})
 
 
 function validateAddNoteForm() {
 	/* This function gets and validate data from addNote form and passes
 		data to addNotes() function to update it in firebase database. */
 
-	// Get values
-	var noteCategory = document.getElementById('noteCategory');
-	var noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
-	var noteHeading = document.getElementById('noteHeading').value;
-	var noteDescription = document.getElementById('noteDescription').value;
 
-	// Validate data
-	if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
-		alert("Please fill form before submitting.");
+	// Check user is logged In or not
+	user = firebase.auth().currentUser;
+	if(user) {
+		// User is logged In
+
+		// Get values
+		var noteCategory = document.getElementById('noteCategory');
+		var noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
+		var noteHeading = document.getElementById('noteHeading').value;
+		var noteDescription = document.getElementById('noteDescription').value;
+
+		// Validate data
+		if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
+			alert("Please fill form before submitting.");
+			return;
+		}
+		pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription);		/* File: firebase.js */
 		return;
 	}
-	pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription);		/* File: firebase.js */
+	else {
+		// User is not logged In
+
+		alert("Please log in first");
+		return;
+	}
 }
 
 
@@ -62,21 +76,36 @@ function validateChangeNote() {
 		in firebase.js file.
 	*/
 
-	// Get Values of form fields
-	noteHeading = document.getElementById('changeNoteHeading').value;
-	noteDescription = document.getElementById('changeNoteDescription').value;
 
-	// Get note Id from modal 
-	noteId = document.getElementById('changeNoteModal').getAttribute("noteId");
-	categoryId = document.getElementById('changeNoteModal').getAttribute("categoryId");
+	// Check user is signed in or not 
+	user = firebase.auth().currentUser;
+	if(user) {
+		// User is signed In
 
-	// Validate Data
-	if(noteHeading == "" || noteDescription == "") {
-		alert("Please fill form before submitting.");
+
+		// Get Values of form fields
+		noteHeading = document.getElementById('changeNoteHeading').value;
+		noteDescription = document.getElementById('changeNoteDescription').value;
+
+		// Get note Id from modal 
+		noteId = document.getElementById('changeNoteModal').getAttribute("noteId");
+		categoryId = document.getElementById('changeNoteModal').getAttribute("categoryId");
+
+		// Validate Data
+		if(noteHeading == "" || noteDescription == "") {
+			alert("Please fill form before submitting.");
+			return;
+		}
+		else {
+			pushChangeNote(categoryId, noteId, noteHeading, noteDescription);
+		}
 		return;
 	}
 	else {
-		pushChangeNote(categoryId, noteId, noteHeading, noteDescription);
+		// User is not Signed In
+
+		alert("Please sign In first.");
+		return;
 	}
 }
 
@@ -234,6 +263,9 @@ var user_data;
 document.getElementById('general-data-btn').addEventListener('click', handleGeneralData);
 document.getElementById('user-data-btn').addEventListener('click', handleUserData);
 
+// Load general data initially after DOM is fully loaded
+document.getElementById('general-data-btn').click();
+
 
 function handleGeneralData() {
 
@@ -271,7 +303,14 @@ function handleUserData() {
 		document.getElementById('general-data-btn').style.backgroundColor = 'transparent';
 
 		// Load user data
-		pullCategories(user_data);
+		result = pullCategories(user_data);
+		if( result != 0 ) {
+			// Data doesn't exist in database or something went wrong
+
+			/*********** WRITE CODE HERE FOR HANGLING NO DATA *************/
+			
+			return;
+		}
 		return;
 	}
 	else {
@@ -448,4 +487,46 @@ function signOut() {
 	// Sign Out user from firebase 
 
 	firebase.auth().signOut();
+	document.getElementById('general-data-btn').click();
+}
+
+
+function message(mssg_text) {
+	// This function creates a div and adds it to the main content div to display message
+
+	var mssgDiv = document.createElement('div');
+	mssgDiv.setAttribute('id', 'messageBox');
+	mssgDiv.setAttribute('class', 'message-box border');
+	mssgDiv.innerHTML = `
+		<span style="font-size: 100px">&#128542;</span>
+		<p>${mssg_text}</p>
+	`;
+
+	// Add mssgDiv to the main content div (cont)
+
+	mainDiv = document.getElementById('cont');
+	mainDiv.innerHTML = "";
+	mainDiv.appendChild(mssgDiv);
+
+}
+
+
+function isSignedIn() {
+	user = firebase.auth().currentUser;
+	if(user) {
+		// User is signed In
+		return true;
+	}
+	return false;
+}
+
+
+// Like Post
+function upvoteNote(elementId) {
+	if(isSignedIn()) {
+		noteDiv = document.getElementById('noteContent'+elementId);
+		categoryId = noteDiv.getAttribute('category-id');
+		noteId = noteDiv.getAttribute('note-id');
+		updateUpvote(categoryId, noteId, elementId);
+	}
 }

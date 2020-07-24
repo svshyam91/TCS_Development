@@ -35,12 +35,16 @@
 	color: rgba(255,255,255,1);
 }
 .nav-link {
-	font-weight: 600;
+	font-weight: 500;
 	color: #FFFFFF;
 }
 
 
 /* ----------------------- Sidebar Category Buttons ----------------------- */
+.category-sidebar-btn {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 .category-sidebar-btn:hover {
 	background-color: #5c85d6;
 }
@@ -68,12 +72,24 @@
 .note-heading-btn:hover {
 	background-color: #356089;
 }
-.delete-note, .edit-note {
-	float: right;
+.delete-note, .edit-note, .like-note, .share-note, .author-note, .copy-note {
 	border-radius: 15px;
 }
-.copy-note {
+.delete-note, .edit-note {
+	float: right;
+	/*border-radius: 15px;*/
+}
+/*.copy-note {
 	border-radius: 15px;
+}*/
+.message-box {
+	text-align: center;
+	margin-top: 50px;
+	padding: 20px 0px;	
+}
+.note-upvoted {
+	color: blue;
+	border-color: blue;
 }
 
 

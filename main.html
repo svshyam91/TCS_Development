@@ -31,20 +31,20 @@
 		
 		<!-- Top Navigation Bar -->
 		<ul class="navbar-nav">
-			<li class="nav-item border-right">
+			<li class="nav-item">
 				<a class="nav-link" href="javascript:void(0)">NOTES</a>
 			</li>
-			<li class="nav-item border-right">
+			<li class="nav-item">
 				<a class="nav-link" target="_blank" 
 				href="https://spc.ondemand.com/sap/public/ap/ui/repository/SAP_UI/HTMLOBERON5/client.html?app.component=/SAP_UI_CT/Main/root.uiccwoc&rootWindow=X&redirectUrl=/sap/public/byd/runtime#n=eyJpblBvcnQiOiIiLCJ0YXJnZXQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInBhcmFtcyI6e30sImxpc3RzIjp7fSwid2NDb250ZXh0Ijp7IndvY0lkIjoiL0ExU19TUEMvV29ya0NlbnRlci9Nb25pdG9yaW5nX1dDRi5XQ0YudWl3b2MiLCJ2aWV3SWQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInN0YXRzSXNDb21tb25UYXNrIjpmYWxzZSwiaXNOYXZOb2RlIjpmYWxzZSwibmF2Tm9kZVRleHQiOiIifX0%3D">OPEN SPC</a>
 			</li>
-			<li class="nav-item border-right">
-				<a class="nav-link" href="javascript:void(0)" onclick="openTicket()"><i class="fas fa-clipboard-list"></i>&nbsp;	OPEN TICKET</a>
+			<li class="nav-item">
+				<a class="nav-link open-ticket" href="javascript:void(0)"><i class="fas fa-clipboard-list"></i>&nbsp;OPEN TICKET</a>
 			</li>
-			<li class="nav-item border-right">
-				<a class="nav-link" href="javascript:void(0)" onclick="openSapNote()">OPEN SAP NOTE</a>
+			<li class="nav-item">
+				<a class="nav-link open-sap-note" href="javascript:void(0)">OPEN SAP NOTE</a>
 			</li>
-			<li class="nav-item border-right">
+			<li class="nav-item">
 				<a class="nav-link" href="javascript:void(0)" id="addSapNote">ADD SAP NOTE</a>
 			</li>
 		</ul>
@@ -74,7 +74,7 @@
 	<div class="container-fluid">
 		<div class="row">	
 
-			<div class="col-sm-2 border-right">
+			<div class="col-sm-2">
 
 				<!-- Input button to edit category -->
 				<div class="input-group" id="editInputDiv">
@@ -279,8 +279,8 @@
 	<script>
 
 		// Used for testing
-		function uploadFile() {
-			/* This function uploads file to firebase store. */
+		/*function uploadFile() {
+			// This function uploads file to firebase store.
 
 			var fileUpload = document.getElementById('fileInput')
 			// Validate file upload
@@ -294,7 +294,7 @@
 			
 			// Upload file
 			storageRef.put(file)
-		}
+		}*/
 	</script>
 
 </body>
