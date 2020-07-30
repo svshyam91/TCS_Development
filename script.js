@@ -37,9 +37,42 @@ document.querySelector('.open-sap-note').addEventListener('click', function() {
 })
 
 
+function validateAddCategoryForm() {
+	/* This function gets and validates data from addCategory form and passes
+		data to pushCategory() -> firebase.js to add in firebase database.	
+	*/
+
+	if(isSignedIn()) {
+		// User is signed In
+
+		// Get Values from category form
+		var categoryName = document.getElementById('categoryName').value;
+		var categoryDescription = document.getElementById('categoryDescription').value;
+
+		// Validating form
+		if(categoryName == "" || categoryDescription == "") {
+			alert("Please fill form before submitting.");
+			return;
+		}
+
+		pushCategory(categoryName, categoryDescription);
+	}
+	else {
+		// User is not logged In
+
+		alert("Please log in first");
+		return;
+	}
+}
+
+
 function validateAddNoteForm() {
 	/* This function gets and validate data from addNote form and passes
-		data to addNotes() function to update it in firebase database. */
+		data to addNotes() function to update it in firebase database. 
+	*/
+
+	var categorySelectBtn, categoryOptnValue, 
+		noteHeading, noteDescription;
 
 
 	// Check user is logged In or not
@@ -48,17 +81,17 @@ function validateAddNoteForm() {
 		// User is logged In
 
 		// Get values
-		var noteCategory = document.getElementById('noteCategory');
-		var noteCategoryValue = noteCategory.options[noteCategory.selectedIndex].value;
-		var noteHeading = document.getElementById('noteHeading').value;
-		var noteDescription = document.getElementById('noteDescription').value;
+		categorySelectBtn = document.getElementById('category-select-btn');
+		categoryOptnValue = categorySelectBtn.options[categorySelectBtn.selectedIndex].value;
+		noteHeading = document.getElementById('noteHeading').value;
+		noteDescription = document.getElementById('noteDescription').value;
 
 		// Validate data
-		if (noteCategoryValue == "" || noteHeading == "" || noteDescription == "" ) {
+		if (categoryOptnValue == "" || noteHeading == "" || noteDescription == "" ) {
 			alert("Please fill form before submitting.");
 			return;
 		}
-		pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription);		/* File: firebase.js */
+		pushNotesOfCategory(categoryOptnValue, noteHeading, noteDescription);		/* File: firebase.js */
 		return;
 	}
 	else {
@@ -88,8 +121,8 @@ function validateChangeNote() {
 		noteDescription = document.getElementById('changeNoteDescription').value;
 
 		// Get note Id from modal 
-		noteId = document.getElementById('changeNoteModal').getAttribute("noteId");
-		categoryId = document.getElementById('changeNoteModal').getAttribute("categoryId");
+		noteId = document.getElementById('changeNoteModal').getAttribute("note-id");
+		categoryId = document.getElementById('changeNoteModal').getAttribute("category-id");
 
 		// Validate Data
 		if(noteHeading == "" || noteDescription == "") {
@@ -97,7 +130,7 @@ function validateChangeNote() {
 			return;
 		}
 		else {
-			pushChangeNote(categoryId, noteId, noteHeading, noteDescription);
+			pushChangeNote(noteId, noteHeading, noteDescription);
 		}
 		return;
 	}
@@ -260,11 +293,23 @@ function hideLoaderDiv() {
 // it will show general data.
 var user_data;	
 
-document.getElementById('general-data-btn').addEventListener('click', handleGeneralData);
-document.getElementById('user-data-btn').addEventListener('click', handleUserData);
+document.getElementById('general-data-btn').addEventListener('click', showGeneralData);
+document.getElementById('user-data-btn').addEventListener('click', showUserData);
+
+function showGeneralData() {
+	document.querySelector('.general-row').style.display = 'block';
+	document.querySelector('.user-row').style.display = 'none';
+}
+
+
+function showUserData() {
+	document.querySelector('.user-row').style.display = 'block';
+	document.querySelector('.general-row').style.display = 'none';
+}
+
 
 // Load general data initially after DOM is fully loaded
-document.getElementById('general-data-btn').click();
+// document.getElementById('general-data-btn').click();
 
 
 function handleGeneralData() {
@@ -279,7 +324,7 @@ function handleGeneralData() {
 	document.getElementById('user-data-btn').style.backgroundColor = 'transparent';
 
 	// Load General Data
-	pullCategories(user_data);
+	//pullCategories(user_data);
 
 	return;
 }
@@ -431,7 +476,6 @@ function userLoggedOut() {
 	// Show signIn and signUp button
 	$('#signInNavItem').show();
 	$('#signUpNavItem').show();
-
 }
 
 // Sign Up
@@ -507,7 +551,6 @@ function message(mssg_text) {
 	mainDiv = document.getElementById('cont');
 	mainDiv.innerHTML = "";
 	mainDiv.appendChild(mssgDiv);
-
 }
 
 

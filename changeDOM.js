@@ -5,7 +5,7 @@ function addCategorySideBar() {
 	sideBarDiv = document.getElementById('categorySideBar');
 	
 	
-	// We are getting values from allCategories[] global array defined in pullCategories().
+	// We are getting values from allCategories[] global array defined in firebase.js
 	var allCategoryButtons = "";
 	allCategories.forEach(function(category, index){
 		categoryBtn = document.createElement('button');
@@ -29,22 +29,21 @@ function showNotes(categoryId, allNotes) {
 		Called In: firebase.js -> pullNotesOfCategory()
 	*/
 
-	var allNotesDivs = "";
-	var elementId = 1;
+	var allNotesDivs = '', elementId = 1, heading, description, authorEmail, totalUpvotes;
+
 	for(var key in allNotes) {
 
-		var heading = allNotes[key]["heading"];
-		var id = allNotes[key]["id"];
-		var description = allNotes[key]["description"];
-		var authorEmail = allNotes[key]["meta"]["author"].split("@")[0];
-		var totalUpvotes = allNotes[key]["meta"]["likes"];
+		heading = allNotes[key]['data']["heading"];
+		description = allNotes[key]['data']["description"];
+		authorEmail = allNotes[key]['meta_data']['author'].split("@")[0];
+		totalUpvotes = allNotes[key]['meta_data']['likes'];
 
 		/* Creating element <div> to display content */
 		var div = document.createElement("div");
-		div.setAttribute("class","pre-text");
-		div.setAttribute("categoryId", categoryId);
-		div.setAttribute("noteId", key);
-		div.setAttribute("id","note"+elementId)
+		div.setAttribute('class','pre-text');
+		div.setAttribute('categoryId', categoryId);
+		div.setAttribute('noteId', key);
+		div.setAttribute('id','note'+elementId)
 		// <i class="fas fa-angle-double-up"></i>
 		div.innerHTML = `
 						<button class="btn btn-block note-heading-btn" onclick="displayNoteContent('${elementId}')">${heading}&nbsp;&nbsp;<i class="fas fa-angle-double-down" id="udAngle${elementId}"></i></button>
@@ -110,33 +109,29 @@ function showUpvote() {
 */
 
 
-function editNote(elementId) {
-	/* This function gets data from allNotes global variable and fills in the form. */
+function editNote(noteId) {
+	/* This function gets data from Notes div and fills in the form. */
 
 	// Check if user is logged in 
 	user = firebase.auth().currentUser;
 	if(user) {
 
-		// Get noteId and categoryId
-		noteId = document.getElementById('editNote'+elementId).getAttribute('note-id');
-		categoryId = document.getElementById('deleteNote'+elementId).getAttribute('category-id');
-
-
-		// Get Data from global variable
-		noteHeading = allNotes[noteId]["heading"];
-		noteDescription = allNotes[noteId]["description"];
+		// Get Note Data from Note Div
+		categoryId = document.getElementById(noteId).getAttribute('category_id');	
+		noteHeading = document.getElementById(noteId+'_heading').textContent;
+		noteDescription = document.getElementById(noteId+'_content').textContent;
 
 		// Open modal 
 		// data-toggle="modal" data-target="#changeNoteModal"
-		editBtn = document.getElementById('editNote'+elementId);
+		editBtn = document.getElementById(noteId+'_edit');
 		editBtn.setAttribute('data-toggle','modal');
 		editBtn.setAttribute('data-target', '#changeNoteModal');
 
 
 		// Add noteId attribute to the modal(#changeNoteModal)
 		changeNoteModal = document.getElementById('changeNoteModal');
-		changeNoteModal.setAttribute('noteId',noteId);	
-		changeNoteModal.setAttribute('categoryId', categoryId);
+		changeNoteModal.setAttribute('note-id',noteId);	
+		changeNoteModal.setAttribute('category-id', categoryId);
 
 		// Fill data in form
 		document.getElementById('changeNoteHeading').value = noteHeading;
@@ -144,9 +139,9 @@ function editNote(elementId) {
 	}
 	else {
 		// Remmove previously set attributes
-		editBtn = document.getElementById('editNote'+elementId);
-		editBtn.removeAttribute('data-toggle');
-		editBtn.removeAttribute('data-target');
+		// editBtn = document.getElementById('editNote'+elementId);
+		// editBtn.removeAttribute('data-toggle');
+		// editBtn.removeAttribute('data-target');
 
 		alert("Please Sign In first.");
 		return;

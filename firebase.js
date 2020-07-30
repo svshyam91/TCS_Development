@@ -22,12 +22,14 @@ var allCategories = [], allNotes='';
 function pullCategories(data_id) {
 	/* This function retrieves categories of SAP Notes from Firebase Database. */
 
+	var pullCategoryRef;
+
 
 	if(data_id == false) {
 		// Pull General data 
 
 		console.log("Pulling general category notes.");
-		pullCategoryRef = database.ref('sap_notes/activities/type/');
+		pullCategoryRef = database.ref('sap_notes/general_data/categories/');
 	}
 	else if(data_id == true) {
 		// User data
@@ -36,11 +38,12 @@ function pullCategories(data_id) {
 		pullCategoryRef = database.ref('sap_notes/user_data/'+user.uid+'/categories/');
 	}
 
-	pullCategoryRef.on('value',function(snapshot) {
+	pullCategoryRef.once('value',function(snapshot) {
+
 		if(snapshot.exists() == false) {
-			console.log("No categories exist in firebase DB.");
-			// alert("No category exist in Database. Please add category.");
-			message("No category exist in Database. Please add category.")
+			console.log('No categories exist in firebase DB.');
+			message('No category exist in Database. Please add category.');
+			return;
 		}
 
 		// Clear all categories stored previously
@@ -53,8 +56,8 @@ function pullCategories(data_id) {
 			// Storing category in global allCategories[] array for future use.
 			var category = {
 				id: categoryKey,
-				name: categoryValue["meta"]["name"],
-				description: categoryValue["description"]
+				name: categoryValue['data']['name'],
+				description: categoryValue['data']['description']
 			};
 			allCategories.push(category);
 		});
@@ -63,74 +66,64 @@ function pullCategories(data_id) {
 		addCategorySideBar();		/* Definition In: changeDOM.js */
 
 
-		// Add <options>(all categories) in <select> element.
+		//           ***** Add <options>(all categories) in <select> element. *****
+
 		// Clear previously stored (<option>)categories in <select> element
 		selectElement = document.getElementById('noteCategory');
-		selectElement.innerHTML = "";
+		selectElement.innerHTML = '';
 
-		// Create <option> element for null value
-		var optn = document.createElement("option");
-		optn.innerHTML = " -- Select -- ";
-		optn.setAttribute("value","");
-		selectElement.innerHTML = optn.outerHTML;
+		// Create <option> element for NULL value
+		var opt = document.createElement('option');
+		opt.innerHTML = ' -- Select -- ';
+		opt.setAttribute('value','');
+		selectElement.innerHTML = opt.outerHTML;
 
-		var allOptnElements = "";
+		var allOptElements = '';
 		allCategories.forEach(function(category, index){
 
 			// Create <option> element
-			var optn = document.createElement("option");
-			optn.innerHTML = category["name"];
-			optn.setAttribute("value",category["id"]);
+			var opt = document.createElement("option");
+			opt.innerHTML = category["name"];
+			opt.setAttribute("value",category["id"]);
 
-			allOptnElements += optn.outerHTML;
+			allOptElements += opt.outerHTML;
 		});
-		selectElement.innerHTML += allOptnElements;
+		selectElement.innerHTML += allOptElements;
 	});
 }
 
 
-function pushCategory() {
+function pushCategory(categoryName, categoryDescription) {
 	/* This function adds category of SAP Notes to Firebase Database. */
 
-	/* NOTE: Later, add authentication check and validation to separate function */
-
-
-	// Check if user is signed In or not
-	var user = firebase.auth().currentUser;
-	if(!user) {
-		// User is not signed In.
-
-		alert("Please sign In first.");
-		return;
-	}
-	// User is signed In
-
-	// Get Values from category form
-	var categoryName = document.getElementById('categoryName').value;
-	var categoryDescription = document.getElementById('categoryDescription').value;
-
-	// Validating form
-	if(categoryName == "" || categoryDescription == "") {
-		alert("Please fill form before submitting.");
-		return;
-	}
+	var categoryData, pushCategoryRef;
 
 	if( user_data == false) {
 		// Push to general data
 
-		pushCategoryRef = database.ref('sap_notes/activities/type/');
+		pushCategoryRef = database.ref('sap_notes/general_data/categories/');
+		categoryData = {
+			data: {
+				description: categoryDescription,
+				name: categoryName
+			},
+			meta_data: {
+				author: user.email
+			}
+		}
 	}
 	else if(user_data == true) {
 		// Push to user data
 
 		pushCategoryRef = database.ref('sap_notes/user_data/'+user.uid+'/categories/');
-	}
-	pushCategoryRef.push({
-		description: categoryDescription,
-		meta: {
-			name: categoryName
+		categoryData = {
+			data: {
+				description: categoryDescription,
+				name: categoryName
+			}
 		}
-	},function(error) {
+	}
+	pushCategoryRef.push(categoryData,function(error) {
 		if(error) {
 			console.log("Something went wrong!!");
 		}
@@ -144,174 +137,16 @@ function pushCategory() {
 }
 
 
-function pushNotesOfCategory(noteCategoryValue, noteHeading, noteDescription) {
-	/* 
-		This function pushes SAP note of choosen category to Firebase Database.
-		Called In: changeDOM.js -> submitForm()
-	*/
-
-
-	if(user_data == false) {
-		// Push to general data
-
-		pushNoteRef = database.ref('sap_notes/typeDetail/allActivityTypes/'+noteCategoryValue+'/activityNotes/');
-	}
-	else if(user_data == true) {
-		// Push to user data
-
-		pushNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+noteCategoryValue+'/category_notes/');
-	}
-	pushNoteRef.push({
-		heading: noteHeading,
-		description: noteDescription,
-		additionalNotes: "",
-		meta: {
-			author: user.email,
-			publish_date: "current date comes here.",
-			last_modified: "current date with time comes here.",
-			last_modified_by: user.email,
-			likes: 0
-		}
-	},function(error) {
-		if(error) {
-			console.log("Something went wrong!! "+error);
-		}
-		else {
-			console.log("Note pushed successfully.");
-			showStatus(0);
-		}
-	});
-
-	return;
-}
-
-
-function pullNotesOfCategory(categoryId) {
-	/* This function pulls all notes of category categoryId */
-
-	hideMainDivContent();
-	changeCategoryBtnStyle(categoryId);
-
-	if(user_data == false) {
-		// Pull General Data
-
-		var pullNoteRef = database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/');
-	} 
-	else if(user_data == true) {
-		// Pull User data
-
-		var pullNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/');
-	}
-	pullNoteRef.once('value',function(snapshot){
-		allNotes = snapshot.val();
-		if(allNotes == null) {
-
-			// Clear previous data if there is no new data
-			// Bug: This below line of code is not executing properly with alert()
-			document.getElementById('cont').innerHTML = "";
-
-			alert("No data exist");
-			return;
-		}
-		else {
-			showNotes(categoryId, allNotes);		// Definition In: changeDOM.js
-		}
-	});
-	addEditDelete(categoryId);
-	return;
-}
-
-
-function pushChangeNote(categoryId, noteId, noteHeading, noteDescription) {
-	/* This function updates(pushes) data in the firebase database. */
-
-	var noteData = {
-		additionalNotes: "",
-		description: noteDescription,
-		heading: noteHeading,
-		id: 1
-	};
-
-	if(user_data == false) {
-		// Change general data
-
-		// Generate a key for new note
-		newNoteKey = database.ref().child('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/').push().key;
-
-		// Write new note data
-		var updates = {};
-		updates['sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+newNoteKey] = noteData;
-
-		// Push update in firebase database
-		database.ref().update(updates, function(error){
-			if(error)
-				console.log("Something went wrong!!"+error);
-			else
-				console.log("Data updated successfully.");
-		});
-
-		// Remove old data
-		database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+noteId).remove();
-	}
-	else {
-		// Change user data
-
-		// Generate a key for new note
-		newNoteKey = database.ref().child('sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/').push().key;
-
-		// Write new note data
-		var updates = {};
-		updates['sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/'+newNoteKey] = noteData;
-
-		// Push update in firebase database
-		database.ref().update(updates, function(error){
-			if(error)
-				console.log("Something went wrong!!"+error);
-			else
-				console.log("Data updated successfully.");
-				window.reload()
-		});
-
-		// Remove old data
-		database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/'+noteId).remove();
-	}
-
-	showStatus(0);
-
-	/* The reason why we first added and then removed data from the firebase database instead 
-	of directly updating it is because if we push data with new key, we will get different advantages
-	like sorting data. */
-}
-
-
-function removeNote(categoryId, noteId) {
-	/* This function removes note(noteId) of categoryId from firebase database. */
-
-	if(user_data == false) {
-		// Delete general data
-
-		delNoteRef = database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId+'/activityNotes/'+noteId);
-	}
-	else if(user_data == true) {
-		// Delete user data
-
-		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).child('/category_notes/'+noteId);
-	}
-	delNoteRef.remove();
-}
-
-
+// We'll change this later, we have to change UI for changing the category
 function changeCategory(categoryName, categoryId) {
 	/* This function pushes change categoryName and categoryId to firebase database. */
 
 	var updates = {};
+
 	if(user_data == false) {
 		// Change in general data
 
-		// Change in all category path
-		updates['sap_notes/activities/type/'+categoryId+'/meta/name'] = categoryName;
-		// Change category name in all notes path
-		updates['sap_notes/typeDetail/allActivityTypes/'+categoryId+'/meta/name'] = categoryName;
+		updates['sap_notes/general_data/categories/'+categoryId+'/data/name'] = categoryName;
 	}
 	else if(user_data == true) {
 		// Change in user_data
@@ -329,7 +164,7 @@ function changeCategory(categoryName, categoryId) {
 	});
 }
 
-
+// We'll change this later, we have to change UI for deleting the category
 function deleteCategory(categoryId) {
 	/* This function will remove category of categoryId and all notes under same category */
 
@@ -353,6 +188,299 @@ function deleteCategory(categoryId) {
 
 		/* NOTE: Later, add code for catching errors. */
 	}
+}
+
+
+// child_added listner on 'sap_notes/general_data/categories'
+categoryRef = database.ref('sap_notes/general_data/categories/');
+categoryRef.on('child_added', (snap) => {
+	var categoryId  = snap.key, 
+		categoryName = snap.val().data.name,
+		sideCategoryDiv, categoryBtn, generalNotesDiv,
+		categoryDiv, categorySelectBtn, option;
+
+	// Add category to the side navigation
+	categoryBtn = document.createElement('button');
+	categoryBtn.id = categoryId+'_btn';
+	categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
+	categoryBtn.textContent = categoryName;
+
+	sideCategoryDiv = document.getElementById('categorySideDiv');
+	sideCategoryDiv.appendChild(categoryBtn);
+
+	// Make General Category Div in the Main Div
+	categoryDiv = document.createElement('div');
+	categoryDiv.id = categoryId+'_div';
+	categoryDiv.setAttribute('class', 'border category-div');
+
+	generalNotesDiv = document.getElementById('general-notes-div');
+	generalNotesDiv.appendChild(categoryDiv);
+
+	// Add category to the <option>
+	option = document.createElement('option');
+	option.setAttribute('value', categoryId);
+	option.textContent = categoryName;
+
+	categorySelectBtn = document.getElementById('category-select-btn');
+	categorySelectBtn.appendChild(option);
+});
+
+
+// child_changed listner on 'sap_notes/general_data/categories'
+categoryRef.on('child_changed', (snap) => {
+
+	// Get values
+	var categoryId  = snap.key, 
+		categoryName = snap.val().data.name;
+
+	                      // Update values in DOM
+	// change in category btn
+	categoryBtn = document.getElementById(categoryId+'_btn');
+	categoryBtn.textContent = categoryName;
+
+	// Change in option value
+	option = document.querySelector('option[value="'+categoryId+'"]');
+	option.textContent = categoryName;
+});
+
+
+// child_removed listner on 'sap_notes/general_data/categories'
+categoryRef.on('child_removed', (snap) => {
+	var categoryId = snap.key;
+
+	// Remove Category Btn
+	document.getElementById(categoryId+'_btn').remove();
+
+	// Remove Option Element
+	document.querySelector('option[value="'+categoryId+'"]').remove();
+
+	// Remove General Category Div in the Main Div 
+	document.getElementById(categoryId+'_div').remove();
+});	
+
+
+function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
+	/* 
+		This function pushes new note of choosen category to Firebase Database.
+	*/
+
+	var noteData, pushNoteRef;
+	var currentTime = Date.now();
+
+
+	if(user_data == false) {
+		// Push to general data
+
+		pushNoteRef = database.ref('sap_notes/general_data/notes/');
+		noteData = {
+			data: {
+				heading: noteHeading,
+				description: noteDescription,
+				additionalNotes: ""
+			},
+			meta_data: {
+				author: user.email,
+				publish_date: currentTime,
+				last_modified: currentTime,
+				last_modified_by: user.email	
+			}, 
+			category_id: categoryId
+		}
+	}
+	else if(user_data == true) {
+		// Push to user data
+
+		pushNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+noteCategoryValue+'/category_notes/');
+		noteData = {
+			data: {
+				heading: noteHeading,
+				description: noteDescription,
+				additionalNotes: ""
+			},
+			meta: {
+				publish_date: currentTime,
+				last_modified: currentTime
+			}
+		}
+	}
+	pushKeyRef = pushNoteRef.push(noteData,function(error) {
+		if(error) {
+			console.log("Something went wrong!! "+error);
+		}
+		else {
+			console.log("Note pushed successfully.");
+			showStatus(0);
+		}
+	});
+	newNoteKey = pushKeyRef.key;
+
+	// ++++ Add log only when note is pushed successfully
+	// Add push data in log_changes
+	// database.ref('sap_notes/log_changes/'+newNoteKey+'/').set({
+	// 	category_id: noteCategoryValue,
+	// 	last_modified: currentTime
+	// });
+}
+
+
+// Child_added listner on notes
+noteRef = database.ref('sap_notes/general_data/notes');
+noteRef.on('child_added', (snap) => {
+
+	var noteDiv, categoryId = snap.val().category_id,
+		noteId = snap.key,
+		noteData = snap.val();
+
+	noteDiv = document.createElement('div');
+	noteDiv.id = noteId;
+	noteDiv.setAttribute('category_id', categoryId);
+
+	noteDiv.innerHTML = `
+		<button class="btn btn-block note-heading-btn" id="${noteId}_heading">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
+		<div class="note-content">
+			<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
+			<div class="border-up">
+				<button class="btn btn-sm btn-outline-info copy-note"> <i class="far fa-copy"></i> </button>
+				<button class="btn btn-sm btn-outline-success edit-note" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
+				<button class="btn btn-sm btn-outline-danger delete-note"> <i class="far fa-trash-alt"></i> </button>
+				<button class="btn btn-sm btn-outline-primary share-note"> <i class="fas fa-share-alt"></i> </button>
+				<button class="btn btn-sm btn-outline-secondary author-note" title="Author"><i class="fas fa-at"></i>&nbsp;${noteData.meta_data.author}</button>
+				<button class="btn btn-sm btn-outline-danger like-note"> <i class="fas fa-arrow-up"></i> &nbsp;</i></button>	
+			</div>
+		</div>
+	`
+	document.getElementById(categoryId+'_div').appendChild(noteDiv);
+});
+
+
+noteRef.on('child_changed', (snap) => {
+
+	var noteData = snap.val(),
+		noteId = snap.key;
+
+	// Change values in DOM
+	document.getElementById(noteId+'_heading').textContent = noteData.data.heading;
+	document.getElementById(noteId+'_content').textContent = noteData.data.description;
+});
+
+
+noteRef.on('child_removed', (snap) => {
+	var noteId = snap.key;
+
+	// Remove note Div
+	document.getElementById(noteId).remove();
+});
+
+
+
+function pullNotesOfCategory(categoryId) {
+	/* This function pulls all notes of category categoryId */
+
+	hideMainDivContent();
+	changeCategoryBtnStyle(categoryId);
+
+	if(user_data == false) {
+		// Pull General Data
+
+		var pullNoteRef = database.ref('sap_notes/general_data/notes/'+categoryId+'/category_notes/');
+	} 
+	else if(user_data == true) {
+		// Pull User data
+
+		var pullNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/');
+	}
+	pullNoteRef.once('value',function(snapshot){
+		allNotes = snapshot.val();
+		if(allNotes == null) {
+
+			// Clear previous data of main div
+			document.getElementById('cont').innerHTML = "";
+
+			message('No data exist in Database. Please add note of this category.');
+			return;
+		}
+		else {
+			showNotes(categoryId, allNotes);		// Definition In: changeDOM.js
+		}
+	});
+	addEditDelete(categoryId);
+	return;
+}
+
+
+function pushChangeNote(noteId, noteHeading, noteDescription) {
+	/* This function updates(pushes) data in the firebase database. */
+
+	var notePath, updates = {}, 
+		last_modified_user = user.email, last_modified_at = Date.now(), 
+		noteData = {
+			additionalNotes: "",
+			description: noteDescription,
+			heading: noteHeading,
+		};
+
+	if(user_data == false) {
+		// Change general data
+
+		notePath = 'sap_notes/general_data/notes/'+noteId;
+
+		updates[notePath+'/data/description'] = noteDescription;
+		updates[notePath+'/data/heading'] = noteHeading;
+		updates[notePath+'/meta_data/last_modified_by'] = last_modified_user;
+		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
+
+		// Push update in firebase database
+		database.ref().update(updates, function(error){
+			if(error)
+				console.log("Something went wrong!!"+error);
+			else
+				console.log("Data updated successfully.");
+		});
+	}
+	else {
+		// Change user data
+
+		notePath = 'sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/'+noteId;
+
+		// Generate a key for new note
+		// newNoteKey = database.ref().child('sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/').push().key;
+
+		// Write new note data
+		updates[notePath+'/data/description'] = noteDescription;
+		updates[notePath+'/data/heading'] = noteHeading;
+		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
+		// updates['sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/'+newNoteKey] = noteData;
+
+		// Push update in firebase database
+		database.ref().update(updates, function(error){
+			if(error)
+				console.log("Something went wrong!!"+error);
+			else
+				console.log("Data updated successfully.");
+				window.reload()
+		});
+	}
+}
+
+
+function removeNote(categoryId, noteId) {
+	/* This function removes note(noteId) of categoryId from firebase database. */
+
+	if(user_data == false) {
+		// Delete general data
+
+		delNoteRef = database.ref('sap_notes/general_data/notes/'+categoryId+'/category_notes/'+noteId);
+
+		// Remove log
+		logRef = database.ref('sap_notes/log_changes/'+noteId);
+		logRef.remove();
+	}
+	else if(user_data == true) {
+		// Delete user data
+
+		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).child('/category_notes/'+noteId);
+	}
+	delNoteRef.remove();
 }
 
 

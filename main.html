@@ -72,7 +72,7 @@
 	</nav>
 	
 	<div class="container-fluid">
-		<div class="row">	
+		<div class="row general-row">	
 
 			<div class="col-sm-2">
 
@@ -103,18 +103,18 @@
 				<div class="loader" id="loaderDiv"></div>
 				
 				<div id="categorySideDiv">
-					<div id="categorySideBar"></div>
+
 				</div>
 			</div>
 
 
-			<div class="col-sm-8 border-right">
+			<div class="col-sm-8 border-right general-div">
 				<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
 				<!-- <div class="upload-file" id="uploadFile">
 					<input type="file" name="firebaseFile" id="fileInput" class="btn btn-outline-primary">
 					<input type="submit" name="submitFile" class="btn btn-outline-primary" onclick="uploadFile()"> 
 				</div> -->
-				<div class="content main-div" id="cont">
+				<div class="content main-div" id="general-notes-div">
 					<!-- Add contents comes here. --> 
 				</div>
 
@@ -127,7 +127,7 @@
 						<div class="form-group">
 							<label for="noteCategory" class="control-label">Choose Category:</label>
 							<button class="btn btn-sm btn-outline-primary" style="float: right;" data-toggle="modal" data-target="#categoryModal">Add Category</button>	
-							<select id="noteCategory" class="form-control">
+							<select id="category-select-btn" class="form-control">
 								<option value=""> -- Select Category -- </option>
 							</select>
 						</div>
@@ -213,7 +213,7 @@
 								</div>
 							</div>
 							<div class="modal-footer">
-								<button class="btn btn-outline-success" onclick="pushCategory()" data-dismiss="modal">Submit</button>
+								<button class="btn btn-outline-success" onclick="validateAddCategoryForm()" data-dismiss="modal">Submit</button>
 								<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
 							</div>
 						</div>
@@ -261,6 +261,18 @@
 					<div class="user-data-username">Your Password</div>
 				</div>
 			</div><!-- End of right div -->
+
+		</div>
+
+		<div class="user-row" style="display: none;">	
+			<p>This is some text</p>
+			<div class="col-sm-2 border"></div>
+
+			<div class="col-sm-8 border">
+				<h2 border>Here User data will come</h2>
+			</div>
+
+			<div class="col-sm-2 border"></div>
 
 		</div>
 	</div>
