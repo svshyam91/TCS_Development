@@ -211,7 +211,7 @@ categoryRef.on('child_added', (snap) => {
 	// Make General Category Div in the Main Div
 	categoryDiv = document.createElement('div');
 	categoryDiv.id = categoryId+'_div';
-	categoryDiv.setAttribute('class', 'border category-div');
+	categoryDiv.setAttribute('class', 'category-div');
 
 	generalNotesDiv = document.getElementById('general-notes-div');
 	generalNotesDiv.appendChild(categoryDiv);
@@ -333,6 +333,7 @@ noteRef.on('child_added', (snap) => {
 
 	noteDiv = document.createElement('div');
 	noteDiv.id = noteId;
+	noteDiv.setAttribute('class', 'mt-3')
 	noteDiv.setAttribute('category_id', categoryId);
 
 	noteDiv.innerHTML = `

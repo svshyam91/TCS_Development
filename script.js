@@ -36,6 +36,8 @@ document.querySelector('.open-sap-note').addEventListener('click', function() {
 	}
 })
 
+/*                         ****************************  Validation of forms ***********************************              */
+
 
 function validateAddCategoryForm() {
 	/* This function gets and validates data from addCategory form and passes
@@ -277,94 +279,34 @@ $(document).ready(function() {
 });
 
 
-// This function runs when the page is fully loaded
-$(document).ready(function(){
-	// Show loader div for categories
-	$("#loaderDiv").show();
-});
-function hideLoaderDiv() {
-	$("#loaderDiv").hide();
-};
-
-
 /* Code for data toggle between general and user. */
 
 // Global boolean variable to store type(general/user) of data to show. "user_data = false" means 
 // it will show general data.
 var user_data;	
 
-document.getElementById('general-data-btn').addEventListener('click', showGeneralData);
-document.getElementById('user-data-btn').addEventListener('click', showUserData);
+document.querySelector('.user-toggle-btn').addEventListener('click', toggleUserData);
 
-function showGeneralData() {
-	document.querySelector('.general-row').style.display = 'block';
-	document.querySelector('.user-row').style.display = 'none';
-}
+function toggleUserData() {
 
+	// Change toggle btn
+	toggleBtn = document.querySelector('.toggle-btn');
 
-function showUserData() {
-	document.querySelector('.user-row').style.display = 'block';
-	document.querySelector('.general-row').style.display = 'none';
-}
-
-
-// Load general data initially after DOM is fully loaded
-// document.getElementById('general-data-btn').click();
-
-
-function handleGeneralData() {
-
-	// Return if general data is already loaded
-	if(user_data == false) 
-		return;
-	user_data = false;
-
-	// Change CSS
-	document.getElementById('general-data-btn').style.backgroundColor = '#03396c';
-	document.getElementById('user-data-btn').style.backgroundColor = 'transparent';
-
-	// Load General Data
-	//pullCategories(user_data);
-
-	return;
-}
-
-
-function handleUserData() {
-
-	// Return if user data is already loaded
-	if(user_data == true) 
-		return;
-
-	// Check user is signed in or not
-	user = firebase.auth().currentUser;
-	if(user) {
-		// User is signed in
-
-		user_data = true;
-
-		// Change CSS
-		document.getElementById('user-data-btn').style.backgroundColor = '#03396c';
-		document.getElementById('general-data-btn').style.backgroundColor = 'transparent';
-
-		// Load user data
-		result = pullCategories(user_data);
-		if( result != 0 ) {
-			// Data doesn't exist in database or something went wrong
-
-			/*********** WRITE CODE HERE FOR HANGLING NO DATA *************/
-			
-			return;
-		}
-		return;
+	if(toggleBtn.classList.contains('fa-toggle-off')) {
+		console.log("You are toggling class");
+		toggleBtn.classList.remove('fa-toggle-off');
+		toggleBtn.classList.add('fa-toggle-on');
 	}
 	else {
-		// User is not signed In
-
-		// Tell user to sign In first.
-		alert("Please sign In first.");
-		return;
+		toggleBtn.classList.remove('fa-toggle-on');
+		toggleBtn.classList.add('fa-toggle-off');
 	}
+
+	// Toggle user/general row
+	document.querySelector('.user-row').classList.toggle('hide-row');
+	document.querySelector('.general-row').classList.toggle('show-row');
+	document.querySelector('.user-row').classList.toggle('show-row');
+	document.querySelector('.general-row').classList.toggle('hide-row');
 }
 
 
@@ -558,7 +500,7 @@ function isSignedIn() {
 	user = firebase.auth().currentUser;
 	if(user) {
 		// User is signed In
-		return true;
+		return user;
 	}
 	return false;
 }

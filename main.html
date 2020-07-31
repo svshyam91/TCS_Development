@@ -50,10 +50,7 @@
 		</ul>
 		<ul class="navbar-nav ml-auto">
 			<li class="nav-item">
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-outline-primary data-toggle-btn" id="general-data-btn" data-id="0">General</button>
-					<button type="button" class="btn btn-sm btn-outline-primary data-toggle-btn" id="user-data-btn" data-id="1">User</button>
-				</div>
+				<a class="nav-link user-toggle-btn" href="javascript:void(0)">User&nbsp;<i class="fas fa-toggle-off toggle-btn"></i></a>
 			</li>
 			<li class="nav-item" style="display: none;" id="usernameNavItem">
 				<a class="nav-link" href="javascript:void(0)" id="usernameNav"></a>
@@ -72,7 +69,7 @@
 	</nav>
 	
 	<div class="container-fluid">
-		<div class="row general-row">	
+		<div class="row general-row show-row">	
 
 			<div class="col-sm-2">
 
@@ -100,7 +97,7 @@
 				</div>
 
 				<!-- Div to show loading button -->
-				<div class="loader" id="loaderDiv"></div>
+				<!-- <div class="loader" id="loaderDiv"></div> -->
 				
 				<div id="categorySideDiv">
 
@@ -108,7 +105,7 @@
 			</div>
 
 
-			<div class="col-sm-8 border-right general-div">
+			<div class="col-sm-8 border-right">
 				<!-- <button class="btn btn-outline-info btn-block" onclick="getCategory()">Get Data</button> -->
 				<!-- <div class="upload-file" id="uploadFile">
 					<input type="file" name="firebaseFile" id="fileInput" class="btn btn-outline-primary">
@@ -251,10 +248,10 @@
 			</div>
 
 
-			<div class="col-sm-2 border">
+			<div class="col-sm-2">
 
 				<!-- Show User Data -->
-				<div class="user-data border" id="userData"  style="display: none;">
+				<div class="user-data" id="userData"  style="display: none;">
 					<button class="btn btn-block btn-sm btn-outline-success" id="emailVerified" style="display: none;">Email Verified</button>
 					<button class="btn btn-block btn-sm btn-outline-danger" id="emailNotVerified" style="display: none;">Verify Email</button>
 					<div class="user-data-email">Your Email</div>
@@ -264,15 +261,19 @@
 
 		</div>
 
-		<div class="user-row" style="display: none;">	
-			<p>This is some text</p>
-			<div class="col-sm-2 border"></div>
+		<div class="row user-row hide-row">	
 
-			<div class="col-sm-8 border">
-				<h2 border>Here User data will come</h2>
+			<div class="col-sm-2 border">
+				<h2>This is col-sm-2</h2>
 			</div>
 
-			<div class="col-sm-2 border"></div>
+			<div class="col-sm-8 border">
+				<h2>This is col-sm-8</h2>
+			</div>
+
+			<div class="col-sm-2 border">
+				<h2>This is col-sm-2</h2>
+			</div>
 
 		</div>
 	</div>

@@ -15,6 +15,14 @@
 }
 
 
+.show-row {
+	display: flex;
+}
+
+.hide-row {
+	display: none;
+}
+
 /* ----------------------- Styling Items In Navigation Bar. ----------------------- */
 .navbar {
 	background-color: #5c85d6;
