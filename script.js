@@ -83,7 +83,11 @@ function validateAddNoteForm() {
 		// User is logged In
 
 		// Get values
-		categorySelectBtn = document.getElementById('category-select-btn');
+		if(user_data == true) 
+			categorySelectBtn = document.getElementById('usr-category-select-btn');
+		else
+			categorySelectBtn = document.getElementById('gn-category-select-btn');
+			
 		categoryOptnValue = categorySelectBtn.options[categorySelectBtn.selectedIndex].value;
 		noteHeading = document.getElementById('noteHeading').value;
 		noteDescription = document.getElementById('noteDescription').value;
@@ -283,7 +287,7 @@ $(document).ready(function() {
 
 // Global boolean variable to store type(general/user) of data to show. "user_data = false" means 
 // it will show general data.
-var user_data;	
+var user_data = false;	
 
 document.querySelector('.user-toggle-btn').addEventListener('click', toggleUserData);
 
@@ -293,11 +297,26 @@ function toggleUserData() {
 	toggleBtn = document.querySelector('.toggle-btn');
 
 	if(toggleBtn.classList.contains('fa-toggle-off')) {
-		console.log("You are toggling class");
+		// User mode
+		console.log("You are in user mode");
+		user_data = true;
+
+		// Hide gn-select-btn and display usr-select-btn
+		document.getElementById('gn-category-select-btn').style.display = 'none';
+		document.getElementById('usr-category-select-btn').style.display = 'block';
+
 		toggleBtn.classList.remove('fa-toggle-off');
 		toggleBtn.classList.add('fa-toggle-on');
 	}
 	else {
+		// General mode
+		console.log("You are in general mode");
+		user_data = false;
+
+		// Hide usr-category-select-btn and display gn-category-select-btn
+		document.getElementById('usr-category-select-btn').style.display = 'none';
+		document.getElementById('gn-category-select-btn').style.display = 'block';
+
 		toggleBtn.classList.remove('fa-toggle-on');
 		toggleBtn.classList.add('fa-toggle-off');
 	}
@@ -314,7 +333,7 @@ function toggleUserData() {
 $(document).ready(function() {
 	$('#signUpNav').click(signUpForm);	
 	$('#signInNav').click(signInForm);
-	$('#addSapNote').click(addSapNote);
+	$('#openGeneralNoteForm').click(addSapNote);
 
 	// Hide and show addSapNoteForm 	
 	function addSapNote() {
@@ -343,59 +362,57 @@ function hideMainDivContent() {
 	return;
 }
 
-$(document).ready(function() {
-	/* This function adds event on signIn and signUp buttons and observes behaviour 
-	 of authentication. */
+/* This function adds event on signIn and signUp buttons and observes behaviour 
+	of authentication. */
 
-	document.getElementById('signInBtn').addEventListener('click', signIn);
-	document.getElementById("signUpBtn").addEventListener('click', signUp);
-	document.getElementById('signOutNav').addEventListener('click', signOut);
-	document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
+document.getElementById('signInBtn').addEventListener('click', signIn);
+document.getElementById("signUpBtn").addEventListener('click', signUp);
+document.getElementById('signOutNav').addEventListener('click', signOut);
+document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
 
-	// Authentication State Observer
-	firebase.auth().onAuthStateChanged(function(user) {
-		if(user) {
-			// User logged In
+// Authentication State Observer
+firebase.auth().onAuthStateChanged(function(user) {
+	if(user) {
+		// User logged In
 
-			// Check if user is already stored in DB or not. (Check if user is signing in or signing up)
-			userRef = firebase.database().ref('/user/'+user.uid+'/').once('value',(snapshot) => {
-				if(snapshot.exists() == false) {
-					// User is not stored in DB means user is signing Up.
+		// Check if user is already stored in DB or not. (Check if user is signing in or signing up)
+		userRef = firebase.database().ref('/user/'+user.uid+'/').once('value',(snapshot) => {
+			if(snapshot.exists() == false) {
+				// User is not stored in DB means user is signing Up.
 
-					console.log("User was not stored in DB.");
-					firebase.database().ref('/user/'+user.uid+'/').set({
-						uid: user.uid,
-						email: user.email
-					});	
-					return;
-				}
-				console.log("User is stored in DB");
+				console.log("User was not stored in DB.");
+				firebase.database().ref('/user/'+user.uid+'/').set({
+					uid: user.uid,
+					email: user.email
+				});	
 				return;
-			});
+			}
+			console.log("User is stored in DB");
+			return;
+		});
 
 
-			$('#usernameNav').text(user.email);
-			document.getElementById('userData').style.display = 'block';
-			if( user.emailVerified == false) {
-				console.log("Email not verified");
-				document.getElementById('emailNotVerified').style.display = 'block';
-				document.getElementById('emailVerified').style.display = "none";
-			}
-			else {
-				document.getElementById('emailVerified').style.display = "block";
-				document.getElementById('emailNotVerified').style.display = "none";
-			}
-			userLoggedIn();
-			showStatus(2);
+		$('#usernameNav').text(user.email);
+		document.getElementById('userData').style.display = 'block';
+		if( user.emailVerified == false) {
+			console.log("Email not verified");
+			document.getElementById('emailNotVerified').style.display = 'block';
+			document.getElementById('emailVerified').style.display = "none";
 		}
 		else {
-			// User is logged Out
-			console.log("You have successfully signed out.");
-			document.getElementById('userData').style.display = 'none';
-			userLoggedOut();
+			document.getElementById('emailVerified').style.display = "block";
+			document.getElementById('emailNotVerified').style.display = "none";
 		}
-	});
-})
+		userLoggedIn();
+		showStatus(2);
+	}
+	else {
+		// User is logged Out
+		console.log("You have successfully signed out.");
+		document.getElementById('userData').style.display = 'none';
+		userLoggedOut();
+	}
+});
 
 
 function userLoggedIn() {
@@ -420,7 +437,7 @@ function userLoggedOut() {
 	$('#signUpNavItem').show();
 }
 
-// Sign Up
+
 function signUp() {
 	/* This function is used to sign Up user to firebase database. */
 
@@ -453,7 +470,6 @@ function sendEmailVerfication() {
 }
 
 
-// Sign In
 function signIn() {
 	/* This function is used to sign In user to firebase database. */
 

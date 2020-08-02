@@ -45,7 +45,7 @@
 				<a class="nav-link open-sap-note" href="javascript:void(0)">OPEN SAP NOTE</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="javascript:void(0)" id="addSapNote">ADD SAP NOTE</a>
+				<a class="nav-link" href="javascript:void(0)" id="openNoteForm" data-toggle="modal" data-target="#addNoteModal">ADD SAP NOTE</a>
 			</li>
 		</ul>
 		<ul class="navbar-nav ml-auto">
@@ -116,7 +116,7 @@
 				</div>
 
 				<!-- Form for adding notes -->
-				<div id="addSapNoteForm" class="main-div form-block" style="display: none;">
+				<!-- <div id="generalNoteForm" class="main-div form-block" style="display: none;">
 					<div class="form-heading">
 						<h2>ADD NOTES</h2>
 					</div>
@@ -143,7 +143,7 @@
 						<button type="submit" class="btn btn-block btn-success" id="submitNote" onclick="validateAddNoteForm()">SUBMIT</button>
 						<button type="reset" class="btn btn-block btn-danger" id="cancelNote">CANCEL</button>
 					</form>
-				</div>
+				</div>--> <!-- End of adding notes form -->
 
 				
 				<!-- Form for Sign Up -->
@@ -189,34 +189,6 @@
 						<button type="reset" class="btn btn-danger btn-block" id="cancelSignIn">Cancel</button>
 					</form>
 				</div>
-
-				<!-- Modal for Category Form -->
-				<div id="categoryModal" class="modal fade" role="dialog">
-					<div class="modal-dialog">
-						
-						<!-- Content -->
-						<div class="modal-content">
-							<div class="modal-header form-heading">
-								<h3>Add Category</h3>
-							</div>
-							<div class="modal-body">
-								<div class="form-group">
-									<label for="categoryName">Enter Category Name:</label>
-									<input type="text" name="categoryName" id="categoryName" class="form-control">
-								</div>
-								<div class="form-group">
-									<label for="categoryDescription">Enter Category Description:</label>
-									<input type="text" name="categoryDescription" id="categoryDescription" class="form-control">
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-outline-success" onclick="validateAddCategoryForm()" data-dismiss="modal">Submit</button>
-								<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-							</div>
-						</div>
-					</div>
-				</div><!-- End of category Modal -->
-
 
 				<!-- Modal for change Note Form -->
 				<div id="changeNoteModal" class="modal fade" role="dialog" noteId="">
@@ -265,10 +237,19 @@
 
 			<div class="col-sm-2 border">
 				<h2>This is col-sm-2</h2>
+				<div id="usrCategorySideDiv">
+
+				</div>
 			</div>
 
 			<div class="col-sm-8 border">
 				<h2>This is col-sm-8</h2>
+				
+				<button class="btn btn-sm btn-outline-primary" style="float: right;" data-toggle="modal" data-target="#categoryModal">Add Category</button>	
+				
+				<div class="content main-div" id="user-notes-div">
+					<!-- Add contents comes here. --> 
+				</div>
 			</div>
 
 			<div class="col-sm-2 border">
@@ -276,6 +257,77 @@
 			</div>
 
 		</div>
+
+		<!-- Modal for Add Note Form -->
+		<div id="addNoteModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<div class="modal-content">
+					<div class="modal-header form-heading">
+						<h3>Add NOTE</h3>
+					</div>
+					<div class="modal-body">
+						<form action="javascript:void(0)">
+							<div class="form-group">
+								<label for="noteCategory" class="control-label">Choose Category:</label>
+								<button class="btn btn-sm btn-outline-primary" style="float: right;" data-toggle="modal" data-target="#categoryModal">Add Category</button>	
+								<select id="gn-category-select-btn" class="form-control">
+									<option value=""> -- Select Category -- </option>
+								</select>
+								<select id="usr-category-select-btn" class="form-control" style="display: none;">
+									<option value=""> -- Select Category -- </option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="noteHeading" class="control-label">Enter Heading:</label>
+								<input type="text" name="noteHeading" id="noteHeading" class="form-control" maxlength="50">
+							</div>	
+							<div class="form-group">
+								<label for="noteDescription" class="control-label">Enter Note Description:</label>
+								<textarea class="form-control" id="noteDescription"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="additionalInfo" class="control-label">Enter Additional Info (Not Mandatory):</label>
+								<input type="text" name="additionalInfo" id="additionalInfo" class="form-control" maxlength="100">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-block btn-success" id="submitNote" onclick="validateAddNoteForm()">SUBMIT</button>
+						<button type="reset" class="btn btn-block btn-danger" id="cancelNote" data-dismiss="modal">CANCEL</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal for Category Form -->
+		<div id="categoryModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				
+				<!-- Content -->
+				<div class="modal-content">
+					<div class="modal-header form-heading">
+						<h3>Add Category</h3>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="categoryName">Enter Category Name:</label>
+							<input type="text" name="categoryName" id="categoryName" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="categoryDescription">Enter Category Description:</label>
+							<input type="text" name="categoryDescription" id="categoryDescription" class="form-control">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-outline-success" onclick="validateAddCategoryForm()" data-dismiss="modal">Submit</button>
+						<button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div><!-- End of category Modal -->
+
+
 	</div>
 
 	<!-- Status Notification -->

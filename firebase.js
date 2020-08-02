@@ -151,7 +151,7 @@ function changeCategory(categoryName, categoryId) {
 	else if(user_data == true) {
 		// Change in user_data
 
-		updates['sap_notes/user_data/'+user.uid+'/categories/'+categoryId+'/meta/name'] = categoryName;	
+		updates['sap_notes/user_data/'+user.uid+'/categories/'+categoryId+'/data/name'] = categoryName;	
 	}
 
 	database.ref().update(updates,function(error) {
@@ -210,7 +210,7 @@ categoryRef.on('child_added', (snap) => {
 
 	// Make General Category Div in the Main Div
 	categoryDiv = document.createElement('div');
-	categoryDiv.id = categoryId+'_div';
+	categoryDiv.id = categoryId + '_div';
 	categoryDiv.setAttribute('class', 'category-div');
 
 	generalNotesDiv = document.getElementById('general-notes-div');
@@ -221,7 +221,7 @@ categoryRef.on('child_added', (snap) => {
 	option.setAttribute('value', categoryId);
 	option.textContent = categoryName;
 
-	categorySelectBtn = document.getElementById('category-select-btn');
+	categorySelectBtn = document.getElementById('gn-category-select-btn');
 	categorySelectBtn.appendChild(option);
 });
 
@@ -259,6 +259,41 @@ categoryRef.on('child_removed', (snap) => {
 });	
 
 
+// child_added listner on 'sap_notes/user_data/<user_id>/categories'
+usrCategoryRef = database.ref('sap_notes/user_data/'+user.uid+'/categories');
+usrCategoryRef.on('child_added', (snap) => {
+	var categoryId = snap.key,
+		categoryName = snap.val().data.name,
+		sideCategoryDiv, categoryBtn, generalNotesDiv,
+		categoryDiv, categorySelectBtn, option;
+	
+	// Add category to the side navigation
+	categoryBtn = document.createElement('button');
+	categoryBtn.id = categoryId+'_btn';
+	categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
+	categoryBtn.textContent = categoryName;
+
+	sideCategoryDiv = document.getElementById('usrCategorySideDiv');
+	sideCategoryDiv.appendChild(categoryBtn);
+
+	// Make General Category Div in the Main Div
+	categoryDiv = document.createElement('div');
+	categoryDiv.id = categoryId+'_div';
+	categoryDiv.setAttribute('class', 'category-div');
+
+	generalNotesDiv = document.getElementById('user-notes-div');
+	generalNotesDiv.appendChild(categoryDiv);
+
+	// Add category to the <option>
+	option = document.createElement('option');
+	option.setAttribute('value', categoryId);
+	option.textContent = categoryName;
+
+	categorySelectBtn = document.getElementById('usr-category-select-btn');
+	categorySelectBtn.appendChild(option);
+});
+
+
 function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
 	/* 
 		This function pushes new note of choosen category to Firebase Database.
@@ -290,17 +325,18 @@ function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
 	else if(user_data == true) {
 		// Push to user data
 
-		pushNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+noteCategoryValue+'/category_notes/');
+		pushNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/');
 		noteData = {
 			data: {
 				heading: noteHeading,
 				description: noteDescription,
 				additionalNotes: ""
 			},
-			meta: {
+			meta_data: {
 				publish_date: currentTime,
 				last_modified: currentTime
-			}
+			}, 
+			category_id: categoryId
 		}
 	}
 	pushKeyRef = pushNoteRef.push(noteData,function(error) {
@@ -323,7 +359,7 @@ function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
 }
 
 
-// Child_added listner on notes
+// Child_added listner on General Notes
 noteRef = database.ref('sap_notes/general_data/notes');
 noteRef.on('child_added', (snap) => {
 
@@ -353,7 +389,7 @@ noteRef.on('child_added', (snap) => {
 	document.getElementById(categoryId+'_div').appendChild(noteDiv);
 });
 
-
+// Child_changed listner on General Notes
 noteRef.on('child_changed', (snap) => {
 
 	var noteData = snap.val(),
@@ -364,7 +400,7 @@ noteRef.on('child_changed', (snap) => {
 	document.getElementById(noteId+'_content').textContent = noteData.data.description;
 });
 
-
+// Child_removed listner on General Notes
 noteRef.on('child_removed', (snap) => {
 	var noteId = snap.key;
 
@@ -373,7 +409,7 @@ noteRef.on('child_removed', (snap) => {
 });
 
 
-
+// No use of this function now
 function pullNotesOfCategory(categoryId) {
 	/* This function pulls all notes of category categoryId */
 
@@ -458,7 +494,6 @@ function pushChangeNote(noteId, noteHeading, noteDescription) {
 				console.log("Something went wrong!!"+error);
 			else
 				console.log("Data updated successfully.");
-				window.reload()
 		});
 	}
 }
@@ -470,11 +505,7 @@ function removeNote(categoryId, noteId) {
 	if(user_data == false) {
 		// Delete general data
 
-		delNoteRef = database.ref('sap_notes/general_data/notes/'+categoryId+'/category_notes/'+noteId);
-
-		// Remove log
-		logRef = database.ref('sap_notes/log_changes/'+noteId);
-		logRef.remove();
+		delNoteRef = database.ref('sap_notes/general_data/notes/'+noteId);
 	}
 	else if(user_data == true) {
 		// Delete user data
