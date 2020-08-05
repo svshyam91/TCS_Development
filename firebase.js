@@ -15,8 +15,8 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 // Global variables
-var database  = firebase.database();
-var allCategories = [], allNotes='';
+var database  = firebase.database(),
+	allCategories = [], allNotes='';
 
 
 function pullCategories(data_id) {
@@ -164,6 +164,7 @@ function changeCategory(categoryName, categoryId) {
 	});
 }
 
+
 // We'll change this later, we have to change UI for deleting the category
 function deleteCategory(categoryId) {
 	/* This function will remove category of categoryId and all notes under same category */
@@ -191,8 +192,12 @@ function deleteCategory(categoryId) {
 }
 
 
-// child_added listner on 'sap_notes/general_data/categories'
+/*                       **************************** Listners on General Category **************************** */
+
+
 categoryRef = database.ref('sap_notes/general_data/categories/');
+
+// child_added listner on 'sap_notes/general_data/categories'
 categoryRef.on('child_added', (snap) => {
 	var categoryId  = snap.key, 
 		categoryName = snap.val().data.name,
@@ -259,38 +264,135 @@ categoryRef.on('child_removed', (snap) => {
 });	
 
 
-// child_added listner on 'sap_notes/user_data/<user_id>/categories'
-usrCategoryRef = database.ref('sap_notes/user_data/'+user.uid+'/categories');
-usrCategoryRef.on('child_added', (snap) => {
-	var categoryId = snap.key,
-		categoryName = snap.val().data.name,
-		sideCategoryDiv, categoryBtn, generalNotesDiv,
-		categoryDiv, categorySelectBtn, option;
-	
-	// Add category to the side navigation
-	categoryBtn = document.createElement('button');
-	categoryBtn.id = categoryId+'_btn';
-	categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
-	categoryBtn.textContent = categoryName;
+// Listners on auth Change
+firebase.auth().onAuthStateChanged(function(user) {
+	if(user) {
 
-	sideCategoryDiv = document.getElementById('usrCategorySideDiv');
-	sideCategoryDiv.appendChild(categoryBtn);
+		var usrCategoryRef = database.ref('sap_notes/user_data/'+user.uid+'/categories'),
+			usrNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes');
 
-	// Make General Category Div in the Main Div
-	categoryDiv = document.createElement('div');
-	categoryDiv.id = categoryId+'_div';
-	categoryDiv.setAttribute('class', 'category-div');
+		// Clear #usrCategorySideDiv , #usr-category-select-btn , #user-notes-div 
+		document.getElementById('usrCategorySideDiv').innerHTML = '';
+		document.getElementById('usr-category-select-btn').innerHTML = '';
+		document.getElementById('user-notes-div').innerHTML = '';
 
-	generalNotesDiv = document.getElementById('user-notes-div');
-	generalNotesDiv.appendChild(categoryDiv);
 
-	// Add category to the <option>
-	option = document.createElement('option');
-	option.setAttribute('value', categoryId);
-	option.textContent = categoryName;
+		/*                       **************************** Listners on User Category **************************** */
 
-	categorySelectBtn = document.getElementById('usr-category-select-btn');
-	categorySelectBtn.appendChild(option);
+		
+		// child_added listner on 'sap_notes/user_data/<user_id>/categories'
+		usrCategoryRef.on('child_added', (snap) => {
+			
+			var categoryId = snap.key,
+				categoryName = snap.val().data.name,
+				sideCategoryDiv, categoryBtn, generalNotesDiv,
+				categoryDiv, categorySelectBtn, option;
+			
+			// Add category to the side navigation
+			categoryBtn = document.createElement('button');
+			categoryBtn.id = categoryId+'_btn';
+			categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
+			categoryBtn.textContent = categoryName;
+
+			sideCategoryDiv = document.getElementById('usrCategorySideDiv');
+			sideCategoryDiv.appendChild(categoryBtn);
+
+			// Make General Category Div in the Main Div
+			categoryDiv = document.createElement('div');
+			categoryDiv.id = categoryId+'_div';
+			categoryDiv.setAttribute('class', 'category-div');
+
+			generalNotesDiv = document.getElementById('user-notes-div');
+			generalNotesDiv.appendChild(categoryDiv);
+
+			// Add category to the <option>
+			option = document.createElement('option');
+			option.setAttribute('value', categoryId);
+			option.textContent = categoryName;
+
+			categorySelectBtn = document.getElementById('usr-category-select-btn');
+			categorySelectBtn.appendChild(option);
+		});
+
+
+		// child_changed listner on 'sap_notes/user_data/<user_id>/categories'
+		usrCategoryRef.on('child_changed', (snap) => {
+
+			var categoryId = snap.key,
+				categoryName = snap.val().data.name;
+
+			// Change in category btn
+			document.getElementById(categoryId+'_btn').textContent = categoryName;
+
+			// Change in option value
+			document.querySelector('option[value="'+categoryId+'"]').textContent = categoryName;
+		});
+
+
+		// child_removed listner on 'sap_notes/user_data/<user_id>/categories'
+		usrCategoryRef.on('child_removed', (snap) => {
+			
+			var categoryId = snap.key;
+
+			// Remove Category Btn
+			document.getElementById(categoryId+'_btn').remove();
+
+			// Remove Option Element
+			document.querySelector('option[value="'+categoryId+'"]').remove();
+
+			// Remove General Category Div in the Main Div 
+			document.getElementById(categoryId+'_div').remove();
+		});
+
+
+		/*                       **************************** Listners on User Notes **************************** */
+
+
+		// child_added listner on 'sap_notes/user_data/<user_id>/notes'
+		usrNoteRef.on('child_added', (snap) => {
+			var noteId = snap.key,
+				categoryId = snap.val().category_id,
+				noteData = snap.val();
+			
+			noteDiv = document.createElement('div');
+			noteDiv.id = noteId;
+			noteDiv.setAttribute('class', 'mt-3')
+			noteDiv.setAttribute('category_id', categoryId);
+		
+			noteDiv.innerHTML = `
+				<button class="btn btn-block note-heading-btn" id="${noteId}_heading">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
+				<div class="note-content">
+					<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
+					<div class="border-up">
+						<button class="btn btn-sm btn-outline-info copy-note"> <i class="far fa-copy"></i> </button>
+						<button class="btn btn-sm btn-outline-success edit-note" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
+						<button class="btn btn-sm btn-outline-danger delete-note"> <i class="far fa-trash-alt"></i> </button>
+						<button class="btn btn-sm btn-outline-primary share-note"> <i class="fas fa-share-alt"></i> </button>
+					</div>
+				</div>
+			`;
+			document.getElementById(categoryId + '_div').appendChild(noteDiv);
+		});
+
+		// child_changed listner on 'sap_notes/user_data/<user_id>/notes'
+		usrNoteRef.on('child_changed', (snap) => {
+
+			var noteData = snap.val(),
+			noteId = snap.key;
+
+			// Change values in DOM
+			document.getElementById(noteId+'_heading').textContent = noteData.data.heading;
+			document.getElementById(noteId+'_content').textContent = noteData.data.description;
+		});
+
+		// child_removed listner on 'sap_notes/user_data/<user_id>/notes'
+		usrNoteRef.on('child_removed', (snap) => {
+			var noteId = snap.key;
+
+			// Remove note Div
+			document.getElementById(noteId).remove();
+		});
+	}
 });
 
 
@@ -301,7 +403,6 @@ function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
 
 	var noteData, pushNoteRef;
 	var currentTime = Date.now();
-
 
 	if(user_data == false) {
 		// Push to general data
@@ -349,18 +450,82 @@ function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
 		}
 	});
 	newNoteKey = pushKeyRef.key;
-
-	// ++++ Add log only when note is pushed successfully
-	// Add push data in log_changes
-	// database.ref('sap_notes/log_changes/'+newNoteKey+'/').set({
-	// 	category_id: noteCategoryValue,
-	// 	last_modified: currentTime
-	// });
 }
 
 
-// Child_added listner on General Notes
+function pushChangeNote(noteId, noteHeading, noteDescription) {
+	/* This function updates(pushes) data in the firebase database. */
+
+	var notePath, updates = {}, 
+		last_modified_user = user.email, last_modified_at = Date.now(), 
+		noteData = {
+			additionalNotes: "",
+			description: noteDescription,
+			heading: noteHeading,
+		};
+
+	if(user_data == false) {
+		// Change general data
+
+		notePath = 'sap_notes/general_data/notes/'+noteId;
+
+		updates[notePath+'/data/description'] = noteDescription;
+		updates[notePath+'/data/heading'] = noteHeading;
+		updates[notePath+'/meta_data/last_modified_by'] = last_modified_user;
+		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
+
+		// Push update in firebase database
+		database.ref().update(updates, function(error){
+			if(error)
+				console.log("Something went wrong!!"+error);
+			else
+				console.log("Data updated successfully.");
+		});
+	}
+	else {
+		// Change user data
+
+		notePath = 'sap_notes/user_data/'+user.uid+'/notes/'+noteId;
+
+		// Write new note data
+		updates[notePath+'/data/description'] = noteDescription;
+		updates[notePath+'/data/heading'] = noteHeading;
+		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
+
+		// Push update in firebase database
+		database.ref().update(updates, function(error){
+			if(error)
+				console.log("Something went wrong!!"+error);
+			else
+				console.log("Data updated successfully.");
+		});
+	}
+}
+
+
+function removeNote(categoryId, noteId) {
+	/* This function removes note(noteId) of categoryId from firebase database. */
+
+	if(user_data == false) {
+		// Delete general data
+
+		delNoteRef = database.ref('sap_notes/general_data/notes/'+noteId);
+	}
+	else if(user_data == true) {
+		// Delete user data
+
+		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).child('/category_notes/'+noteId);
+	}
+	delNoteRef.remove();
+}
+
+
+/*                       **************************** Listners on General Notes **************************** */
+
+
 noteRef = database.ref('sap_notes/general_data/notes');
+
+// Child_added listner on General Notes
 noteRef.on('child_added', (snap) => {
 
 	var noteDiv, categoryId = snap.val().category_id,
@@ -444,78 +609,7 @@ function pullNotesOfCategory(categoryId) {
 	return;
 }
 
-
-function pushChangeNote(noteId, noteHeading, noteDescription) {
-	/* This function updates(pushes) data in the firebase database. */
-
-	var notePath, updates = {}, 
-		last_modified_user = user.email, last_modified_at = Date.now(), 
-		noteData = {
-			additionalNotes: "",
-			description: noteDescription,
-			heading: noteHeading,
-		};
-
-	if(user_data == false) {
-		// Change general data
-
-		notePath = 'sap_notes/general_data/notes/'+noteId;
-
-		updates[notePath+'/data/description'] = noteDescription;
-		updates[notePath+'/data/heading'] = noteHeading;
-		updates[notePath+'/meta_data/last_modified_by'] = last_modified_user;
-		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
-
-		// Push update in firebase database
-		database.ref().update(updates, function(error){
-			if(error)
-				console.log("Something went wrong!!"+error);
-			else
-				console.log("Data updated successfully.");
-		});
-	}
-	else {
-		// Change user data
-
-		notePath = 'sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/'+noteId;
-
-		// Generate a key for new note
-		// newNoteKey = database.ref().child('sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/').push().key;
-
-		// Write new note data
-		updates[notePath+'/data/description'] = noteDescription;
-		updates[notePath+'/data/heading'] = noteHeading;
-		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
-		// updates['sap_notes/user_data/'+user.uid+'/notes/'+categoryId+'/category_notes/'+newNoteKey] = noteData;
-
-		// Push update in firebase database
-		database.ref().update(updates, function(error){
-			if(error)
-				console.log("Something went wrong!!"+error);
-			else
-				console.log("Data updated successfully.");
-		});
-	}
-}
-
-
-function removeNote(categoryId, noteId) {
-	/* This function removes note(noteId) of categoryId from firebase database. */
-
-	if(user_data == false) {
-		// Delete general data
-
-		delNoteRef = database.ref('sap_notes/general_data/notes/'+noteId);
-	}
-	else if(user_data == true) {
-		// Delete user data
-
-		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).child('/category_notes/'+noteId);
-	}
-	delNoteRef.remove();
-}
-
-
+// No use of this function now
 function updateUpvote(categoryId, noteId, elementId) {
 	var updates = {}, totalUpvotes = null, metaNotePath, 
 		metaNoteRef, userUpvotedNote, userUpvoteNoteRef;

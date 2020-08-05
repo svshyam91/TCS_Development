@@ -1,3 +1,24 @@
+// Global Variables
+var user_data = false;
+
+
+// JS Listeners
+document.querySelector('.user-toggle-btn').addEventListener('click', toggleUserData);
+document.getElementById('signInSubmit').addEventListener('click', signIn);
+document.getElementById('signUpBtn').addEventListener('click', signUp);
+document.getElementById('signOutNav').addEventListener('click', signOut);
+document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
+document.getElementById('categorySideDiv').addEventListener('click', displayCategoryNotes);
+
+function displayCategoryNotes(e) {
+
+	if( e.target && e.target.nodeName == 'BUTTON') {
+		categoryBtn = e.target;
+		document.
+	}
+}
+
+
 function copyToClipboard(elemId) {
 	/* This function copies content inside div with id elemId 
 		Ref: https://stackoverflow.com/questions/36639681/how-to-copy-text-from-a-div-to-clipboard  */
@@ -34,7 +55,8 @@ document.querySelector('.open-sap-note').addEventListener('click', function() {
 		var sapNoteLink = "https://launchpad.support.sap.com/#/notes/"+sapNoteNo.trim();
 		window.open(sapNoteLink);
 	}
-})
+});
+
 
 /*                         ****************************  Validation of forms ***********************************              */
 
@@ -207,12 +229,6 @@ function displayNoteContent(elementId) {
 }
 
 
-function changeCategoryBtnStyle(categoryId) {
-	$(".category-sidebar-btn").removeClass("selected-category");
-	$("#"+categoryId).addClass("selected-category");
-}
-
-
 // jQuery Code for Edit and Delete Categoty button actions
 $(document).ready(function() {
 
@@ -287,10 +303,6 @@ $(document).ready(function() {
 
 // Global boolean variable to store type(general/user) of data to show. "user_data = false" means 
 // it will show general data.
-var user_data = false;	
-
-document.querySelector('.user-toggle-btn').addEventListener('click', toggleUserData);
-
 function toggleUserData() {
 
 	// Change toggle btn
@@ -298,6 +310,7 @@ function toggleUserData() {
 
 	if(toggleBtn.classList.contains('fa-toggle-off')) {
 		// User mode
+
 		console.log("You are in user mode");
 		user_data = true;
 
@@ -310,6 +323,7 @@ function toggleUserData() {
 	}
 	else {
 		// General mode
+
 		console.log("You are in general mode");
 		user_data = false;
 
@@ -329,46 +343,8 @@ function toggleUserData() {
 }
 
 
-// Hide/Show Sign In and Sign Up form
-$(document).ready(function() {
-	$('#signUpNav').click(signUpForm);	
-	$('#signInNav').click(signInForm);
-	$('#openGeneralNoteForm').click(addSapNote);
-
-	// Hide and show addSapNoteForm 	
-	function addSapNote() {
-		$('.main-div').hide();
-		$('#addSapNoteForm').slideDown();
-	};
-
-	// Hide other content and show signInForm 
-	function signInForm() {
-		$('.main-div').hide();
-		$('#signInForm').slideDown();
-	}
-
-	// Hide other content and show signUpForm 
-	function signUpForm() {
-		$('.main-div').hide();
-		$('#signUpForm').slideDown();
-	}
-});
-
-
-// Hide all content from main div to show div
-function hideMainDivContent() {
-	$('.main-div').hide();
-	$('#cont').slideDown();
-	return;
-}
-
 /* This function adds event on signIn and signUp buttons and observes behaviour 
 	of authentication. */
-
-document.getElementById('signInBtn').addEventListener('click', signIn);
-document.getElementById("signUpBtn").addEventListener('click', signUp);
-document.getElementById('signOutNav').addEventListener('click', signOut);
-document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
 
 // Authentication State Observer
 firebase.auth().onAuthStateChanged(function(user) {
@@ -380,7 +356,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 			if(snapshot.exists() == false) {
 				// User is not stored in DB means user is signing Up.
 
-				console.log("User was not stored in DB.");
+				console.log("User is not stored in DB.");
 				firebase.database().ref('/user/'+user.uid+'/').set({
 					uid: user.uid,
 					email: user.email
@@ -392,7 +368,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 		});
 
 
-		$('#usernameNav').text(user.email);
+		// $('#usernameNav').text(user.email);
+		document.getElementById('usernameNav').textContent = user.email;
 		document.getElementById('userData').style.display = 'block';
 		if( user.emailVerified == false) {
 			console.log("Email not verified");
@@ -403,39 +380,26 @@ firebase.auth().onAuthStateChanged(function(user) {
 			document.getElementById('emailVerified').style.display = "block";
 			document.getElementById('emailNotVerified').style.display = "none";
 		}
-		userLoggedIn();
+
+		// Hide SignIn and SignUp Button and show username and signOut button
+		document.getElementById('signInBtn').style.display = 'none';
+		document.getElementById('signUpBtn').style.display = 'none';
+		document.getElementById('signOutBtn').style.display = 'block';
+		document.getElementById('usernameBtn').style.display = 'block';
 		showStatus(2);
 	}
 	else {
 		// User is logged Out
 		console.log("You have successfully signed out.");
 		document.getElementById('userData').style.display = 'none';
-		userLoggedOut();
+
+		// Show SignIn and SignUp Button and Hide username and signOut button
+		document.getElementById('signInBtn').style.display = 'block';
+		document.getElementById('signUpBtn').style.display = 'block';
+		document.getElementById('signOutBtn').style.display = 'none';
+		document.getElementById('usernameBtn').style.display = 'none';
 	}
 });
-
-
-function userLoggedIn() {
-
-	// Hide signIn and signUp button
-	$('#signInNavItem').hide();
-	$('#signUpNavItem').hide();
-
-	// Show username and signOut Button
-	$('#signOutNavItem').show();
-	$('#usernameNavItem').show();
-}
-
-function userLoggedOut() {
-
-	// Hide username and signOut button
-	$('#signOutNavItem').hide();
-	$('#usernameNavItem').hide();
-
-	// Show signIn and signUp button
-	$('#signInNavItem').show();
-	$('#signUpNavItem').show();
-}
 
 
 function signUp() {
@@ -449,9 +413,11 @@ function signUp() {
 	// Sign Up using Firebase
 	firebase.auth().createUserWithEmailAndPassword(signUpEmail, signUpPassword).then(function(){
 		// Successfully signed up.
+
 		console.log("User has successfully signed up.");
 	}).catch(function(error) {
 		// Error Handling
+
 		console.log("Something went wrong!! "+error);
 	});
 }
@@ -477,8 +443,16 @@ function signIn() {
 	signInEmail = document.getElementById('signInEmail').value;
 	signInPassword = document.getElementById('signInPassword').value;
 
+	console.log("Sign In Email: "+signInEmail);
+	console.log("Sign In Password:" + signInPassword);
+
 	// Sign In Using Firebase
-	firebase.auth().signInWithEmailAndPassword(signInEmail, signInPassword).catch(function(error) {
+	firebase.auth().signInWithEmailAndPassword(signInEmail, signInPassword)
+	.then(function() {
+		console.log("User has successfully logged in");
+		document.getElementById('cancelSignIn').click();
+	})
+	.catch(function(error) {
 		//Error Handling
 		console.log("Something went wrong!! "+error);
 	});
@@ -489,7 +463,6 @@ function signOut() {
 	// Sign Out user from firebase 
 
 	firebase.auth().signOut();
-	document.getElementById('general-data-btn').click();
 }
 
 
