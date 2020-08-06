@@ -9,12 +9,56 @@ document.getElementById('signUpBtn').addEventListener('click', signUp);
 document.getElementById('signOutNav').addEventListener('click', signOut);
 document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
 document.getElementById('categorySideDiv').addEventListener('click', displayCategoryNotes);
+document.getElementById('usrCategorySideDiv').addEventListener('click', u_displayCategoryNotes);
+
+function u_displayCategoryNotes(e) {
+	if( e.target && e.target.nodeName == 'BUTTON') {
+		categoryBtn = e.target;
+
+		// Remove class 's-cat' from all category-sidebar-btns
+		categorySideBtns = document.querySelectorAll('.u-cat');
+		for(const categorySideBtn of categorySideBtns.values()) {
+			categorySideBtn.classList.remove('s-cat') ;
+		}
+
+		// Add class 's-cat' to the selected category-sidebar-btns
+		categoryBtn.classList.add('s-cat');
+
+		// Hide all divs from the main content
+		categoryDivs = document.querySelectorAll('.u-category-div');
+		for(const categoryDiv of categoryDivs.values()) {
+			categoryDiv.style.display = 'none';
+		}
+
+		// Show selected category div
+		categoryId = categoryBtn.getAttribute('category-id');
+		document.getElementById(categoryId + '_div').style.display = 'block';		
+	}
+}
 
 function displayCategoryNotes(e) {
 
 	if( e.target && e.target.nodeName == 'BUTTON') {
 		categoryBtn = e.target;
-		document.
+
+		// Remove class 's-cat' from all category-sidebar-btns
+		categorySideBtns = document.querySelectorAll('.category-sidebar-btn');
+		for(const categorySideBtn of categorySideBtns.values()) {
+			categorySideBtn.classList.remove('s-cat') ;
+		}
+
+		// Add class 's-cat' to the selected category-sidebar-btns
+		categoryBtn.classList.add('s-cat');
+
+		// Hide all divs from the main content
+		categoryDivs = document.querySelectorAll('.category-div');
+		for(const categoryDiv of categoryDivs.values()) {
+			categoryDiv.style.display = 'none';
+		}
+
+		// Show selected category div
+		categoryId = categoryBtn.getAttribute('category-id');
+		document.getElementById(categoryId + '_div').style.display = 'block';
 	}
 }
 
@@ -215,14 +259,14 @@ function displayNoteContent(elementId) {
 		preDisplay = "block";
 		
 		// Change down arrow to up
-		angle.classList.remove("fa-angle-double-down");
+		angle.classList.remove("selected-catfa-angle-double-down");
 		angle.classList.add("fa-angle-double-up");
 	}
 	else if(preDisplay == "block") {
 		preDisplay = "none";
 
 		// Change up arrow to down
-		angle.classList.remove("fa-angle-double-up");
+		angle.classList.remove("selected-catfa-angle-double-up");
 		angle.classList.add("fa-angle-double-down");
 	}
 	document.getElementById("noteContent"+elementId).style.display = preDisplay;
@@ -250,7 +294,7 @@ $(document).ready(function() {
 		// Hide input div
 		$("#editInputDiv").css("width","0");
 
-		// Remove blur of backgroud
+		// Remove bselected-catlur of backgroud
 		$("#categorySideBar").css("filter","blur(0px)");
 
 		//Enable pointer-events to background div
@@ -276,7 +320,7 @@ $(document).ready(function() {
 		// Hide Delete Div
 		$("#deleteInputDiv").css("width","0");
 
-		// Remove blur of background
+		// Remove bselected-catlur of background
 		$("#categorySideBar").css("filter","blur(0px)");
 
 		//Enable pointer-events to background div

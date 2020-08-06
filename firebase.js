@@ -204,10 +204,11 @@ categoryRef.on('child_added', (snap) => {
 		sideCategoryDiv, categoryBtn, generalNotesDiv,
 		categoryDiv, categorySelectBtn, option;
 
-	// Add category to the side navigation
+	// Add category button to the side navigation
 	categoryBtn = document.createElement('button');
 	categoryBtn.id = categoryId+'_btn';
 	categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
+	categoryBtn.setAttribute('category-id', categoryId);
 	categoryBtn.textContent = categoryName;
 
 	sideCategoryDiv = document.getElementById('categorySideDiv');
@@ -291,7 +292,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 			// Add category to the side navigation
 			categoryBtn = document.createElement('button');
 			categoryBtn.id = categoryId+'_btn';
-			categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
+			categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn u-cat');
+			categoryBtn.setAttribute('category-id', categoryId);
 			categoryBtn.textContent = categoryName;
 
 			sideCategoryDiv = document.getElementById('usrCategorySideDiv');
@@ -300,7 +302,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 			// Make General Category Div in the Main Div
 			categoryDiv = document.createElement('div');
 			categoryDiv.id = categoryId+'_div';
-			categoryDiv.setAttribute('class', 'category-div');
+			categoryDiv.setAttribute('class', 'u-category-div');
 
 			generalNotesDiv = document.getElementById('user-notes-div');
 			generalNotesDiv.appendChild(categoryDiv);
@@ -364,10 +366,9 @@ firebase.auth().onAuthStateChanged(function(user) {
 				<div class="note-content">
 					<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
 					<div class="border-up">
-						<button class="btn btn-sm btn-outline-info copy-note"> <i class="far fa-copy"></i> </button>
+						<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
 						<button class="btn btn-sm btn-outline-success edit-note" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
 						<button class="btn btn-sm btn-outline-danger delete-note"> <i class="far fa-trash-alt"></i> </button>
-						<button class="btn btn-sm btn-outline-primary share-note"> <i class="fas fa-share-alt"></i> </button>
 					</div>
 				</div>
 			`;
@@ -542,12 +543,10 @@ noteRef.on('child_added', (snap) => {
 		<div class="note-content">
 			<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
 			<div class="border-up">
-				<button class="btn btn-sm btn-outline-info copy-note"> <i class="far fa-copy"></i> </button>
-				<button class="btn btn-sm btn-outline-success edit-note" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
-				<button class="btn btn-sm btn-outline-danger delete-note"> <i class="far fa-trash-alt"></i> </button>
-				<button class="btn btn-sm btn-outline-primary share-note"> <i class="fas fa-share-alt"></i> </button>
-				<button class="btn btn-sm btn-outline-secondary author-note" title="Author"><i class="fas fa-at"></i>&nbsp;${noteData.meta_data.author}</button>
-				<button class="btn btn-sm btn-outline-danger like-note"> <i class="fas fa-arrow-up"></i> &nbsp;</i></button>	
+				<button class="btn btn-sm btn-outline-info copy-note" title="Copy" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
+				<button class="btn btn-sm btn-outline-success edit-note" title="Edit" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
+				<button class="btn btn-sm btn-outline-danger delete-note" title="Delete"> <i class="far fa-trash-alt"></i> </button>
+				<a class="author-note" title="Author"><i class="fas fa-user"></i>&nbsp;${noteData.meta_data.author}</a>
 			</div>
 		</div>
 	`

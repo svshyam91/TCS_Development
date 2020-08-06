@@ -23,6 +23,11 @@
 	display: none;
 }
 
+.s-cat {
+	background-color: #5c85d6;
+	color: #FFFFFF;
+}
+
 /* ----------------------- Styling Items In Navigation Bar. ----------------------- */
 .navbar {
 	background-color: #5c85d6;
@@ -80,8 +85,18 @@
 .note-heading-btn:hover {
 	background-color: #356089;
 }
-.delete-note, .edit-note, .like-note, .share-note, .author-note, .copy-note {
-	border-radius: 15px;
+.delete-note, .edit-note, .copy-note {
+	border: 0px;
+}
+a:not([href]):not([tabindex]).author-note {
+	color: #5c85d6;
+}
+a.author-note, a.author-note:hover {
+	border: 0px;
+	cursor: default !important;
+	background-color: #FFFFFF;
+	color: #5c85d6;
+	font-size: 15px;
 }
 .delete-note, .edit-note {
 	float: right;
