@@ -368,7 +368,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 					<div class="border-up">
 						<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
 						<button class="btn btn-sm btn-outline-success edit-note" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
-						<button class="btn btn-sm btn-outline-danger delete-note"> <i class="far fa-trash-alt"></i> </button>
+						<button class="btn btn-sm btn-outline-danger delete-note" onclick="confirmDeleteNote('${noteId}')"> <i class="far fa-trash-alt"></i> </button>
 					</div>
 				</div>
 			`;
@@ -469,12 +469,14 @@ function pushChangeNote(noteId, noteHeading, noteDescription) {
 		// Change general data
 
 		notePath = 'sap_notes/general_data/notes/'+noteId;
+		console.log(notePath);
 
 		updates[notePath+'/data/description'] = noteDescription;
 		updates[notePath+'/data/heading'] = noteHeading;
 		updates[notePath+'/meta_data/last_modified_by'] = last_modified_user;
 		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
 
+		console.log('Updates'+JSON.stringify(updates));
 		// Push update in firebase database
 		database.ref().update(updates, function(error){
 			if(error)
@@ -504,7 +506,7 @@ function pushChangeNote(noteId, noteHeading, noteDescription) {
 }
 
 
-function removeNote(categoryId, noteId) {
+function removeNote(noteId) {
 	/* This function removes note(noteId) of categoryId from firebase database. */
 
 	if(user_data == false) {
@@ -515,7 +517,7 @@ function removeNote(categoryId, noteId) {
 	else if(user_data == true) {
 		// Delete user data
 
-		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).child('/category_notes/'+noteId);
+		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+noteId);
 	}
 	delNoteRef.remove();
 }
@@ -545,12 +547,14 @@ noteRef.on('child_added', (snap) => {
 			<div class="border-up">
 				<button class="btn btn-sm btn-outline-info copy-note" title="Copy" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
 				<button class="btn btn-sm btn-outline-success edit-note" title="Edit" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
-				<button class="btn btn-sm btn-outline-danger delete-note" title="Delete"> <i class="far fa-trash-alt"></i> </button>
+				<button class="btn btn-sm btn-outline-danger delete-note" title="Delete" onclick="confirmDeleteNote('${noteId}')"> <i class="far fa-trash-alt"></i> </button>
 				<a class="author-note" title="Author"><i class="fas fa-user"></i>&nbsp;${noteData.meta_data.author}</a>
 			</div>
 		</div>
 	`
 	document.getElementById(categoryId+'_div').appendChild(noteDiv);
+	// Hide spinner
+	document.querySelector('.spinner-grow').classList.add('hide');
 });
 
 // Child_changed listner on General Notes

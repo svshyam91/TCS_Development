@@ -14,12 +14,15 @@
 	100% { transform: rotate(360deg); }
 }
 
+.spinner-grow {
+	color: #5c85d6;
+}
 
 .show-row {
 	display: flex;
 }
 
-.hide-row {
+.hide-row, .hide {
 	display: none;
 }
 
@@ -50,6 +53,8 @@
 .nav-link {
 	font-weight: 500;
 	color: #FFFFFF;
+	padding-top: 0px;
+	padding-bottom: 0px;
 }
 
 
@@ -84,6 +89,7 @@
 }
 .note-heading-btn:hover {
 	background-color: #356089;
+	color: #FFFFFF;
 }
 .delete-note, .edit-note, .copy-note {
 	border: 0px;
@@ -137,8 +143,10 @@ label {
 	max-height: 80%;
 }
 .status-alert {
-	position: sticky;
+	position: fixed;
 	bottom: 0;		
+	margin-bottom: 0px; /* Overwriting bootstrap property */
+	padding: 0.5rem;
 	width: 100%;
 }
 /* .btn-group button {

@@ -36,6 +36,7 @@ function u_displayCategoryNotes(e) {
 	}
 }
 
+
 function displayCategoryNotes(e) {
 
 	if( e.target && e.target.nodeName == 'BUTTON') {
@@ -274,6 +275,8 @@ function displayNoteContent(elementId) {
 
 
 // jQuery Code for Edit and Delete Categoty button actions
+// Below jQuery code has no use currently
+/* 
 $(document).ready(function() {
 
 	$("#editCategory").click(function() {
@@ -341,6 +344,7 @@ $(document).ready(function() {
 		closeDeleteBtn();
 	})
 });
+*/
 
 
 /* Code for data toggle between general and user. */
@@ -539,7 +543,7 @@ function isSignedIn() {
 }
 
 
-// Like Post
+// Like Post. The below function is currently not used.
 function upvoteNote(elementId) {
 	if(isSignedIn()) {
 		noteDiv = document.getElementById('noteContent'+elementId);

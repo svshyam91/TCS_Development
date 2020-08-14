@@ -139,9 +139,9 @@ function editNote(noteId) {
 	}
 	else {
 		// Remmove previously set attributes
-		// editBtn = document.getElementById('editNote'+elementId);
-		// editBtn.removeAttribute('data-toggle');
-		// editBtn.removeAttribute('data-target');
+		editBtn = document.getElementById(noteId+'_edit');
+		editBtn.removeAttribute('data-toggle');
+		editBtn.removeAttribute('data-target');
 
 		alert("Please Sign In first.");
 		return;
@@ -149,15 +149,14 @@ function editNote(noteId) {
 }
 
 
-function confirmDeleteNote(categoryId, noteId) {
+function confirmDeleteNote(noteId) {
 	
 	// Check user is signed In or Not
-	user = firebase.auth().currentUser;
-	if(user) {
+	if(isSignedIn()) {
 		// User is signed In
 
 		if(confirm("Are you sure you want to delete this note ?")){
-			removeNote(categoryId, noteId);
+			removeNote(noteId);
 			return;
 		}
 		return;
