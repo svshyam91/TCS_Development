@@ -129,8 +129,6 @@
 				<div class="user-data" id="userData"  style="display: none;">
 					<button class="btn btn-block btn-sm btn-outline-success" id="emailVerified" style="display: none;">Email Verified</button>
 					<button class="btn btn-block btn-sm btn-outline-danger" id="emailNotVerified" style="display: none;">Verify Email</button>
-					<div class="user-data-email">Your Email</div>
-					<div class="user-data-username">Your Password</div>
 				</div>
 			</div>
 
@@ -157,6 +155,7 @@
 		</div>
 
 
+		<!-- Modal for Sign Up Form -->
 		<div id="signUpModal" class="modal fade" role="dialog">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -167,20 +166,21 @@
 						<form action="javascript:void(0)">
 							<div class="form-group">
 								<label for="signUpUsername">Username</label>
-								<input type="text" name="username" id="signUpUsername" class="form-control" maxlength="20">
+								<input type="text" name="username" id="signUpUsername" class="form-control" maxlength="20" required>
 							</div>
 							<div class="form-group">
 								<label for="signUpEmail">Email</label>
-								<input type="email" name="email" id="signUpEmail" class="form-control" maxlength="20">
+								<input type="email" name="email" id="signUpEmail" class="form-control" maxlength="20" required>
 							</div>
 							<div class="form-group">
 								<label for="signUpPassword">Password</label>
-								<input type="password" name="password" id="signUpPassword" class="form-control">
+								<input type="password" name="password" id="signUpPassword" class="form-control" required>
 							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-success" id="signUpBtn">Sign Up</button>
+						<!-- <div class="alert alert-success" id="signUpStatus" style="float: left;"></div> -->
+						<button type="submit" class="btn btn-success" id="signUpSubmitBtn">Sign Up</button>
 						<button type="reset" class="btn btn-danger" id="cancelSignUp" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
@@ -198,11 +198,11 @@
 						<form action="javascript:void(0)">
 							<div class="form-group">
 								<label for="signInEmail">Email</label>
-								<input type="email" name="email" id="signInEmail" class="form-control" maxlength="20">
+								<input type="email" name="email" id="signInEmail" class="form-control" maxlength="20" required>
 							</div>
 							<div class="form-group">
 								<label for="signInPassword">Password</label>
-								<input type="password" name="password" id="signInPassword" class="form-control" maxlength="20">
+								<input type="password" name="password" id="signInPassword" class="form-control" maxlength="20" required>
 							</div>
 						</form>
 					</div>
@@ -277,7 +277,7 @@
 					</div>
 					<div class="modal-footer">
 						<button class="btn btn-success" data-dismiss="modal" onclick="validateChangeNote()">Apply Changes</button>
-						<button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+						<button class="btn btn-danger" data-dismiss="modal" id="cancelChangeNote">Cancel</button>
 					</div>
 				</div>
 			</div>

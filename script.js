@@ -5,7 +5,7 @@ var user_data = false;
 // JS Listeners
 document.querySelector('.user-toggle-btn').addEventListener('click', toggleUserData);
 document.getElementById('signInSubmit').addEventListener('click', signIn);
-document.getElementById('signUpBtn').addEventListener('click', signUp);
+document.getElementById('signUpSubmitBtn').addEventListener('click', signUp);
 document.getElementById('signOutNav').addEventListener('click', signOut);
 document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
 document.getElementById('categorySideDiv').addEventListener('click', displayCategoryNotes);
@@ -216,27 +216,28 @@ function validateChangeNote() {
 }
 
 
-function showStatus(statusCode) {
+function showStatus(errCode, errMssg) {
 
+	statusDiv = document.getElementById('statusAlert');
+	statusDiv.classList = '';
 
 	// Alert Text based on status code
-	if(statusCode == 0) {
-		var alertText = "Success!! Data updated successfully.";
+	if(errCode == 0) {
+
+		statusDiv.className = 'alert alert-success alert-dismissible status-alert';
 	}
-	else if(statusCode == 2) {
-		var alertText = "You have successfully logged In.";
+	else if(errCode == 2) {
+
+		statusDiv.className = 'alert alert-warning alert-dismissible status-alert';
 	}
 	else {
-		var alertText = "Failed!! Something went wrong.";
+
+		statusDiv.className = 'alert alert-danger alert-dismissible status-alert';
 	}
-
-	var alertBox = document.getElementById('statusAlert');
-
-	// Add alert status text
-	document.getElementById('statusAlert').innerHTML = alertText;
+	statusDiv.textContent = errMssg;
 
 	// Display alert box.
-	alertBox.style.display = "block";
+	statusDiv.style.display = "block";
 
 	// Hide alert box after 5 seconds 
 	setTimeout(function() {
@@ -245,32 +246,26 @@ function showStatus(statusCode) {
 }
 
 
-function displayNoteContent(elementId) {
+function toggleNoteContent(noteId) {
 	/* 
 		This function hides/displays .note-content and changes the angle(arrow) of the button.
 		Later, replace this code with jQuery code(using delegate).
 	*/
-	
-	// Get elements	
-	preDisplay = document.getElementById("noteContent"+elementId).style.display;
-	angle = document.getElementById("udAngle"+elementId);
 
-	// Use toggle() method of JS to change this code later
-	if(preDisplay == "none") {
-		preDisplay = "block";
-		
-		// Change down arrow to up
-		angle.classList.remove("selected-catfa-angle-double-down");
-		angle.classList.add("fa-angle-double-up");
-	}
-	else if(preDisplay == "block") {
-		preDisplay = "none";
+	noteContentDiv = document.getElementById(noteId+'_div');
+	noteContentDiv.classList.toggle('hide');
 
-		// Change up arrow to down
-		angle.classList.remove("selected-catfa-angle-double-up");
-		angle.classList.add("fa-angle-double-down");
+	arrow = document.querySelector('#'+noteId+'_heading i');
+	if(arrow.classList.contains('fa-angle-double-down')) {
+		arrow.classList.remove('fa-angle-double-down');
+		arrow.classList.add('fa-angle-double-up');
 	}
-	document.getElementById("noteContent"+elementId).style.display = preDisplay;
+	else {
+		arrow.classList.remove('fa-angle-double-up');
+		arrow.classList.add('fa-angle-double-down');
+	}
+
+	// arrow = document.querySelector('#-MDQJIwH1HN1snFN8fqS_content .arrow');
 }
 
 
@@ -434,11 +429,11 @@ firebase.auth().onAuthStateChanged(function(user) {
 		document.getElementById('signUpBtn').style.display = 'none';
 		document.getElementById('signOutBtn').style.display = 'block';
 		document.getElementById('usernameBtn').style.display = 'block';
-		showStatus(2);
 	}
 	else {
 		// User is logged Out
 		console.log("You have successfully signed out.");
+		showStatus(2,"You have successfully logged out.");
 		document.getElementById('userData').style.display = 'none';
 
 		// Show SignIn and SignUp Button and Hide username and signOut button
@@ -453,6 +448,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 function signUp() {
 	/* This function is used to sign Up user to firebase database. */
 
+	var signUpUsername, signUpEmail, signUpPassword;
+
 	// Get Values
 	signUpUsername = document.getElementById('signUpUsername').value;
 	signUpEmail = document.getElementById('signUpEmail').value;
@@ -463,10 +460,13 @@ function signUp() {
 		// Successfully signed up.
 
 		console.log("User has successfully signed up.");
+		showStatus(0, "Successfully signed Up !! ");
+		document.getElementById('cancelSignUp').click();	/* Close modal */
 	}).catch(function(error) {
 		// Error Handling
 
-		console.log("Something went wrong!! "+error);
+		console.log("Sign Up Error: "+error);
+		showStatus(1, error);
 	});
 }
 
@@ -491,18 +491,19 @@ function signIn() {
 	signInEmail = document.getElementById('signInEmail').value;
 	signInPassword = document.getElementById('signInPassword').value;
 
-	console.log("Sign In Email: "+signInEmail);
-	console.log("Sign In Password:" + signInPassword);
-
 	// Sign In Using Firebase
 	firebase.auth().signInWithEmailAndPassword(signInEmail, signInPassword)
 	.then(function() {
+
 		console.log("User has successfully logged in");
-		document.getElementById('cancelSignIn').click();
+		showStatus(0, "You have successfully logged in.");
+		document.getElementById('cancelSignIn').click(); /* Cancel button only closes modal */
 	})
 	.catch(function(error) {
 		//Error Handling
-		console.log("Something went wrong!! "+error);
+
+		console.log("Sign In Error: "+error);
+		showStatus(1, "Something went wrong!! "+error);
 	});
 }
 

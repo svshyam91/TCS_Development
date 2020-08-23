@@ -125,11 +125,12 @@ function pushCategory(categoryName, categoryDescription) {
 	}
 	pushCategoryRef.push(categoryData,function(error) {
 		if(error) {
-			console.log("Something went wrong!!");
+			console.log('Add category Error: '+error);
+			showStatus(1, 'Error while pushing category. '+error);
 		}
 		else {
 			console.log("Data updated successfully.");
-			showStatus(0);		// Display status to user via alert
+			showStatus(0, 'Category has been pushed on cloud successfully.');		// Display status to user via alert
 		}
 	});
 
@@ -352,6 +353,9 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 		// child_added listner on 'sap_notes/user_data/<user_id>/notes'
 		usrNoteRef.on('child_added', (snap) => {
+
+			console.log("Child_added event triggered.");
+
 			var noteId = snap.key,
 				categoryId = snap.val().category_id,
 				noteData = snap.val();
@@ -362,8 +366,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 			noteDiv.setAttribute('category_id', categoryId);
 		
 			noteDiv.innerHTML = `
-				<button class="btn btn-block note-heading-btn" id="${noteId}_heading">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
-				<div class="note-content">
+				<button class="btn btn-block note-heading-btn" id="${noteId}_heading" onclick="toggleNoteContent('${noteId}')">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
+				<div class="note-content" id="${noteId}_div">
 					<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
 					<div class="border-up">
 						<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
@@ -441,13 +445,18 @@ function pushNotesOfCategory(categoryId, noteHeading, noteDescription) {
 			category_id: categoryId
 		}
 	}
+	/* change this push with set method like push().set({}). This way,
+		we'll be able to use promise returned by set().
+	*/
 	pushKeyRef = pushNoteRef.push(noteData,function(error) {
 		if(error) {
-			console.log("Something went wrong!! "+error);
+			console.log("Push Notes Error: "+error);
+			showStatus(1, 'Error while pushing note. '+error);	
 		}
 		else {
 			console.log("Note pushed successfully.");
-			showStatus(0);
+			document.getElementById('cancelNote').click();
+			showStatus(0, 'Note has been pushed on cloud successfully.');
 		}
 	});
 	newNoteKey = pushKeyRef.key;
@@ -476,13 +485,17 @@ function pushChangeNote(noteId, noteHeading, noteDescription) {
 		updates[notePath+'/meta_data/last_modified_by'] = last_modified_user;
 		updates[notePath+'/meta_data/last_modified'] = last_modified_at;
 
-		console.log('Updates'+JSON.stringify(updates));
 		// Push update in firebase database
 		database.ref().update(updates, function(error){
-			if(error)
+			if(error) {
 				console.log("Something went wrong!!"+error);
-			else
+				showStatus(1, 'Changes were not updated! '+error);
+			}
+			else {
 				console.log("Data updated successfully.");
+				showStatus(0, 'Note has been updated successfully! ');
+				document.getElementById('cancelChangeNote').click(); /* Close modal */
+			}
 		});
 	}
 	else {
@@ -497,10 +510,16 @@ function pushChangeNote(noteId, noteHeading, noteDescription) {
 
 		// Push update in firebase database
 		database.ref().update(updates, function(error){
-			if(error)
-				console.log("Something went wrong!!"+error);
-			else
+			if(error) {
+				console.log('Change Note Error: '+error);
+				showStatus(1, 'Something went wrong! '+error);
+			}
+			else {
 				console.log("Data updated successfully.");
+				showStatus(0, 'Note has been updated successfully ');
+				document.getElementById('cancelChangeNote').click(); /* Close modal */
+			}
+
 		});
 	}
 }
@@ -519,7 +538,11 @@ function removeNote(noteId) {
 
 		delNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes/'+noteId);
 	}
-	delNoteRef.remove();
+	delNoteRef.remove().then(function() {
+		showStatus(0,"Note has been successfully removed.");
+	}).catch(function(error) {
+		showStatus(2, "Note hasn't been removed. "+error);
+	});
 }
 
 
@@ -531,6 +554,8 @@ noteRef = database.ref('sap_notes/general_data/notes');
 // Child_added listner on General Notes
 noteRef.on('child_added', (snap) => {
 
+	console.log("Child_added event triggered.");
+
 	var noteDiv, categoryId = snap.val().category_id,
 		noteId = snap.key,
 		noteData = snap.val();
@@ -541,8 +566,8 @@ noteRef.on('child_added', (snap) => {
 	noteDiv.setAttribute('category_id', categoryId);
 
 	noteDiv.innerHTML = `
-		<button class="btn btn-block note-heading-btn" id="${noteId}_heading">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
-		<div class="note-content">
+		<button class="btn btn-block note-heading-btn" id="${noteId}_heading" onclick="toggleNoteContent('${noteId}')">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down arrow"></i> </button>
+		<div class="note-content" id="${noteId}_div">
 			<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
 			<div class="border-up">
 				<button class="btn btn-sm btn-outline-info copy-note" title="Copy" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>

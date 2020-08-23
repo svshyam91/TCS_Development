@@ -148,6 +148,7 @@ label {
 	margin-bottom: 0px; /* Overwriting bootstrap property */
 	padding: 0.5rem;
 	width: 100%;
+	z-index: 1060;
 }
 /* .btn-group button {
 	margin: 10px 0px;
