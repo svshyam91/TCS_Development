@@ -58,10 +58,35 @@
 }
 
 
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	background-color: #FFFCCC;
+	/*position: fixed;*/
+	overflow: auto;	 
+}
+@media screen and (min-width: 480px) {
+	.flex-container {
+		flex-direction: column;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ----------------------- Sidebar Category Buttons ----------------------- */
 .category-sidebar-btn {
-	overflow: hidden;
-	text-overflow: ellipsis;
+
 }
 .category-sidebar-btn:hover {
 	background-color: #5c85d6;
