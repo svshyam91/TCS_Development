@@ -53,19 +53,16 @@
 .nav-link {
 	font-weight: 500;
 	color: #FFFFFF;
-	padding-top: 0px;
-	padding-bottom: 0px;
 }
 
 
 .flex-container {
 	display: flex;
 	flex-direction: row;
-	background-color: #FFFCCC;
 	/*position: fixed;*/
 	overflow: auto;	 
 }
-@media screen and (min-width: 480px) {
+@media screen and (min-width: 576px) {
 	.flex-container {
 		flex-direction: column;
 	}
@@ -73,21 +70,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 /* ----------------------- Sidebar Category Buttons ----------------------- */
-.category-sidebar-btn {
-
+.category-sidebar-btn, .add-category-btn {
+	margin: 5px;
 }
+
 .category-sidebar-btn:hover {
 	background-color: #5c85d6;
 }

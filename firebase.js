@@ -208,7 +208,7 @@ categoryRef.on('child_added', (snap) => {
 	// Add category button to the side navigation
 	categoryBtn = document.createElement('button');
 	categoryBtn.id = categoryId+'_btn';
-	categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn');
+	categoryBtn.setAttribute('class', 'btn btn-sm btn-outline-primary category-sidebar-btn');
 	categoryBtn.setAttribute('category-id', categoryId);
 	categoryBtn.textContent = categoryName;
 
