@@ -15,6 +15,11 @@ function u_displayCategoryNotes(e) {
 	if( e.target && e.target.nodeName == 'BUTTON') {
 		categoryBtn = e.target;
 
+		if(e.target.classList.contains('add-category-btn')) {
+			console.log('This condition is true');
+			return;
+		}
+
 		// Remove class 's-cat' from all category-sidebar-btns
 		categorySideBtns = document.querySelectorAll('.u-cat');
 		for(const categorySideBtn of categorySideBtns.values()) {
@@ -41,6 +46,11 @@ function displayCategoryNotes(e) {
 
 	if( e.target && e.target.nodeName == 'BUTTON') {
 		categoryBtn = e.target;
+
+		if(e.target.classList.contains('add-category-btn')) {
+			console.log('This condition is true');
+			return;
+		}
 
 		// Remove class 's-cat' from all category-sidebar-btns
 		categorySideBtns = document.querySelectorAll('.category-sidebar-btn');

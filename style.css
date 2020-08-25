@@ -112,6 +112,7 @@ a:not([href]):not([tabindex]).author-note {
 a.author-note, a.author-note:hover {
 	border: 0px;
 	cursor: default !important;
+	text-decoration: none;
 	background-color: #FFFFFF;
 	color: #5c85d6;
 	font-size: 15px;

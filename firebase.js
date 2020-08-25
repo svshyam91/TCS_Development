@@ -274,9 +274,20 @@ firebase.auth().onAuthStateChanged(function(user) {
 			usrNoteRef = database.ref('sap_notes/user_data/'+user.uid+'/notes');
 
 		// Clear #usrCategorySideDiv , #usr-category-select-btn , #user-notes-div 
+
+		// Clear usrCategorySideDiv because if a user logs out and other user logs in then 2nd user's categories
+		// will also be added with the previous categories. But this will also remove Add Category button
 		document.getElementById('usrCategorySideDiv').innerHTML = '';
 		document.getElementById('usr-category-select-btn').innerHTML = '';
 		document.getElementById('user-notes-div').innerHTML = '';
+
+		// Create and append addCategory btn
+		addCategoryBtn = document.createElement('button');
+		addCategoryBtn.setAttribute('class','btn btn-sm btn-primary add-category-btn');
+		addCategoryBtn.setAttribute('data-toggle','modal');
+		addCategoryBtn.setAttribute('data-target','#categoryModal');
+		addCategoryBtn.textContent = 'Add Category +';
+		document.getElementById('usrCategorySideDiv').appendChild(addCategoryBtn);
 
 
 		/*                       **************************** Listners on User Category **************************** */
@@ -293,7 +304,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 			// Add category to the side navigation
 			categoryBtn = document.createElement('button');
 			categoryBtn.id = categoryId+'_btn';
-			categoryBtn.setAttribute('class', 'btn btn-sm btn-block btn-outline-primary category-sidebar-btn u-cat');
+			categoryBtn.setAttribute('class', 'btn btn-sm btn-outline-primary category-sidebar-btn u-cat');
 			categoryBtn.setAttribute('category-id', categoryId);
 			categoryBtn.textContent = categoryName;
 
@@ -364,6 +375,12 @@ firebase.auth().onAuthStateChanged(function(user) {
 			noteDiv.id = noteId;
 			noteDiv.setAttribute('class', 'mt-3')
 			noteDiv.setAttribute('category_id', categoryId);
+
+			tempDiv = document.createElement('textarea');
+			tempDiv.textContent = noteData.data.description;
+			tempDiv.style.height = '10px';
+			console.log('tempDiv: '+tempDiv);
+			console.log('tempDiv height: '+tempDiv.scrollHeight);
 		
 			noteDiv.innerHTML = `
 				<button class="btn btn-block note-heading-btn" id="${noteId}_heading" onclick="toggleNoteContent('${noteId}')">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
@@ -553,8 +570,6 @@ noteRef = database.ref('sap_notes/general_data/notes');
 
 // Child_added listner on General Notes
 noteRef.on('child_added', (snap) => {
-
-	console.log("Child_added event triggered.");
 
 	var noteDiv, categoryId = snap.val().category_id,
 		noteId = snap.key,
