@@ -14,6 +14,11 @@
 	100% { transform: rotate(360deg); }
 }
 
+/* Changing default behaviour of bootstrap */
+.btn {
+	border-radius: 0px;
+}
+
 .spinner-grow {
 	color: #5c85d6;
 }

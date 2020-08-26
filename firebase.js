@@ -365,8 +365,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 		// child_added listner on 'sap_notes/user_data/<user_id>/notes'
 		usrNoteRef.on('child_added', (snap) => {
 
-			console.log("Child_added event triggered.");
-
 			var noteId = snap.key,
 				categoryId = snap.val().category_id,
 				noteData = snap.val();
@@ -376,16 +374,10 @@ firebase.auth().onAuthStateChanged(function(user) {
 			noteDiv.setAttribute('class', 'mt-3')
 			noteDiv.setAttribute('category_id', categoryId);
 
-			tempDiv = document.createElement('textarea');
-			tempDiv.textContent = noteData.data.description;
-			tempDiv.style.height = '10px';
-			console.log('tempDiv: '+tempDiv);
-			console.log('tempDiv height: '+tempDiv.scrollHeight);
-		
 			noteDiv.innerHTML = `
 				<button class="btn btn-block note-heading-btn" id="${noteId}_heading" onclick="toggleNoteContent('${noteId}')">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down"></i> </button>
 				<div class="note-content" id="${noteId}_div">
-					<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
+					<textarea readonly class="note-content" id="${noteId}_content" style="height: 150px;">${noteData.data.description}</textarea>
 					<div class="border-up">
 						<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
 						<button class="btn btn-sm btn-outline-success edit-note" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
@@ -585,7 +577,7 @@ noteRef.on('child_added', (snap) => {
 		<div class="note-content" id="${noteId}_div">
 			<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
 			<div class="border-up">
-				<button class="btn btn-sm btn-outline-info copy-note" title="Copy" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy"></i> </button>
+				<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy" data-toggle="tooltip" data-placement="bottom" title="Copy"></i> </button>
 				<button class="btn btn-sm btn-outline-success edit-note" title="Edit" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
 				<button class="btn btn-sm btn-outline-danger delete-note" title="Delete" onclick="confirmDeleteNote('${noteId}')"> <i class="far fa-trash-alt"></i> </button>
 				<a class="author-note" title="Author"><i class="fas fa-user"></i>&nbsp;${noteData.meta_data.author}</a>
@@ -593,6 +585,13 @@ noteRef.on('child_added', (snap) => {
 		</div>
 	`
 	document.getElementById(categoryId+'_div').appendChild(noteDiv);
+
+	// Adjust the height of textarea. This height can only be adjusted after element is added on the page.
+	textarea = document.getElementById(noteId+'_content');
+	scrollH = textarea.scrollHeight;
+	textarea.style.height = scrollH+5+'px';
+	console.log("Scroll Height "+scrollH);
+
 	// Hide spinner
 	document.querySelector('.spinner-grow').classList.add('hide');
 });
