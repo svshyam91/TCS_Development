@@ -282,12 +282,12 @@ firebase.auth().onAuthStateChanged(function(user) {
 		document.getElementById('user-notes-div').innerHTML = '';
 
 		// Create and append addCategory btn
-		addCategoryBtn = document.createElement('button');
-		addCategoryBtn.setAttribute('class','btn btn-sm btn-primary add-category-btn');
-		addCategoryBtn.setAttribute('data-toggle','modal');
-		addCategoryBtn.setAttribute('data-target','#categoryModal');
-		addCategoryBtn.textContent = 'Add Category +';
-		document.getElementById('usrCategorySideDiv').appendChild(addCategoryBtn);
+		// addCategoryBtn = document.createElement('button');
+		// addCategoryBtn.setAttribute('class','btn btn-sm btn-primary add-category-btn');
+		// addCategoryBtn.setAttribute('data-toggle','modal');
+		// addCategoryBtn.setAttribute('data-target','#categoryModal');
+		// addCategoryBtn.textContent = 'Add Category +';
+		// document.getElementById('usrCategorySideDiv').appendChild(addCategoryBtn);
 
 
 		/*                       **************************** Listners on User Category **************************** */

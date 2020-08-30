@@ -76,14 +76,18 @@
 		<div class="row general-row show-row">	
 
 			<div class="col-sm-2 pt-3">
-				<div class="flex-container" id="categorySideDiv">
-					<div> 
-						<!-- <button class="btn btn-sm btn-primary add-category-btn btn-block">Temp1</button>
-						<button class="btn btn-sm btn-primary add-category-btn btn-block">Temp2</button>
-						<button class="btn btn-sm btn-primary add-category-btn btn-block">Temp3</button>
-						<button class="btn btn-sm btn-primary add-category-btn btn-block">Temp4</button> -->
+				<div class="flex-container" >
+					<div class="btn-group" role="group" aria-label="edit-delete-category-btn">
+						<button type="button" class="btn btn-sm btn-outline-success add-remove-category">Edit</button>
+						<button type="button" class="btn btn-sm btn-outline-danger add-remove-category">Delete</button>
 					</div>
 					<button class="btn btn-sm btn-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">Add Category&nbsp; &#10011;</button>	
+					<div class="flex-container" id="categorySideDiv"> 
+						<!-- <button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp1</button>
+						<button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp2</button>
+						<button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp3</button>
+						<button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp4</button> -->
+					</div>
 				</div>
 			</div>
 
@@ -117,8 +121,15 @@
 		<div class="row user-row hide-row">	
 
 			<div class="col-sm-2 pt-3">
-				<div class="flex-container" id="usrCategorySideDiv">
-					<!-- <button class="btn btn-sm btn-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">Add Category&nbsp; &#10011;</button>	 -->
+				<div class="flex-container">
+					<div class="btn-group" role="group" aria-label="user-edit-delete-category-btn">
+						<button type="button" class="btn btn-sm btn-success">Edit</button>
+						<button type="button" class="btn btn-sm btn-danger">Delete</button>
+					</div>
+					<button class="btn btn-sm btn-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">Add Category&nbsp; &#10011;</button>
+					<div class="flex-container" id="usrCategorySideDiv">
+
+					</div>
 					<!-- User Categories comes here. -->
 				</div>
 			</div>
