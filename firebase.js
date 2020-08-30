@@ -573,7 +573,7 @@ noteRef.on('child_added', (snap) => {
 	noteDiv.setAttribute('category_id', categoryId);
 
 	noteDiv.innerHTML = `
-		<button class="btn btn-block note-heading-btn" id="${noteId}_heading" onclick="toggleNoteContent('${noteId}')">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-down arrow"></i> </button>
+		<button class="btn btn-block note-heading-btn" id="${noteId}_heading" onclick="toggleNoteContent('${noteId}')">${noteData.data.heading}&nbsp;&nbsp; <i class="fas fa-angle-double-up arrow"></i> </button>
 		<div class="note-content" id="${noteId}_div">
 			<textarea readonly class="note-content" id="${noteId}_content">${noteData.data.description}</textarea>
 			<div class="border-up">
