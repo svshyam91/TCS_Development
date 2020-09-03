@@ -38,17 +38,7 @@
 					<a class="nav-link" href="javascript:void(0)">NOTES</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" target="_blank" 
-					href="https://spc.ondemand.com/sap/public/ap/ui/repository/SAP_UI/HTMLOBERON5/client.html?app.component=/SAP_UI_CT/Main/root.uiccwoc&rootWindow=X&redirectUrl=/sap/public/byd/runtime#n=eyJpblBvcnQiOiIiLCJ0YXJnZXQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInBhcmFtcyI6e30sImxpc3RzIjp7fSwid2NDb250ZXh0Ijp7IndvY0lkIjoiL0ExU19TUEMvV29ya0NlbnRlci9Nb25pdG9yaW5nX1dDRi5XQ0YudWl3b2MiLCJ2aWV3SWQiOiIvQTFTX1NQQy9JbmNpZGVudC9UaWNrZXQvVGlja2V0V29ya0NlbnRlclZpZXcuV0NWSUVXLnVpd29jdmlldyIsInN0YXRzSXNDb21tb25UYXNrIjpmYWxzZSwiaXNOYXZOb2RlIjpmYWxzZSwibmF2Tm9kZVRleHQiOiIifX0%3D">OPEN SPC</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link open-ticket" href="javascript:void(0)">OPEN TICKET</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link open-sap-note" href="javascript:void(0)">OPEN SAP NOTE</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="javascript:void(0)" id="openNoteForm" data-toggle="modal" data-target="#addNoteModal">ADD SAP NOTE</a>
+					<a class="nav-link" href="javascript:void(0)" id="openNoteForm" data-toggle="modal" data-target="#addNoteModal">ADD NOTE</a>
 				</li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
@@ -77,16 +67,13 @@
 
 			<div class="col-sm-2 pt-3">
 				<div class="flex-container" >
-					<div class="btn-group" role="group" aria-label="edit-delete-category-btn">
-						<button type="button" class="btn btn-sm btn-outline-success add-remove-category">Edit</button>
-						<button type="button" class="btn btn-sm btn-outline-danger add-remove-category">Delete</button>
+					<div class="btn-group-vertical sidebar-category-btn-group" role="group" aria-label="edit-delete-category-btn">
+						<button type="button" class="btn btn-sm btn-outline-success sidebar-btn" id="editCategory" data-toggle="modal" data-target="#editCategoryModal"><i class="far fa-edit"></i></button>
+						<button type="button" class="btn btn-sm btn-outline-danger sidebar-btn" id="deleteCategory"><i class="far fa-trash-alt"></i></button>
+						<button type="button" class="btn btn-sm btn-outline-primary add-category-btn" data-toggle="modal" data-target="#categoryModal" >&#10011;</button>	
 					</div>
-					<button class="btn btn-sm btn-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">Add Category&nbsp; &#10011;</button>	
-					<div class="flex-container" id="categorySideDiv"> 
-						<!-- <button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp1</button>
-						<button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp2</button>
-						<button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp3</button>
-						<button class="btn btn-sm btn-outline-primary category-sidebar-btn">Temp4</button> -->
+					<div class="flex-container" id="categorySideDiv">
+						<!-- General categories comes here... -->
 					</div>
 				</div>
 			</div>
@@ -102,7 +89,7 @@
 
 					<!-- Add spinner-grow -->
 					<div class="d-flex justify-content-center">
-						<div class="spinner-grow" style="width: 3rem; height: 3rem; top: 30vh; position: absolute;" role="status"></div>
+						<div class="spinner-grow" style="width: 3rem; height: 3rem; top: 20vh; position: absolute;" role="status"></div>
 					</div>
 				</div>
 			</div>
@@ -122,15 +109,16 @@
 
 			<div class="col-sm-2 pt-3">
 				<div class="flex-container">
-					<div class="btn-group" role="group" aria-label="user-edit-delete-category-btn">
-						<button type="button" class="btn btn-sm btn-success">Edit</button>
-						<button type="button" class="btn btn-sm btn-danger">Delete</button>
+					<div class="btn-group-vertical sidebar-category-btn-group" role="group" aria-label="edit-delete-category-btn">
+						<button type="button" class="btn btn-sm btn-outline-success sidebar-btn" id="addUserCategory"><i class="far fa-edit"></i></button>
+						<button type="button" class="btn btn-sm btn-outline-danger sidebar-btn" id="deleteUserCategory"><i class="far fa-trash-alt"></i></button>
+						<button class="btn btn-sm btn-outline-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">&#10011;</button>
 					</div>
-					<button class="btn btn-sm btn-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">Add Category&nbsp; &#10011;</button>
 					<div class="flex-container" id="usrCategorySideDiv">
 
-					</div>
 					<!-- User Categories comes here. -->
+
+					</div>
 				</div>
 			</div>
 
@@ -211,7 +199,7 @@
 
 				<div class="modal-content">
 					<div class="modal-header form-heading">
-						<h3>Add NOTE</h3>
+						<h3>ADD NOTE</h3>
 					</div>
 					<div class="modal-body">
 						<form action="javascript:void(0)">
@@ -239,8 +227,8 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-success" id="submitNote" onclick="validateAddNoteForm()">SUBMIT</button>
-						<button type="reset" class="btn btn-danger" id="cancelNote" data-dismiss="modal">CANCEL</button>
+						<button type="submit" class="btn btn-success" id="submitNote" onclick="validateAddNoteForm()">Submit</button>
+						<button type="reset" class="btn btn-danger" id="cancelNote" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
 			</div>
@@ -253,15 +241,15 @@
 				<!-- Content -->
 				<div class="modal-content">
 					<div class="modal-header form-heading">
-						<h3>Change NOTE</h3>
+						<h3>EDIT NOTE</h3>
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
-							<label for="changeNoteHeading">Change NOTE Heading:</label>
+							<label for="changeNoteHeading">Change Note Heading:</label>
 							<input type="text" name="changeNoteHeading" id="changeNoteHeading" class="form-control">
 						</div>
 						<div class="form-group">
-							<label for="changeNoteDescription">Change NOTE Description:</label>
+							<label for="changeNoteDescription">Change Note Description:</label>
 							<textarea class="form-control" style="height: 200px;" name="changeNoteDescription" id="changeNoteDescription"></textarea>
 							<!-- <text type="text" name="changeNoteDescription" id="changeNoteDescription" class="form-control"> -->
 						</div>
@@ -281,7 +269,7 @@
 				<!-- Content -->
 				<div class="modal-content">
 					<div class="modal-header form-heading">
-						<h3>Add Category</h3>
+						<h3>ADD CATEGORY</h3>
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
@@ -300,6 +288,33 @@
 				</div>
 			</div>
 		</div><!-- End of category Modal -->
+
+		<!-- Modal for Edit category -->
+		<div id="editCategoryModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-dialog-centered">
+				
+				<!-- Content -->
+				<div class="modal-content">
+					<div class="modal-header form-heading">
+						<h3>EDIT CATEGORY</h3>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="categoryName_edit">Edit Category Name:</label>
+							<input type="text" name="categoryName_edit" id="categoryName_edit" class="form-control">
+						</div>
+						<!-- <div class="form-group">
+							<label for="categoryDescription_edit">Edit Category Description:</label>
+							<input type="text" name="categoryDescription_edit" id="categoryDescription_edit" class="form-control">
+						</div> -->
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-success" id="editCategorySubmitBtn" data-dismiss="modal">Save</button>
+						<button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</div>
 

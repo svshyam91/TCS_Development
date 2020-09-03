@@ -139,8 +139,26 @@ function pushCategory(categoryName, categoryDescription) {
 
 
 // We'll change this later, we have to change UI for changing the category
-function changeCategory(categoryName, categoryId) {
+function saveEditCategory() {
 	/* This function pushes change categoryName and categoryId to firebase database. */
+
+	// Get changed category name and categoryId from global variable
+	var categoryName = document.getElementById('categoryName_edit').value;
+	var categoryId = selected_general_category;
+
+	// Validation
+	if(isSignedIn()) {
+		if(typeof categoryId == 'undefined' || typeof categoryName == 'undefined' || 
+			categoryId == '' || categoryName == '') {
+
+			console.log("CategoryID: "+categoryId+"CategoryName: "+categoryName);
+			return;	
+		}
+	}
+	else {
+		alert('Please Sign In first.');
+		return;
+	}
 
 	var updates = {};
 
@@ -590,7 +608,6 @@ noteRef.on('child_added', (snap) => {
 	textarea = document.getElementById(noteId+'_content');
 	scrollH = textarea.scrollHeight;
 	textarea.style.height = scrollH+5+'px';
-	console.log("Scroll Height "+scrollH);
 
 	// Hide spinner
 	document.querySelector('.spinner-grow').classList.add('hide');

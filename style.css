@@ -3,7 +3,7 @@
 	border: 8px solid #f3f3f3;
 	border-top: 8px solid #03396c;
 	border-radius: 50%;
-	margin: auto;	/* align center horizontally */
+	margin: auto;	/* align center horizontally */	
 	margin-top: 20vh;
 	width: 50px;
 	height: 50px;
@@ -60,24 +60,44 @@
 	color: #FFFFFF;
 }
 
+/* ----------------------- Sidebar Category Buttons ----------------------- */
 
 .flex-container {
+	/* For mobile screens */
 	display: flex;
 	flex-direction: row;
 	/*position: fixed;*/
 	overflow: auto;	 
 }
+.category-sidebar-btn {
+	/* For mobile screen */
+	margin-top: 0;
+	margin-left: 0.5rem;
+	/*padding: 0.1rem 0.3rem;*/
+}
+.btn-group-vertical>.btn:not(:first-child) {
+	margin: 0px;
+}
+.sidebar-btn, .add-category-btn, .category-sidebar-btn {
+	font-size: 0.7rem;
+}
+
 @media screen and (min-width: 576px) {
+	/* For Laptop and desktop screens */
 	.flex-container {
 		flex-direction: column;
 	}
-}
-
-
-
-/* ----------------------- Sidebar Category Buttons ----------------------- */
-.category-sidebar-btn, .add-category-btn, .add-remove-category {
-	margin: 5px;
+	.category-sidebar-btn {
+		margin-left: 0;
+		margin-top: 0.5rem;
+	}
+	.sidebar-category-btn-group {
+		display: inline-flex;
+		flex-direction: row;
+	}
+	.sidebar-btn, .add-category-btn, .category-sidebar-btn {
+		font-size: 0.875rem;
+	}
 }
 
 .category-sidebar-btn:hover {
@@ -124,11 +144,7 @@ a.author-note, a.author-note:hover {
 }
 .delete-note, .edit-note {
 	float: right;
-	/*border-radius: 15px;*/
 }
-/*.copy-note {
-	border-radius: 15px;
-}*/
 .message-box {
 	text-align: center;
 	margin-top: 50px;
@@ -168,9 +184,6 @@ label {
 	width: 100%;
 	z-index: 1060;
 }
-/* .btn-group button {
-	margin: 10px 0px;
-} */
 .input-group {
 	position: absolute;
 	left: 0;

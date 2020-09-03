@@ -1,5 +1,7 @@
 // Global Variables
-var user_data = false;
+var user_data = false,
+	selected_general_category,
+	selected_user_category;
 
 
 // JS Listeners
@@ -10,15 +12,15 @@ document.getElementById('signOutNav').addEventListener('click', signOut);
 document.getElementById('emailNotVerified').addEventListener('click', sendEmailVerfication);	
 document.getElementById('categorySideDiv').addEventListener('click', displayCategoryNotes);
 document.getElementById('usrCategorySideDiv').addEventListener('click', u_displayCategoryNotes);
+document.getElementById('editCategory').addEventListener('click', editCategory);
+document.getElementById('editCategorySubmitBtn').addEventListener('click', saveEditCategory);
+// document.getElementById('deleteCategory').addEventListener('click', deleteCategory);
+// document.getElementById('editUserCategory').addEventListener('click', editUserCategory);
+// document.getElementById('deleteUserCategory').addEventListener('click', deleteUserCategory);
 
 function u_displayCategoryNotes(e) {
 	if( e.target && e.target.nodeName == 'BUTTON') {
 		categoryBtn = e.target;
-
-		// if(e.target.classList.contains('add-category-btn')) {
-		// 	console.log('This condition is true');
-		// 	return;
-		// }
 
 		// Remove class 's-cat' from all category-sidebar-btns
 		categorySideBtns = document.querySelectorAll('.u-cat');
@@ -37,7 +39,10 @@ function u_displayCategoryNotes(e) {
 
 		// Show selected category div
 		categoryId = categoryBtn.getAttribute('category-id');
-		document.getElementById(categoryId + '_div').style.display = 'block';		
+		document.getElementById(categoryId + '_div').style.display = 'block';	
+
+		// Change global variable 
+		selected_user_category = categoryId;	
 	}
 }
 
@@ -46,11 +51,6 @@ function displayCategoryNotes(e) {
 
 	if( e.target && e.target.nodeName == 'BUTTON') {
 		categoryBtn = e.target;
-
-		// if(e.target.classList.contains('add-category-btn')) {
-		// 	console.log('This condition is true');
-		// 	return;
-		// }
 
 		// Remove class 's-cat' from all category-sidebar-btns
 		categorySideBtns = document.querySelectorAll('.category-sidebar-btn');
@@ -70,6 +70,9 @@ function displayCategoryNotes(e) {
 		// Show selected category div
 		categoryId = categoryBtn.getAttribute('category-id');
 		document.getElementById(categoryId + '_div').style.display = 'block';
+
+		// Change global variable 
+		selected_general_category = categoryId;
 	}
 }
 
@@ -95,25 +98,7 @@ function copyToClipboard(elemId) {
 }
 
 
-document.querySelector('.open-ticket').addEventListener('click', function(){
-	var ticketNo = prompt("Enter ticket number:");
-	if(ticketNo != null && ticketNo != "") {
-		var link = "https://spc.ondemand.com/open?ticket="+ticketNo.trim();
-		window.open(link);
-	}
-});
-
-
-document.querySelector('.open-sap-note').addEventListener('click', function() {
-	var sapNoteNo = prompt("Enter SAP NOTE: ");
-	if(sapNoteNo != null && sapNoteNo != "") {
-		var sapNoteLink = "https://launchpad.support.sap.com/#/notes/"+sapNoteNo.trim();
-		window.open(sapNoteLink);
-	}
-});
-
-
-/*                         ****************************  Validation of forms ***********************************              */
+/*   ****************************  Validation of forms ***********************************   */
 
 
 function validateAddCategoryForm() {
@@ -223,6 +208,21 @@ function validateChangeNote() {
 		alert("Please sign In first.");
 		return;
 	}
+}
+
+function editCategory() {
+	var categoryId;
+
+	// Get element using global variable 'selected_general_category'
+	if(selected_general_category) {
+		categoryId = selected_general_category;
+		categoryBtn = document.getElementById(categoryId+'_btn');
+		categoryText = categoryBtn.textContent;
+		// Add code category description also
+
+		// Adding categoryText to edit-modal text input 
+		document.getElementById('categoryName_edit').value = categoryText;
+	}	
 }
 
 
@@ -421,7 +421,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 		});
 
 
-		// $('#usernameNav').text(user.email);
+		// Display email on navigation bar
 		document.getElementById('usernameNav').textContent = user.email;
 		document.getElementById('userData').style.display = 'block';
 		if( user.emailVerified == false) {
@@ -554,7 +554,7 @@ function isSignedIn() {
 }
 
 
-// Like Post. The below function is currently not used.
+// Like Post. The below function is currently in use.
 function upvoteNote(elementId) {
 	if(isSignedIn()) {
 		noteDiv = document.getElementById('noteContent'+elementId);
