@@ -19,6 +19,7 @@ var database  = firebase.database(),
 	allCategories = [], allNotes='';
 
 
+// This function is currently not in use.
 function pullCategories(data_id) {
 	/* This function retrieves categories of SAP Notes from Firebase Database. */
 
@@ -108,7 +109,7 @@ function pushCategory(categoryName, categoryDescription) {
 				name: categoryName
 			},
 			meta_data: {
-				author: user.email
+				author: user.email,
 			}
 		}
 	}
@@ -138,24 +139,17 @@ function pushCategory(categoryName, categoryDescription) {
 }
 
 
-// We'll change this later, we have to change UI for changing the category
 function saveEditCategory() {
 	/* This function pushes change categoryName and categoryId to firebase database. */
 
 	// Get changed category name and categoryId from global variable
 	var categoryName = document.getElementById('categoryName_edit').value;
-	var categoryId = selected_general_category;
+	if(user_data == false) {
+
+	}
 
 	// Validation
-	if(isSignedIn()) {
-		if(typeof categoryId == 'undefined' || typeof categoryName == 'undefined' || 
-			categoryId == '' || categoryName == '') {
-
-			console.log("CategoryID: "+categoryId+"CategoryName: "+categoryName);
-			return;	
-		}
-	}
-	else {
+	if(!isSignedIn()) {
 		alert('Please Sign In first.');
 		return;
 	}
@@ -163,50 +157,87 @@ function saveEditCategory() {
 	var updates = {};
 
 	if(user_data == false) {
-		// Change in general data
+		// Update category of general data
+
+		categoryId = selected_general_category;
+
+		// Validation
+		if(typeof categoryId == 'undefined' || typeof categoryName == 'undefined' || 
+			categoryId == '' || categoryName == '')
+			return;
 
 		updates['sap_notes/general_data/categories/'+categoryId+'/data/name'] = categoryName;
 	}
 	else if(user_data == true) {
-		// Change in user_data
+		// Update category of user data
+
+		categoryId = selected_user_category;
+
+		// Validation
+		if(typeof categoryId == 'undefined' || typeof categoryName == 'undefined' || 
+			categoryId == '' || categoryName == '')
+			return;
 
 		updates['sap_notes/user_data/'+user.uid+'/categories/'+categoryId+'/data/name'] = categoryName;	
 	}
 
 	database.ref().update(updates,function(error) {
 		if(error) {
-			console.log("Category updation failed. "+error);
+			console.log("Category updation failed.  "+error);
+			showStatus(1, 'Failed.'+error);
 			return;
 		}
-		console.log("Category updated successfully.")
-		showStatus(0);
+		else {
+			console.log("Category updated successfully.")
+			showStatus(0, 'Category Updated Successfully');
+		}
 	});
 }
 
 
-// We'll change this later, we have to change UI for deleting the category
+// Under development
 function deleteCategory(categoryId) {
 	/* This function will remove category of categoryId and all notes under same category */
+
+	if(categoryId == '') {
+		return;
+	}
 
 	if(user_data == false) {
 		// Change in general data
 
 		// Delete all notes of category categoryId
-		database.ref('sap_notes/typeDetail/allActivityTypes/'+categoryId).remove();
+		// for(i = 0; i < deleteNotes.length; i++) {
+		// 	noteId = deleteNotes[i];
+		// 	database.ref('sap_notes/general_data/notes/'+noteId).remove();
+		// }
 
 		// Delete category
-		database.ref('sap_notes/activities/type/'+categoryId).remove();
+		console.log("categoryId: "+categoryId);
+		console.log("User Uid: "+user.uid);
+		database.ref('sap_notes/general_data/categories/'+categoryId).remove().then(function() {
+			showStatus(0, "Category has been deleted successfully.");
+		}).catch(function(error) {
+			showStatus(2, "Category hasn't been removed. "+error);
+		});
+		
 	}
 	else if(user_data == true) {
 		// Change in user data 
 
 		// Delete all notes of category categoryId
-		database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).remove();
+		// for(i = 0; i < deleteNotes.length; i++) {
+		// 	noteId = deleteNotes[i];
+		// 	database.ref('sap_notes/user_data/'+user.uid+'/notes/'+noteId).remove();
+		// }
+		// database.ref('sap_notes/user_data/'+user.uid+'/notes/'+categoryId).remove();
 
 		// Delete category
-		database.ref('sap_notes/user_data/'+user.uid+'/categories/'+categoryId).remove();
-
-		/* NOTE: Later, add code for catching errors. */
+		database.ref('sap_notes/user_data/'+user.uid+'/categories/'+categoryId).remove().then(function() {
+			showStatus(0, "Category has been deleted successfully.");
+		}).catch(function(error) {
+			showStatus(2, "Category hasn't been removed. "+error);
+		});
 	}
 }
 
@@ -585,6 +616,8 @@ noteRef.on('child_added', (snap) => {
 		noteId = snap.key,
 		noteData = snap.val();
 
+	author = noteData.meta_data.author.split('@')[0];
+
 	noteDiv = document.createElement('div');
 	noteDiv.id = noteId;
 	noteDiv.setAttribute('class', 'mt-3')
@@ -598,7 +631,7 @@ noteRef.on('child_added', (snap) => {
 				<button class="btn btn-sm btn-outline-info copy-note" onclick="copyToClipboard('${noteId}_content')"> <i class="far fa-copy" data-toggle="tooltip" data-placement="bottom" title="Copy"></i> </button>
 				<button class="btn btn-sm btn-outline-success edit-note" title="Edit" id='${noteId}_edit' onclick="editNote('${noteId}')"> <i class="far fa-edit"></i> </button>
 				<button class="btn btn-sm btn-outline-danger delete-note" title="Delete" onclick="confirmDeleteNote('${noteId}')"> <i class="far fa-trash-alt"></i> </button>
-				<a class="author-note" title="Author"><i class="fas fa-user"></i>&nbsp;${noteData.meta_data.author}</a>
+				<a class="author-note" title="Author"><i class="fas fa-user"></i>&nbsp;${author}</a>
 			</div>
 		</div>
 	`

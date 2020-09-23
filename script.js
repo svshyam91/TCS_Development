@@ -1,6 +1,7 @@
 // Global Variables
 var user_data = false,
 	selected_general_category,
+	selected_user_category,
 	selected_user_category;
 
 
@@ -14,9 +15,9 @@ document.getElementById('categorySideDiv').addEventListener('click', displayCate
 document.getElementById('usrCategorySideDiv').addEventListener('click', u_displayCategoryNotes);
 document.getElementById('editCategory').addEventListener('click', editCategory);
 document.getElementById('editCategorySubmitBtn').addEventListener('click', saveEditCategory);
-// document.getElementById('deleteCategory').addEventListener('click', deleteCategory);
-// document.getElementById('editUserCategory').addEventListener('click', editUserCategory);
-// document.getElementById('deleteUserCategory').addEventListener('click', deleteUserCategory);
+document.getElementById('deleteCategory').addEventListener('click', getNotesAndCategories);
+document.getElementById('editUserCategory').addEventListener('click', editUserCategory);
+document.getElementById('deleteUserCategory').addEventListener('click', getNotesAndCategories);
 
 function u_displayCategoryNotes(e) {
 	if( e.target && e.target.nodeName == 'BUTTON') {
@@ -210,8 +211,70 @@ function validateChangeNote() {
 	}
 }
 
+
+function confirmDeleteNote(noteId) {
+	
+	// Check user is signed In or Not
+	if(isSignedIn()) {
+		// User is signed In
+
+		if(confirm("Are you sure you want to delete this note ?")){
+			removeNote(noteId);
+			return;
+		}
+		return;
+	}
+	else {
+		// User is not signed In
+
+		alert("Please sign In first. ");
+		return;
+	}
+}
+
+
+function editNote(noteId) {
+	/* This function gets data from Notes div and fills in the form. */
+
+	// Check if user is logged in 
+	user = firebase.auth().currentUser;
+	if(user) {
+
+		// Get Note Data from Note Div
+		categoryId = document.getElementById(noteId).getAttribute('category_id');	
+		noteHeading = document.getElementById(noteId+'_heading').textContent;
+		noteDescription = document.getElementById(noteId+'_content').textContent;
+
+		// Open modal 
+		// data-toggle="modal" data-target="#changeNoteModal"
+		editBtn = document.getElementById(noteId+'_edit');
+		editBtn.setAttribute('data-toggle','modal');
+		editBtn.setAttribute('data-target', '#changeNoteModal');
+
+
+		// Add noteId attribute to the modal(#changeNoteModal)
+		changeNoteModal = document.getElementById('changeNoteModal');
+		changeNoteModal.setAttribute('note-id',noteId);	
+		changeNoteModal.setAttribute('category-id', categoryId);
+
+		// Fill data in form
+		document.getElementById('changeNoteHeading').value = noteHeading;
+		document.getElementById('changeNoteDescription').value = noteDescription;		
+	}
+	else {
+		// Remmove previously set attributes
+		editBtn = document.getElementById(noteId+'_edit');
+		editBtn.removeAttribute('data-toggle');
+		editBtn.removeAttribute('data-target');
+
+		alert("Please Sign In first.");
+		return;
+	}
+}
+
+
 function editCategory() {
-	var categoryId;
+	var categoryId, categoryBtn, categoryText;
 
 	// Get element using global variable 'selected_general_category'
 	if(selected_general_category) {
@@ -220,9 +283,86 @@ function editCategory() {
 		categoryText = categoryBtn.textContent;
 		// Add code category description also
 
+		// Open modal 
+		$('#editCategoryModal').modal();
+
 		// Adding categoryText to edit-modal text input 
 		document.getElementById('categoryName_edit').value = categoryText;
 	}	
+	else {
+		showStatus(2, "You have not selected any category. Please select category.");
+	}
+}
+
+
+function editUserCategory() {
+	var categoryId, categoryBtn, categoryText;
+
+	if(selected_user_category) {
+		categoryId = selected_user_category;
+		categoryBtn = document.getElementById(categoryId+'_btn');
+		categoryText = categoryBtn.textContent;
+
+		// Open Modal 
+		$('#editCategoryModal').modal();
+
+		// Adding categoryText to edit-modal text input
+		document.getElementById('categoryName_edit').value = categoryText;
+	}
+	else {
+		showStatus(2, "You have not selected any category. Please select category.");
+	} 	
+}
+
+
+function getNotesAndCategories() {
+	if(!isSignedIn()) {
+		alert('Please sign In first.');
+		return;
+	}
+
+	if(!confirm('Category can only be deleted if no notes are associated with it.\
+	 			\nAre you sure you want to delete this category ?')){
+		return;
+	}
+	var categoryId, categoryDiv, notesDivs, deleteNotes=[];
+
+	if(user_data) {
+		// Delete category of user data
+
+		categoryId = selected_user_category;
+	}
+	else {
+		// Delete category of general data
+
+		categoryId = selected_general_category;
+	}
+	if( typeof categoryId != 'undefined' && categoryId != '') {
+
+		// Check if categoryId_div has any child elements
+		if(document.getElementById(categoryId+'_div').hasChildNodes()) {
+			showStatus(2, "This category contains notes, it can't be removed.");
+			return;
+		}
+		else {
+			deleteCategory(categoryId);
+		}
+
+
+		// categoryDiv = document.getElementById(categoryId+'_div');
+		// notesDivs  = categoryDiv.querySelectorAll('div[category_id]');
+		// for(i = 0; i < notesDivs.length; i++) {
+		// 	// console.log(notesDivs[i].id);
+		// 	deleteNotes.push(notesDivs[i].id)
+		// }
+
+		// // Delete all notes and category
+		// deleteCategory(categoryId, deleteNotes);
+	}
+	else {
+		showStatus(2, "You have not selected any category. Please select category.");
+		return;
+	}
 }
 
 
@@ -279,83 +419,7 @@ function toggleNoteContent(noteId) {
 }
 
 
-// jQuery Code for Edit and Delete Categoty button actions
-// Below jQuery code has no use currently
-/* 
-$(document).ready(function() {
-
-	$("#editCategory").click(function() {
-
-		// Blur backgroud div
-		$("#categorySideBar").css("filter","blur(5px)");
-
-		// Display input div
-		$("#editInputDiv").css("width","100%");
-
-		// Disable pointer-events to backgroud div
-		$("#categorySideBar").css("pointer-events","none");
-		
-	});
-
-	$("#closeInputBtn").click(closeInputBtn);
-	function closeInputBtn() {
-		// Hide input div
-		$("#editInputDiv").css("width","0");
-
-		// Remove bselected-catlur of backgroud
-		$("#categorySideBar").css("filter","blur(0px)");
-
-		//Enable pointer-events to background div
-		$("#categorySideBar").css("pointer-events","auto");
-	}
-
-	$("#deleteCategory").click(function() {
-
-		// Blur backgroud div
-		$("#categorySideBar").css("filter","blur(5px)");
-
-		// Display Delete div
-		$("#deleteInputDiv").css("width","100%");
-
-		// Disable pointer-events to backgroud div
-		$("#categorySideBar").css("pointer-events","none");
-
-	});
-
-	// Close Delete Button
-	$("#closeDeleteBtn").click(closeDeleteBtn);
-	function closeDeleteBtn() {
-		// Hide Delete Div
-		$("#deleteInputDiv").css("width","0");
-
-		// Remove bselected-catlur of background
-		$("#categorySideBar").css("filter","blur(0px)");
-
-		//Enable pointer-events to background div
-		$("#categorySideBar").css("pointer-events","auto");
-	}
-
-	// Edit Category button
-	$("#editCategorySubmitBtn").click(function() {
-		editCategory();
-		closeInputBtn();
-	})
-
-	// Delete Category Submit 
-	$("#deleteCategorySubmitBtn").click(function() {
-		categoryId = $("#deleteCategory").attr("categoryId");
-		deleteCategory(categoryId);
-		showStatus(0);
-		closeDeleteBtn();
-	})
-});
-*/
-
-
 /* Code for data toggle between general and user. */
-
-// Global boolean variable to store type(general/user) of data to show. "user_data = false" means 
-// it will show general data.
 function toggleUserData() {
 
 	// Change toggle btn
@@ -551,15 +615,4 @@ function isSignedIn() {
 		return user;
 	}
 	return false;
-}
-
-
-// Like Post. The below function is currently in use.
-function upvoteNote(elementId) {
-	if(isSignedIn()) {
-		noteDiv = document.getElementById('noteContent'+elementId);
-		categoryId = noteDiv.getAttribute('category-id');
-		noteId = noteDiv.getAttribute('note-id');
-		updateUpvote(categoryId, noteId, elementId);
-	}
 }

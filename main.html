@@ -68,9 +68,9 @@
 			<div class="col-sm-2 pt-3">
 				<div class="flex-container" >
 					<div class="btn-group-vertical sidebar-category-btn-group" role="group" aria-label="edit-delete-category-btn">
-						<button type="button" class="btn btn-sm btn-outline-success sidebar-btn" id="editCategory" data-toggle="modal" data-target="#editCategoryModal"><i class="far fa-edit"></i></button>
-						<button type="button" class="btn btn-sm btn-outline-danger sidebar-btn" id="deleteCategory"><i class="far fa-trash-alt"></i></button>
-						<button type="button" class="btn btn-sm btn-outline-primary add-category-btn" data-toggle="modal" data-target="#categoryModal" >&#10011;</button>	
+						<button type="button" class="btn btn-sm btn-outline-success sidebar-btn" id="editCategory" title="Edit Category"><i class="far fa-edit"></i></button>
+						<button type="button" class="btn btn-sm btn-outline-danger sidebar-btn" id="deleteCategory" title="Delete Category"><i class="far fa-trash-alt"></i></button>
+						<button type="button" class="btn btn-sm btn-outline-primary add-category-btn" data-toggle="modal" data-target="#categoryModal" title="Add Category" >&#10011;</button>	
 					</div>
 					<div class="flex-container" id="categorySideDiv">
 						<!-- General categories comes here... -->
@@ -110,9 +110,9 @@
 			<div class="col-sm-2 pt-3">
 				<div class="flex-container">
 					<div class="btn-group-vertical sidebar-category-btn-group" role="group" aria-label="edit-delete-category-btn">
-						<button type="button" class="btn btn-sm btn-outline-success sidebar-btn" id="addUserCategory"><i class="far fa-edit"></i></button>
-						<button type="button" class="btn btn-sm btn-outline-danger sidebar-btn" id="deleteUserCategory"><i class="far fa-trash-alt"></i></button>
-						<button class="btn btn-sm btn-outline-primary add-category-btn" data-toggle="modal" data-target="#categoryModal">&#10011;</button>
+						<button type="button" class="btn btn-sm btn-outline-success sidebar-btn" id="editUserCategory" title="Edit Category"><i class="far fa-edit" ></i></button>
+						<button type="button" class="btn btn-sm btn-outline-danger sidebar-btn" id="deleteUserCategory" title="Delete Category"><i class="far fa-trash-alt"></i></button>
+						<button class="btn btn-sm btn-outline-primary add-category-btn" data-toggle="modal" data-target="#categoryModal" title="Add Category">&#10011;</button>
 					</div>
 					<div class="flex-container" id="usrCategorySideDiv">
 
@@ -235,7 +235,7 @@
 		</div><!-- End of Add Note Modal -->
 
 		<!-- Modal for change Note Form -->
-		<div id="changeNoteModal" class="modal fade" role="dialog" noteId="">
+		<div id="changeNoteModal" class="modal fade" role="dialog">
 			<div class="modal-dialog modal-xl">
 				
 				<!-- Content -->
@@ -274,11 +274,11 @@
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="categoryName">Enter Category Name:</label>
-							<input type="text" name="categoryName" id="categoryName" class="form-control">
+							<input type="text" name="categoryName" id="categoryName" class="form-control" maxlength="20" required>
 						</div>
 						<div class="form-group">
 							<label for="categoryDescription">Enter Category Description:</label>
-							<input type="text" name="categoryDescription" id="categoryDescription" class="form-control">
+							<input type="text" name="categoryDescription" id="categoryDescription" class="form-control" maxlength="50">
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -325,7 +325,6 @@
 	<!-- FIREBASE -->
 	<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase.js"></script>
 	<script src="firebase.js"></script>
-	<script src="changeDOM.js"></script>
 	
 	<!-- Include JS File -->
 	<script src="script.js"></script>
